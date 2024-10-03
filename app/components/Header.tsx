@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import {Await, NavLink, useAsyncValue} from '@remix-run/react';
 import {
   type CartViewPayload,
@@ -25,7 +25,7 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header">
+    <header className="header hover:text-gray-100 hover:!bg-neutral-900 transition-colors duration-200">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
         <strong>{shop.name}</strong>
       </NavLink>
@@ -102,7 +102,7 @@ function HeaderCtas({
   return (
     <nav className="header-ctas" role="navigation">
       <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
+      <NavLink prefetch="intent" to="/account">
         <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
             {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
@@ -226,6 +226,6 @@ function activeLinkStyle({
 }) {
   return {
     fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
+    color: isPending ? 'grey' : undefined,
   };
 }

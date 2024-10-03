@@ -1,14 +1,17 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {Suspense} from 'react';
-import {Image, Money} from '@shopify/hydrogen';
+import {Image, Money, Video} from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-
+// const heroVideoUrl = `${
+//   import.meta.env.VITE_S3_BUCKET_BASE_URL
+// }/videos/demo-video.mp4`;
+const heroVideoUrl = `app/assets/media/videos/demo-video.mp4`;
 export const meta: MetaFunction = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'Internal War | Home'}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -55,11 +58,31 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   };
 }
 
+interface HeroVideoProps {
+  url: string;
+}
+function HeroVideo({url}: HeroVideoProps) {
+  return (
+    <div className="hero-video w-screen max-h-[50rem]">
+      <video
+        className="max-h-[50rem] w-screen object-center object-cover"
+        src={url}
+        width="100%"
+        autoPlay
+        muted
+        loop
+      >
+        <img src="https://example.com/fallback-image.jpg" alt="hero" />
+      </video>
+    </div>
+  );
+}
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      <FeaturedCollection collection={data.featuredCollection} />
+      {/* <FeaturedCollection collection={data.featuredCollection} /> */}
+      <HeroVideo url={heroVideoUrl} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
   );
@@ -93,7 +116,7 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery | null>;
 }) {
   return (
-    <div className="recommended-products">
+    <div className="recommended-products p-5">
       <h2>Recommended Products</h2>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>

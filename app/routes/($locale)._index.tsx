@@ -9,7 +9,7 @@ import type {
 // const heroVideoUrl = `${
 //   import.meta.env.VITE_S3_BUCKET_BASE_URL
 // }/videos/demo-video.mp4`;
-const heroVideoUrl = `app/assets/media/videos/demo-video.mp4`;
+const heroVideoUrl = `https://cdn.shopify.com/videos/c/o/v/a78e9be02a6840ad9378f5ac9976801d.mp4`;
 export const meta: MetaFunction = () => {
   return [{title: 'Internal War | Home'}];
 };

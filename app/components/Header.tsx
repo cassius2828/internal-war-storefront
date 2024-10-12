@@ -7,6 +7,12 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {
+  faSearch,
+  faShoppingCart,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -25,9 +31,9 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   return (
-    <header className="header hover:text-gray-100 hover:!bg-neutral-900 transition-colors duration-200">
+    <header className="header flex justify-between items-center w-full px-5 md:px-20 bg-neutral-100-500  transition-colors duration-200">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
+        <h1 className="uppercase font-light text-3xl">{shop.name}</h1>
       </NavLink>
       <HeaderMenu
         menu={menu}
@@ -51,7 +57,8 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
-  const className = `header-menu-${viewport}`;
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const className = `header-menu-${viewport} uppercase font-thin`;
   const {close} = useAside();
 
   return (
@@ -64,7 +71,7 @@ export function HeaderMenu({
           style={activeLinkStyle}
           to="/"
         >
-          Home
+          home
         </NavLink>
       )}
       {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
@@ -79,7 +86,7 @@ export function HeaderMenu({
             : item.url;
         return (
           <NavLink
-            className="header-menu-item"
+            className="header-menu-item "
             end
             key={item.id}
             onClick={close}
@@ -101,16 +108,17 @@ function HeaderCtas({
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
     <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
       <NavLink prefetch="intent" to="/account">
         <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
+          {/* <Await resolve={isLoggedIn} errorElement="Sign in">
             {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
-          </Await>
+          </Await> */}
+          <FontAwesomeIcon icon={faUser} />
         </Suspense>
       </NavLink>
       <SearchToggle />
       <CartToggle cart={cart} />
+      <HeaderMenuMobileToggle />
     </nav>
   );
 }
@@ -131,7 +139,7 @@ function SearchToggle() {
   const {open} = useAside();
   return (
     <button className="reset" onClick={() => open('search')}>
-      Search
+      <FontAwesomeIcon icon={faSearch} />
     </button>
   );
 }
@@ -154,7 +162,12 @@ function CartBadge({count}: {count: number | null}) {
         } as CartViewPayload);
       }}
     >
-      Cart {count === null ? <span>&nbsp;</span> : count}
+      <FontAwesomeIcon icon={faShoppingCart} />{' '}
+      {count === null ? (
+        <span>&nbsp;</span>
+      ) : (
+        <span className="absolute top-4">{count}</span>
+      )}
     </a>
   );
 }

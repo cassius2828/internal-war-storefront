@@ -46,9 +46,11 @@ p {
 
 a {
   text-decoration: none;
-  position: relative;
+  /* position: relative; */
 }
-
+button {
+  cursor: pointer;
+}
 .header-menu-item::before {
   content: '';
   position: absolute;

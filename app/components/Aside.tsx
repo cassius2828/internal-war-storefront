@@ -11,6 +11,8 @@ type AsideContextValue = {
   type: AsideType;
   open: (mode: AsideType) => void;
   close: () => void;
+  showDropdown: boolean;
+  setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -76,6 +78,7 @@ const AsideContext = createContext<AsideContextValue | null>(null);
 
 Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
   const [type, setType] = useState<AsideType>('closed');
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
   return (
     <AsideContext.Provider
@@ -83,6 +86,8 @@ Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
         type,
         open: setType,
         close: () => setType('closed'),
+        showDropdown,
+        setShowDropdown,
       }}
     >
       {children}

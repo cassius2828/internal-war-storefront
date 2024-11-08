@@ -29,14 +29,14 @@ aside {
   transition: transform 200ms ease-in-out;
 }
 
-aside header {
+/* aside header {
   align-items: center;
   border-bottom: 1px solid var(--color-dark);
   display: flex;
   height: var(--header-height);
   justify-content: space-between;
   padding: 0 20px;
-}
+} */
 
 aside header h3 {
   margin: 0;
@@ -147,7 +147,7 @@ button.reset:hover:not(:has(> *)) {
 * components/Header
 * --------------------------------------------------
 */
-.header {
+/* .header {
   align-items: center;
   background: transparent;
   display: flex;
@@ -157,7 +157,7 @@ button.reset:hover:not(:has(> *)) {
   top: 0;
   z-index: 1;
   width: 100%;
-}
+} */
 
 .header-menu-mobile-toggle {
   @media (min-width: 48em) {

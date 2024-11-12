@@ -24,13 +24,7 @@ export default defineConfig({
     assetsInlineLimit: 0,
   },
   ssr: {
-    external: [
-      'crypto', // Mark these Node.js built-ins as external
-      'assert',
-      'cookie-signature',
-      'undici',
-      '@remix-run/node',
-    ],
+    external: ['crypto', 'assert', 'cookie-signature', 'undici'],
     optimizeDeps: {
       include: ['prop-types'],
     },

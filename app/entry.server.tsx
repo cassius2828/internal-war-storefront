@@ -1,15 +1,21 @@
-import type {EntryContext, AppLoadContext} from '@shopify/remix-oxygen';
 import {RemixServer} from '@remix-run/react';
 import isbot from 'isbot';
 import {renderToReadableStream} from 'react-dom/server';
 import {createContentSecurityPolicy} from '@shopify/hydrogen';
 
+/**
+ * @param {Request} request
+ * @param {number} responseStatusCode
+ * @param {Headers} responseHeaders
+ * @param {EntryContext} remixContext
+ * @param {AppLoadContext} context
+ */
 export default async function handleRequest(
-  request: Request,
-  responseStatusCode: number,
-  responseHeaders: Headers,
-  remixContext: EntryContext,
-  context: AppLoadContext,
+  request,
+  responseStatusCode,
+  responseHeaders,
+  remixContext,
+  context,
 ) {
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
@@ -45,3 +51,6 @@ export default async function handleRequest(
     status: responseStatusCode,
   });
 }
+
+/** @typedef {import('@shopify/remix-oxygen').EntryContext} EntryContext */
+/** @typedef {import('@shopify/remix-oxygen').AppLoadContext} AppLoadContext */

@@ -14,7 +14,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
 
-import {json, LoaderFunction} from '@remix-run/node';
+// import {json, LoaderFunction} from '@remix-run/node';
 import {Storefront} from '@shopify/hydrogen';
 interface HeaderProps {
   header: HeaderQuery;
@@ -25,55 +25,55 @@ interface HeaderProps {
 
 type Viewport = 'desktop' | 'mobile';
 
-export const loader: LoaderFunction = async ({params, context}) => {
-  const collectionHandle = params.collectionHandle; // Assuming the collection handle is passed via route params
+// export const loader: LoaderFunction = async ({params, context}) => {
+//   const collectionHandle = params.collectionHandle; // Assuming the collection handle is passed via route params
 
-  if (!collectionHandle) {
-    throw new Response('Collection handle is required', {status: 400});
-  }
+//   if (!collectionHandle) {
+//     throw new Response('Collection handle is required', {status: 400});
+//   }
 
-  const query = `
-    query($handle: String!) {
-      collectionByHandle(handle: $handle) {
-        id
-        title
-        description
-        products(first: 3) {
-          edges {
-            node {
-              id
-              title
-              featuredImage {
-                url
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
+//   const query = `
+//     query($handle: String!) {
+//       collectionByHandle(handle: $handle) {
+//         id
+//         title
+//         description
+//         products(first: 3) {
+//           edges {
+//             node {
+//               id
+//               title
+//               featuredImage {
+//                 url
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   `;
 
-  try {
-    // Here we use the Storefront instance to execute the query
-    const response = await Storefront.query({
-      query,
-      variables: {
-        handle: collectionHandle,
-      },
-    });
+//   try {
+//     // Here we use the Storefront instance to execute the query
+//     const response = await Storefront.query({
+//       query,
+//       variables: {
+//         handle: collectionHandle,
+//       },
+//     });
 
-    const collection = response.data.collectionByHandle;
+//     const collection = response.data.collectionByHandle;
 
-    if (!collection) {
-      throw new Response('Collection not found', {status: 404});
-    }
+//     if (!collection) {
+//       throw new Response('Collection not found', {status: 404});
+//     }
 
-    return json({collection});
-  } catch (error) {
-    console.error('Error fetching collection:', error);
-    throw new Response('Error fetching collection', {status: 500});
-  }
-};
+//     return json({collection});
+//   } catch (error) {
+//     console.error('Error fetching collection:', error);
+//     throw new Response('Error fetching collection', {status: 500});
+//   }
+// };
 
 export function Header({
   header,

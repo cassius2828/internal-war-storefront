@@ -1,5 +1,12 @@
-import {Suspense, useState} from 'react';
-import {Await, Link, NavLink, useAsyncValue} from '@remix-run/react';
+import {Suspense, useEffect, useState} from 'react';
+import {
+  Await,
+  Link,
+  NavLink,
+  useAsyncValue,
+  useFetcher,
+  useLocation,
+} from '@remix-run/react';
 import {
   type CartViewPayload,
   useAnalytics,
@@ -15,7 +22,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 // import {json, LoaderFunction} from '@remix-run/node';
-import {Storefront} from '@shopify/hydrogen';
+// import {Storefront} from '@shopify/hydrogen';
 interface HeaderProps {
   header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
@@ -25,56 +32,6 @@ interface HeaderProps {
 
 type Viewport = 'desktop' | 'mobile';
 
-// export const loader: LoaderFunction = async ({params, context}) => {
-//   const collectionHandle = params.collectionHandle; // Assuming the collection handle is passed via route params
-
-//   if (!collectionHandle) {
-//     throw new Response('Collection handle is required', {status: 400});
-//   }
-
-//   const query = `
-//     query($handle: String!) {
-//       collectionByHandle(handle: $handle) {
-//         id
-//         title
-//         description
-//         products(first: 3) {
-//           edges {
-//             node {
-//               id
-//               title
-//               featuredImage {
-//                 url
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   `;
-
-//   try {
-//     // Here we use the Storefront instance to execute the query
-//     const response = await Storefront.query({
-//       query,
-//       variables: {
-//         handle: collectionHandle,
-//       },
-//     });
-
-//     const collection = response.data.collectionByHandle;
-
-//     if (!collection) {
-//       throw new Response('Collection not found', {status: 404});
-//     }
-
-//     return json({collection});
-//   } catch (error) {
-//     console.error('Error fetching collection:', error);
-//     throw new Response('Error fetching collection', {status: 500});
-//   }
-// };
-
 export function Header({
   header,
   isLoggedIn,
@@ -83,6 +40,7 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   const {showDropdown} = useAside();
+
   return (
     <header className="header fixed z-10 flex justify-between items-center w-full px-5 md:px-20 bg-neutral-100  transition-colors duration-200">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
@@ -112,8 +70,14 @@ export function HeaderMenu({
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
   const className = `header-menu-${viewport} uppercase font-thin`;
-  const {close, setShowDropdown} = useAside();
-
+  const {close, setHoveredHandle, setShowDropdown, setHoveredCollectionUrl} =
+    useAside();
+  const fetcher = useFetcher();
+  const handleHoverNavItem = (title: string, url: string) => {
+    setHoveredHandle(title?.toLocaleLowerCase());
+    setHoveredCollectionUrl(url);
+    setShowDropdown(true);
+  };
   return (
     <nav className={className} role="navigation">
       {viewport === 'mobile' && (
@@ -137,9 +101,11 @@ export function HeaderMenu({
           item.url.includes(primaryDomainUrl)
             ? new URL(item.url).pathname
             : item.url;
+
         return (
           <NavLink
-            onMouseEnter={() => setShowDropdown(true)}
+            // onMouseEnter={() => handleShowDropdown(hoveredHandle)}
+            onMouseEnter={() => handleHoverNavItem(item.title, url)}
             className="header-menu-item relative"
             end
             key={item.id}
@@ -155,26 +121,33 @@ export function HeaderMenu({
     </nav>
   );
 }
-export function DropdownHeaderMenuSqrFull() {
+export function DropdownHeaderMenuSqrFull({
+  img,
+  url,
+}: {
+  img: string;
+  url: string;
+}) {
   const [showShopBtn, setShowShopBtn] = useState<boolean>(false);
-
   return (
     <div
       onMouseEnter={() => setShowShopBtn(true)}
       onMouseLeave={() => setShowShopBtn(false)}
       className=" h-full bg-neutral-200 cursor-pointer relative"
     >
-      <img
-        className="w-full h-full object-contain"
-        src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/rmblackhoodieback-Photoroom-4.png?v=1710190227"
-        alt=""
-      />
-      {showShopBtn && <ShopBtnDropdownNav />}
+      <img className="w-full h-full object-contain" src={img} alt="" />
+      {showShopBtn && <ShopBtnDropdownNav url={url} />}
     </div>
   );
 }
 
-export function DropdownHeaderMenuSqrHalf() {
+export function DropdownHeaderMenuSqrHalf({
+  img,
+  url,
+}: {
+  img: string;
+  url: string;
+}) {
   const [showShopBtn, setShowShopBtn] = useState<boolean>(false);
 
   return (
@@ -183,17 +156,35 @@ export function DropdownHeaderMenuSqrHalf() {
       onMouseLeave={() => setShowShopBtn(false)}
       className=" h-[48.75%] bg-neutral-300 cursor-pointer relative"
     >
-      <img
-        className="w-full h-full object-contain"
-        src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/rmhoodiepinkfront-Photoroom-2.png?v=1710191440"
-        alt=""
-      />
-      {showShopBtn && <ShopBtnDropdownNav />}
+      <img className="w-full h-full object-contain" src={img} alt="" />
+      {showShopBtn && <ShopBtnDropdownNav url={url} />}
     </div>
   );
 }
 export function DropdownHeaderMenu() {
-  const {showDropdown, setShowDropdown} = useAside();
+  const {showDropdown, setShowDropdown, hoveredHandle, hoveredCollectionUrl} =
+    useAside();
+
+  const imagesMap: Record<string, string[]> = {
+    sweats: [
+      `${import.meta.env.VITE_SWEATS_DROPDOWN_ONE}`,
+      `${import.meta.env.VITE_SWEATS_DROPDOWN_TWO}`,
+      `${import.meta.env.VITE_SWEATS_DROPDOWN_THREE}`,
+    ],
+    hoodies: [
+      `${import.meta.env.VITE_HOODIE_DROPDOWN_ONE}`,
+      `${import.meta.env.VITE_HOODIE_DROPDOWN_TWO}`,
+      `${import.meta.env.VITE_HOODIE_DROPDOWN_THREE}`,
+    ],
+    // Add other collections here
+    default: [
+      `${import.meta.env.VITE_FALLBACK_LOGO}`,
+      `${import.meta.env.VITE_FALLBACK_LOGO}`,
+      `${import.meta.env.VITE_FALLBACK_LOGO}`,
+    ],
+  };
+
+  const imagePath = imagesMap[hoveredHandle || ''] || imagesMap.default;
 
   return (
     <div
@@ -201,13 +192,22 @@ export function DropdownHeaderMenu() {
       className="w-full h-[20rem] px-20 py-2 bg-neutral-100 flex justify-start gap-2 absolute top-24 left-0"
     >
       {/* col 1 */}
-      <DropdownHeaderMenuSqrFull />
+      <DropdownHeaderMenuSqrFull
+        url={hoveredCollectionUrl}
+        img={imagePath[0]}
+      />
       {/* col 2 */}
       <div className="flex flex-col gap-2">
         {/* col 2 row 1 */}
-        <DropdownHeaderMenuSqrHalf />
+        <DropdownHeaderMenuSqrHalf
+          url={hoveredCollectionUrl}
+          img={imagePath[1]}
+        />
         {/* col 2 row 2 */}
-        <DropdownHeaderMenuSqrHalf />
+        <DropdownHeaderMenuSqrHalf
+          url={hoveredCollectionUrl}
+          img={imagePath[2]}
+        />
       </div>
       <button
         onClick={() => setShowDropdown(false)}
@@ -219,9 +219,9 @@ export function DropdownHeaderMenu() {
   );
 }
 
-export function ShopBtnDropdownNav({collectionPath}: {collectionPath: string}) {
+export function ShopBtnDropdownNav({url}: {url: string}) {
   return (
-    <Link to={collectionPath}>
+    <Link to={url}>
       <div className="bg-black opacity-40 w-full h-full absolute top-0 left-0"></div>
       <button className="text-gray-100 border px-4 py-2 rounded-sm absolute top-1/2 left-1/2 -translate-1/2 cursor-pointer">
         SHOP

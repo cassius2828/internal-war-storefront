@@ -6,9 +6,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-// const heroVideoUrl = `${
-//   import.meta.env.VITE_S3_BUCKET_BASE_URL
-// }/videos/demo-video.mp4`;
+
 const heroVideoUrl = `https://cdn.shopify.com/videos/c/o/v/a78e9be02a6840ad9378f5ac9976801d.mp4`;
 export const meta: MetaFunction = () => {
   return [{title: 'Internal War | Home'}];
@@ -33,7 +31,6 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Add other queries here, so that they are loaded in parallel
   ]);
-
   return {
     featuredCollection: collections.nodes[0],
   };
@@ -72,13 +69,17 @@ function HeroVideo({url}: HeroVideoProps) {
         muted
         loop
       >
-        <img src="https://example.com/fallback-image.jpg" alt="hero" />
+        <img
+          src={import.meta.env.VITE_FALLBACK_LOGO}
+          alt={import.meta.env.VITE_FALLBACK_LOGO ? 'fallback logo' : 'hero'}
+        />
       </video>
     </div>
   );
 }
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <div className="home">
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
@@ -87,7 +88,7 @@ export default function Homepage() {
     </div>
   );
 }
-
+// temp do not need
 function FeaturedCollection({
   collection,
 }: {

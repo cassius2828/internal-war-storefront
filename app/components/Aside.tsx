@@ -1,3 +1,4 @@
+import {useFetcher} from '@remix-run/react';
 import {
   createContext,
   type ReactNode,
@@ -13,6 +14,11 @@ type AsideContextValue = {
   close: () => void;
   showDropdown: boolean;
   setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+  setHoveredHandle: React.Dispatch<React.SetStateAction<string>>;
+  setHoveredCollectionUrl: React.Dispatch<React.SetStateAction<string>>;
+  hoveredHandle: string | null;
+  handleShowDropdown: (handle: string) => void;
+  hoveredCollectionUrl: string;
 };
 
 /**
@@ -79,7 +85,32 @@ const AsideContext = createContext<AsideContextValue | null>(null);
 Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
   const [type, setType] = useState<AsideType>('closed');
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const [hoveredHandle, setHoveredHandle] = useState<string>('/');
+  const [hoveredCollectionUrl, setHoveredCollectionUrl] = useState<string>('/');
+  // const [collectionData, setCollectionData] = useState<Record<string, any>>({});
+  const fetcher = useFetcher();
+  const handleShowDropdown = (handle: string | null) => {
+    setShowDropdown(true);
+    setHoveredHandle(handle || '/');
+    // setHoveredCollectionUrl()
 
+    fetcher.load(`${handle}`);
+    console.log(fetcher, ' fetcher');
+  };
+  // const handleMouseLeave = () => {
+  //   setHoveredHandle('/');
+  // };
+
+  useEffect(() => {
+    // Update collection data when fetcher receives new data
+    // if (fetcher.data && hoveredHandle) {
+    //   setCollectionData((prev) => ({
+    //     ...prev,
+    //     [hoveredHandle]: fetcher.data, // Cache the fetched data
+    //   }));
+    // }
+    console.log(fetcher);
+  }, [fetcher.data, hoveredHandle]);
   return (
     <AsideContext.Provider
       value={{
@@ -88,6 +119,11 @@ Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
         close: () => setType('closed'),
         showDropdown,
         setShowDropdown,
+        hoveredHandle,
+        setHoveredHandle,
+        handleShowDropdown,
+        setHoveredCollectionUrl,
+        hoveredCollectionUrl,
       }}
     >
       {children}

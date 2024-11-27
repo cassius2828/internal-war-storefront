@@ -29,11 +29,11 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({context}: LoaderFunctionArgs) {
-  const [{collections}] = await Promise.all([
+  const [{collections, imagePath}] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Add other queries here, so that they are loaded in parallel
   ]);
-
+  console.log(imagePath, ' img path ');
   return {
     featuredCollection: collections.nodes[0],
   };
@@ -79,6 +79,7 @@ function HeroVideo({url}: HeroVideoProps) {
 }
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
+
   return (
     <div className="home">
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}

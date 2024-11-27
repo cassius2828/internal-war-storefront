@@ -161,27 +161,43 @@ export function DropdownHeaderMenuSqrHalf({
     </div>
   );
 }
+//  * Local vs Prod env vars
+const VITE_SWEATS_DROPDOWN_ONE =
+  import.meta.env.VITE_SWEATS_DROPDOWN_ONE || env.VITE_SWEATS_DROPDOWN_ONE;
+
+const VITE_SWEATS_DROPDOWN_TWO =
+  import.meta.env.VITE_SWEATS_DROPDOWN_TWO || env.VITE_SWEATS_DROPDOWN_TWO;
+
+const VITE_SWEATS_DROPDOWN_THREE =
+  import.meta.env.VITE_SWEATS_DROPDOWN_THREE || env.VITE_SWEATS_DROPDOWN_THREE;
+
+const VITE_HOODIE_DROPDOWN_ONE =
+  import.meta.env.VITE_HOODIE_DROPDOWN_ONE || env.VITE_HOODIE_DROPDOWN_ONE;
+
+const VITE_HOODIE_DROPDOWN_TWO =
+  import.meta.env.VITE_HOODIE_DROPDOWN_TWO || env.VITE_HOODIE_DROPDOWN_TWO;
+
+const VITE_HOODIE_DROPDOWN_THREE =
+  import.meta.env.VITE_HOODIE_DROPDOWN_THREE || env.VITE_HOODIE_DROPDOWN_THREE;
+
+const VITE_FALLBACK_LOGO =
+  import.meta.env.VITE_FALLBACK_LOGO || env.VITE_FALLBACK_LOGO;
 export function DropdownHeaderMenu() {
   const {showDropdown, setShowDropdown, hoveredHandle, hoveredCollectionUrl} =
     useAside();
 
   const imagesMap: Record<string, string[]> = {
     sweats: [
-      `${import.meta.env.VITE_SWEATS_DROPDOWN_ONE}`,
-      `${import.meta.env.VITE_SWEATS_DROPDOWN_TWO}`,
-      `${import.meta.env.VITE_SWEATS_DROPDOWN_THREE}`,
+      VITE_SWEATS_DROPDOWN_ONE,
+      VITE_SWEATS_DROPDOWN_TWO,
+      VITE_SWEATS_DROPDOWN_THREE,
     ],
     hoodies: [
-      `${import.meta.env.VITE_HOODIE_DROPDOWN_ONE}`,
-      `${import.meta.env.VITE_HOODIE_DROPDOWN_TWO}`,
-      `${import.meta.env.VITE_HOODIE_DROPDOWN_THREE}`,
+      VITE_HOODIE_DROPDOWN_ONE,
+      VITE_HOODIE_DROPDOWN_TWO,
+      VITE_HOODIE_DROPDOWN_THREE,
     ],
-    // Add other collections here
-    default: [
-      `${import.meta.env.VITE_FALLBACK_LOGO}`,
-      `${import.meta.env.VITE_FALLBACK_LOGO}`,
-      `${import.meta.env.VITE_FALLBACK_LOGO}`,
-    ],
+    default: [VITE_FALLBACK_LOGO, VITE_FALLBACK_LOGO, VITE_FALLBACK_LOGO],
   };
 
   const imagePath = imagesMap[hoveredHandle || ''] || imagesMap.default;

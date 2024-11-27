@@ -32,56 +32,6 @@ interface HeaderProps {
 
 type Viewport = 'desktop' | 'mobile';
 
-// export const loader: LoaderFunction = async ({params, context}) => {
-//   const collectionHandle = params.collectionHandle; // Assuming the collection handle is passed via route params
-
-//   if (!collectionHandle) {
-//     throw new Response('Collection handle is required', {status: 400});
-//   }
-
-//   const query = `
-//     query($handle: String!) {
-//       collectionByHandle(handle: $handle) {
-//         id
-//         title
-//         description
-//         products(first: 3) {
-//           edges {
-//             node {
-//               id
-//               title
-//               featuredImage {
-//                 url
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   `;
-
-//   try {
-//     // Here we use the Storefront instance to execute the query
-//     const response = await Storefront.query({
-//       query,
-//       variables: {
-//         handle: collectionHandle,
-//       },
-//     });
-
-//     const collection = response.data.collectionByHandle;
-
-//     if (!collection) {
-//       throw new Response('Collection not found', {status: 404});
-//     }
-
-//     return json({collection});
-//   } catch (error) {
-//     console.error('Error fetching collection:', error);
-//     throw new Response('Error fetching collection', {status: 500});
-//   }
-// };
-
 export function Header({
   header,
   isLoggedIn,
@@ -120,14 +70,8 @@ export function HeaderMenu({
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
   const className = `header-menu-${viewport} uppercase font-thin`;
-  const {
-    close,
-    handleShowDropdown,
-    hoveredHandle,
-    setHoveredHandle,
-    setShowDropdown,
-    setHoveredCollectionUrl,
-  } = useAside();
+  const {close, setHoveredHandle, setShowDropdown, setHoveredCollectionUrl} =
+    useAside();
   const fetcher = useFetcher();
   const handleHoverNavItem = (title: string, url: string) => {
     setHoveredHandle(title?.toLocaleLowerCase());
@@ -220,9 +164,7 @@ export function DropdownHeaderMenuSqrHalf({
 export function DropdownHeaderMenu() {
   const {showDropdown, setShowDropdown, hoveredHandle, hoveredCollectionUrl} =
     useAside();
-  const {pathname} = useLocation();
 
-  console.log(hoveredHandle, 'hovered handle');
   const imagesMap: Record<string, string[]> = {
     sweats: [
       `${import.meta.env.VITE_SWEATS_DROPDOWN_ONE}`,
@@ -278,7 +220,6 @@ export function DropdownHeaderMenu() {
 }
 
 export function ShopBtnDropdownNav({url}: {url: string}) {
-  console.log(url, 'cp');
   return (
     <Link to={url}>
       <div className="bg-black opacity-40 w-full h-full absolute top-0 left-0"></div>

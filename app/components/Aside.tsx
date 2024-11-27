@@ -87,30 +87,14 @@ Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [hoveredHandle, setHoveredHandle] = useState<string>('/');
   const [hoveredCollectionUrl, setHoveredCollectionUrl] = useState<string>('/');
-  // const [collectionData, setCollectionData] = useState<Record<string, any>>({});
   const fetcher = useFetcher();
+  // TODO: Implement caching
   const handleShowDropdown = (handle: string | null) => {
     setShowDropdown(true);
     setHoveredHandle(handle || '/');
-    // setHoveredCollectionUrl()
-
     fetcher.load(`${handle}`);
-    console.log(fetcher, ' fetcher');
   };
-  // const handleMouseLeave = () => {
-  //   setHoveredHandle('/');
-  // };
 
-  useEffect(() => {
-    // Update collection data when fetcher receives new data
-    // if (fetcher.data && hoveredHandle) {
-    //   setCollectionData((prev) => ({
-    //     ...prev,
-    //     [hoveredHandle]: fetcher.data, // Cache the fetched data
-    //   }));
-    // }
-    console.log(fetcher);
-  }, [fetcher.data, hoveredHandle]);
   return (
     <AsideContext.Provider
       value={{

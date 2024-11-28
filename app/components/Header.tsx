@@ -5,6 +5,7 @@ import {
   NavLink,
   useAsyncValue,
   useFetcher,
+  useLoaderData,
   useLocation,
 } from '@remix-run/react';
 import {
@@ -20,9 +21,7 @@ import {
   faShoppingCart,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-
-// import {json, LoaderFunction} from '@remix-run/node';
-// import {Storefront} from '@shopify/hydrogen';
+import {loader} from '../routes/($locale).collections.$handle';
 interface HeaderProps {
   header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
@@ -161,43 +160,27 @@ export function DropdownHeaderMenuSqrHalf({
     </div>
   );
 }
-//  * Local vs Prod env vars
-const VITE_SWEATS_DROPDOWN_ONE =
-  import.meta.env.VITE_SWEATS_DROPDOWN_ONE || env.VITE_SWEATS_DROPDOWN_ONE;
 
-const VITE_SWEATS_DROPDOWN_TWO =
-  import.meta.env.VITE_SWEATS_DROPDOWN_TWO || env.VITE_SWEATS_DROPDOWN_TWO;
-
-const VITE_SWEATS_DROPDOWN_THREE =
-  import.meta.env.VITE_SWEATS_DROPDOWN_THREE || env.VITE_SWEATS_DROPDOWN_THREE;
-
-const VITE_HOODIE_DROPDOWN_ONE =
-  import.meta.env.VITE_HOODIE_DROPDOWN_ONE || env.VITE_HOODIE_DROPDOWN_ONE;
-
-const VITE_HOODIE_DROPDOWN_TWO =
-  import.meta.env.VITE_HOODIE_DROPDOWN_TWO || env.VITE_HOODIE_DROPDOWN_TWO;
-
-const VITE_HOODIE_DROPDOWN_THREE =
-  import.meta.env.VITE_HOODIE_DROPDOWN_THREE || env.VITE_HOODIE_DROPDOWN_THREE;
-
-const VITE_FALLBACK_LOGO =
-  import.meta.env.VITE_FALLBACK_LOGO || env.VITE_FALLBACK_LOGO;
 export function DropdownHeaderMenu() {
   const {showDropdown, setShowDropdown, hoveredHandle, hoveredCollectionUrl} =
     useAside();
 
   const imagesMap: Record<string, string[]> = {
     sweats: [
-      VITE_SWEATS_DROPDOWN_ONE,
-      VITE_SWEATS_DROPDOWN_TWO,
-      VITE_SWEATS_DROPDOWN_THREE,
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_6698.jpg?v=1732660142',
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5325.jpg?v=1732660175',
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5409.jpg?v=1732660163',
     ],
     hoodies: [
-      VITE_HOODIE_DROPDOWN_ONE,
-      VITE_HOODIE_DROPDOWN_TWO,
-      VITE_HOODIE_DROPDOWN_THREE,
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000227_6F9902.jpg?v=1718668026',
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5579.jpg?v=1732660168',
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5422.jpg?v=1732660168',
     ],
-    default: [VITE_FALLBACK_LOGO, VITE_FALLBACK_LOGO, VITE_FALLBACK_LOGO],
+    default: [
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IW_Candle_logo_black-Photoroom.png?v=1710189976',
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IW_Candle_logo_black-Photoroom.png?v=1710189976',
+      'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IW_Candle_logo_black-Photoroom.png?v=1710189976',
+    ],
   };
 
   const imagePath = imagesMap[hoveredHandle || ''] || imagesMap.default;

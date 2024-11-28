@@ -1,4 +1,4 @@
-import {useFetcher} from '@remix-run/react';
+import {useFetcher, useLoaderData} from '@remix-run/react';
 import {
   createContext,
   type ReactNode,

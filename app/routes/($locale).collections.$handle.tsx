@@ -67,12 +67,24 @@ async function loadCriticalData({
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
 function loadDeferredData({context}: LoaderFunctionArgs) {
-  return {};
+  const {env} = context;
+
+  return {
+    env: {
+      VITE_SWEATS_DROPDOWN_ONE: env.VITE_SWEATS_DROPDOWN_ONE,
+      VITE_SWEATS_DROPDOWN_TWO: env.VITE_SWEATS_DROPDOWN_TWO,
+      VITE_SWEATS_DROPDOWN_THREE: env.VITE_SWEATS_DROPDOWN_THREE,
+      VITE_HOODIE_DROPDOWN_ONE: env.VITE_HOODIE_DROPDOWN_ONE,
+      VITE_HOODIE_DROPDOWN_TWO: env.VITE_HOODIE_DROPDOWN_TWO,
+      VITE_HOODIE_DROPDOWN_THREE: env.VITE_HOODIE_DROPDOWN_THREE,
+      VITE_FALLBACK_LOGO: env.VITE_FALLBACK_LOGO,
+    },
+  };
 }
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
-  console.log(collection, ' collection');
+
   return (
     <div className="collection">
       <h1>{collection.title}</h1>

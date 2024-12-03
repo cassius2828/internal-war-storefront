@@ -12,6 +12,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import BreadCrumbs from '../components/BreadCrumbs';
 import {ProductCard} from '~/components/ProductList';
+import {TwUIFooter} from '~/components/Footer';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 };
@@ -122,6 +123,8 @@ export default function Collection() {
           },
         }}
       />
+
+      <TwUIFooter />
     </div>
   );
 }

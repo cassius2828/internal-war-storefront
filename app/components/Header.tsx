@@ -68,7 +68,7 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
-  const className = `header-menu-${viewport} uppercase font-thin`;
+  const className = `header-menu-${viewport} uppercase font-thin my-10`;
   const {close, setHoveredHandle, setShowDropdown, setHoveredCollectionUrl} =
     useAside();
   const fetcher = useFetcher();
@@ -156,7 +156,8 @@ export function DropdownHeaderMenuSqrHalf({
       className=" h-[48.75%] bg-neutral-300 cursor-pointer relative"
     >
       <img className="w-full h-full object-contain" src={img} alt="" />
-      {showShopBtn && <ShopBtnDropdownNav url={url} />}
+      <ShopBtnDropdownNav url={url} />
+      {/* {showShopBtn && <ShopBtnDropdownNav url={url} />} */}
     </div>
   );
 }
@@ -218,14 +219,22 @@ export function DropdownHeaderMenu() {
   );
 }
 
-export function ShopBtnDropdownNav({url}: {url: string}) {
+export function ShopBtnDropdownNav({
+  url,
+  actionDescription = 'shop',
+}: {
+  url: string;
+  actionDescription: string;
+}) {
   return (
-    <Link to={url}>
-      <div className="bg-black opacity-40 w-full h-full absolute top-0 left-0"></div>
-      <button className="text-gray-100 border px-4 py-2 rounded-sm absolute top-1/2 left-1/2 -translate-1/2 cursor-pointer">
-        SHOP
-      </button>
-    </Link>
+    <div className="opacity-0 hover:opacity-100 transition-opacity duration-300">
+      <Link to={url}>
+        <div className="bg-black opacity-40  w-full h-full absolute top-0 left-0"></div>
+        <button className=" text-gray-100 border px-4 py-2 rounded-sm absolute top-1/2 left-1/2 -translate-1/2 cursor-pointer uppercase">
+          {actionDescription}
+        </button>
+      </Link>
+    </div>
   );
 }
 

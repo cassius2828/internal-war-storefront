@@ -1,12 +1,15 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {Suspense} from 'react';
+import ProductList from '../components/ProductList';
+import CollectionPreviewGrid from '../components/CollectionPreviewGrid';
 import {Image, Money, Video} from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-
+import {TwUIFooter} from '~/components/Footer';
+import NewsCarousel from '../components/NewsCarousel';
 const heroVideoUrl = `https://cdn.shopify.com/videos/c/o/v/a78e9be02a6840ad9378f5ac9976801d.mp4`;
 export const meta: MetaFunction = () => {
   return [{title: 'Internal War | Home'}];
@@ -60,7 +63,21 @@ interface HeroVideoProps {
 }
 function HeroVideo({url}: HeroVideoProps) {
   return (
-    <div className="hero-video w-screen max-h-[50rem]">
+    <div className="hero-video w-screen max-h-[50rem] relative">
+      {/* //TODO change the fonts later */}
+      <div className="absolute left-1/5 top-1/2 flex flex-col gap-4 justify-center items-start">
+        <h2 className="uppercase tracking-widest font-light flex">
+          welcome message
+        </h2>
+        <h3 className="uppercase text-3xl">slogan here</h3>
+        <span className=" capitalize">shop our latest collection now!</span>
+        <button
+          type="button"
+          className=" bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6"
+        >
+          shop
+        </button>
+      </div>
       <video
         className="max-h-[50rem] w-screen object-center object-cover"
         src={url}
@@ -84,7 +101,11 @@ export default function Homepage() {
     <div className="home">
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <HeroVideo url={heroVideoUrl} />
-      <RecommendedProducts products={data.recommendedProducts} />
+      <ProductList />
+      <CollectionPreviewGrid />
+      <NewsCarousel />
+      <TwUIFooter />
+      {/* <RecommendedProducts products={data.recommendedProducts} /> */}
     </div>
   );
 }

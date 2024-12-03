@@ -22,7 +22,7 @@ export function PaginatedResourceSection<NodesType>({
         );
 
         return (
-          <div>
+          <div className="w-3/4 mt-12">
             <PreviousLink>
               {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
             </PreviousLink>

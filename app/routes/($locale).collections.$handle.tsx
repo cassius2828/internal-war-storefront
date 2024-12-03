@@ -7,13 +7,18 @@ import {
   Analytics,
 } from '@shopify/hydrogen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
+
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
-
+import BreadCrumbs from '../components/BreadCrumbs';
+import {ProductCard} from '~/components/ProductList';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 };
-
+const pages = [
+  {name: 'Collections', href: '/collections', current: false},
+  {name: 'Hoodies', href: '/collections/hoodies', current: true},
+];
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -81,14 +86,22 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
     },
   };
 }
-
+// ! where to edit collection UI
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
-
+  console.log(collection, ' collection log');
   return (
-    <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
+    <div className="collection mt-40 flex flex-col items-center">
+      {/* <h1>{collection.title}</h1> */}
+      {/* breadcrubms */}
+      <BreadCrumbs pages={pages} />
+      <div className="flex items-center gap-4 w-3/4">
+        <span>{collection.title}</span>
+        <span className="text-xs text-gray-500">
+          {collection.products.nodes.length} products
+        </span>
+      </div>
+      {/* <p className="collection-description">{collection.description}</p> */}
       <PaginatedResourceSection
         connection={collection.products}
         resourcesClassName="products-grid"
@@ -122,27 +135,39 @@ function ProductItem({
 }) {
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
+  console.log(product, ' product');
   return (
-    <Link
-      className="product-item"
-      key={product.id}
-      prefetch="intent"
-      to={variantUrl}
-    >
-      {product.featuredImage && (
-        <Image
-          alt={product.featuredImage.altText || product.title}
-          aspectRatio="1/1"
-          data={product.featuredImage}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
-    </Link>
+    // <Link
+    //   className="product-item"
+    //   key={product.id}
+    //   prefetch="intent"
+    //   to={variantUrl}
+    // >
+    //   {product.featuredImage && (
+    //     <Image
+    //       alt={product.featuredImage.altText || product.title}
+    //       aspectRatio="1/1"
+    //       data={product.featuredImage}
+    //       loading={loading}
+    //       sizes="(min-width: 45em) 400px, 100vw"
+    //     />
+    //   )}
+    //   <h4>{product.title}</h4>
+    //   <small>
+    //     <Money data={product.priceRange.minVariantPrice} />
+    //   </small>
+    // </Link>
+    <ProductCard
+      // href={product.url}
+      // color={product.color}
+      price={product.priceRange.maxVariantPrice.amount || 'no price set'}
+      id={product.id}
+      name={product.title}
+      imageAlt={product.featuredImage?.altText || product.title}
+      imageSrc={product.featuredImage?.url || ''}
+      imageSrcHovered={product.media?.edges[1].node.image?.url || ''}
+      loading={loading}
+    />
   );
 }
 
@@ -168,6 +193,21 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
       }
       maxVariantPrice {
         ...MoneyProductItem
+      }
+    }
+    media(first: 5) {
+      edges {
+        node {
+          ... on MediaImage {
+            image {
+              id
+              altText
+              url
+              width
+              height
+            }
+          }
+        }
       }
     }
     variants(first: 1) {

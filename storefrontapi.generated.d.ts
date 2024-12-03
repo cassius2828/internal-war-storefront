@@ -517,6 +517,15 @@ export type ProductItemFragment = Pick<
     minVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
     maxVariantPrice: Pick<StorefrontAPI.MoneyV2, 'amount' | 'currencyCode'>;
   };
+  media: {
+    edges: Array<{
+      node: {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+        >;
+      };
+    }>;
+  };
   variants: {
     nodes: Array<{
       selectedOptions: Array<

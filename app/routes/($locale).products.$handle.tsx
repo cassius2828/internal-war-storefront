@@ -1,6 +1,20 @@
 import {Suspense} from 'react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Radio,
+  RadioGroup,
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+} from '@headlessui/react';
+import {StarIcon} from '@heroicons/react/20/solid';
+import {HeartIcon, MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import type {ProductFragment} from 'storefrontapi.generated';
 import {
   getSelectedProductOptions,
@@ -127,6 +141,51 @@ function redirectToFirstVariant({
     },
   );
 }
+const product2 = {
+  name: 'Zip Tote Basket',
+  price: '$140',
+  rating: 4,
+  images: [
+    {
+      id: 1,
+      name: 'Angled view',
+      src: 'https://tailwindui.com/plus/img/ecommerce-images/product-page-03-product-01.jpg',
+      alt: 'Angled front view with bag zipped and handles upright.',
+    },
+    // More images...
+  ],
+  colors: [
+    {
+      name: 'Washed Black',
+      bgColor: 'bg-gray-700',
+      selectedColor: 'ring-gray-700',
+    },
+    {name: 'White', bgColor: 'bg-white', selectedColor: 'ring-gray-400'},
+    {
+      name: 'Washed Gray',
+      bgColor: 'bg-gray-500',
+      selectedColor: 'ring-gray-500',
+    },
+  ],
+  description: `
+    <p>The Zip Tote Basket is the perfect midpoint between shopping tote and comfy backpack. With convertible straps, you can hand carry, should sling, or backpack this convenient and spacious bag. The zip top and durable canvas construction keeps your goods protected for all-day use.</p>
+  `,
+  details: [
+    {
+      name: 'Features',
+      items: [
+        'Multiple strap configurations',
+        'Spacious interior with top zip',
+        'Leather handle and tabs',
+        'Interior dividers',
+        'Stainless strap loops',
+        'Double stitched construction',
+        'Water-resistant',
+      ],
+    },
+    // More sections...
+  ],
+};
 const pages = [
   {name: 'Collections', href: '/collections', current: false},
   {name: 'Hoodies', href: '/collections/hoodies', current: true},
@@ -139,40 +198,47 @@ export default function Product() {
   );
 
   const {title, descriptionHtml} = product;
+  console.log(product, ' ><-- prod')
   return (
-    <div className=" mt-40 flex flex-col items-center">
-      <div>
+    <div className=" mt-32 flex flex-col items-center">
+      <div className="mb-5">
         <Breadcrumbs pages={pages} />
       </div>
       <div className="flex justify-start">
         {/* gallery */}
-        <div className="flex flex-wrap mx-6">
+        <div className="flex flex-wrap mx-6 h-screen">
           <img
+            style={{borderRadius: 0}}
             src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
             alt="akslfn;as"
             className="w-full md:w-1/2 lg:w-1/3 object-cover"
           />
           <img
+            style={{borderRadius: 0}}
             src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
             alt="akslfn;as"
             className="w-full md:w-1/2 lg:w-1/3 object-cover"
           />
           <img
+            style={{borderRadius: 0}}
             src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
             alt="akslfn;as"
             className="w-full md:w-1/2 lg:w-1/3 object-cover"
           />
           <img
+            style={{borderRadius: 0}}
             src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
             alt="akslfn;as"
             className="w-full md:w-1/2 lg:w-1/3 object-cover"
           />
           <img
+            style={{borderRadius: 0}}
             src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
             alt="akslfn;as"
             className="w-full md:w-1/2 lg:w-1/3 object-cover"
           />
           <img
+            style={{borderRadius: 0}}
             src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
             alt="akslfn;as"
             className="w-full md:w-1/2 lg:w-1/3 object-cover"
@@ -219,14 +285,58 @@ export default function Product() {
             </div>
 
             {/* description */}
+            <div className="flex flex-col items-center justify-center bg-red-400 w-96">
+              <div className="mt-6">
+                <h3 className="sr-only">Description</h3>
 
-            <div>
-              <p>
-                <strong>Description</strong>
-              </p>
-              <br />
-              <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-              <br />
+                <div
+                  dangerouslySetInnerHTML={{__html: descriptionHtml}}
+                  className="space-y-6 text-base text-gray-700"
+                />
+              </div>
+              {/* additional details */}
+              <section
+                aria-labelledby="details-heading"
+                className="mt-12 w-full"
+              >
+                <h2 id="details-heading" className="sr-only">
+                  Additional details
+                </h2>
+
+                <div className="divide-y divide-gray-200 border-t">
+                  {product2?.details.map((detail) => (
+                    <Disclosure key={detail.name} as="div">
+                      <h3>
+                        <DisclosureButton className="group relative flex w-full items-center justify-between py-6 text-left">
+                          <span className="text-sm font-medium text-gray-900 group-data-[open]:text-indigo-600">
+                            {detail.name}
+                          </span>
+                          <span className="ml-6 flex items-center">
+                            <PlusIcon
+                              aria-hidden="true"
+                              className="block size-6 text-gray-400 group-hover:text-gray-500 group-data-[open]:hidden"
+                            />
+                            <MinusIcon
+                              aria-hidden="true"
+                              className="hidden size-6 text-indigo-400 group-hover:text-indigo-500 group-data-[open]:block"
+                            />
+                          </span>
+                        </DisclosureButton>
+                      </h3>
+                      <DisclosurePanel className="pb-6">
+                        <ul className="list-disc space-y-1 pl-5 text-sm/6 text-gray-700 marker:text-gray-300">
+                          {detail.items.map((item) => (
+                            <li key={item} className="pl-2">
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </DisclosurePanel>
+                    </Disclosure>
+                  ))}
+                </div>
+              </section>
+              
             </div>
           </div>
           {/* //* end */}
@@ -254,6 +364,7 @@ export default function Product() {
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {
     availableForSale
+    # metafield(key:'details')
     compareAtPrice {
       amount
       currencyCode

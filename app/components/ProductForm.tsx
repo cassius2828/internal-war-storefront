@@ -30,7 +30,7 @@ export function ProductForm({
         {({option}) => <SizePicker key={option.name} option={option} />}
       </VariantSelector>
 
-      <br />
+     
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
@@ -65,26 +65,20 @@ export const SizePicker = ({option}: {option: Option}) => {
 
   return (
     <div className="mt-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-start gap-12">
         <h2 className="text-sm font-medium text-gray-900">{option.name}</h2>
-        <a
-          href="/"
-          className="text-sm font-medium text-neutral-900 hover:text-neutral-800"
-        >
-          See sizing chart
-        </a>
       </div>
 
-      <fieldset aria-label={`Choose a ${option.name}`} className="mt-2">
+      <fieldset aria-label={`Choose a ${option.name}`} className="mt-3">
         <RadioGroup
           value={selectedSize}
           onChange={setSelectedSize}
-          className="grid grid-cols-3 gap-3 sm:grid-cols-6"
+          className="grid grid-cols-3 gap-8 sm:grid-cols-6"
         >
           {reorderSizingArray(option.values).map(
             ({value, isAvailable, isActive, to}) => (
               <Link
-                className="product-options-item"
+                className={'p-0'}
                 key={option.name + value}
                 prefetch="intent"
                 preventScrollReset
@@ -109,6 +103,12 @@ export const SizePicker = ({option}: {option: Option}) => {
           )}
         </RadioGroup>
       </fieldset>
+      {/* <a
+        href="/"
+        className="text-xs font-medium text-neutral-600 hover:text-neutral-500"
+      >
+        See sizing chart
+      </a> */}
     </div>
   );
 };

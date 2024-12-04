@@ -163,6 +163,7 @@ function ProductItem({
     <ProductCard
       // href={product.url}
       // color={product.color}
+      href={product.id}
       price={product.priceRange.maxVariantPrice.amount || 'no price set'}
       id={product.id}
       name={product.title}

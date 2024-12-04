@@ -1,11 +1,13 @@
 import {Link} from '@remix-run/react';
 import {type VariantOption, VariantSelector} from '@shopify/hydrogen';
+import {Radio, RadioGroup} from '@headlessui/react';
 import type {
   ProductFragment,
   ProductVariantFragment,
 } from 'storefrontapi.generated';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
+import {useState} from 'react';
 
 export function ProductForm({
   product,
@@ -17,6 +19,7 @@ export function ProductForm({
   variants: Array<ProductVariantFragment>;
 }) {
   const {open} = useAside();
+
   return (
     <div className="product-form">
       <VariantSelector
@@ -24,8 +27,9 @@ export function ProductForm({
         options={product.options.filter((option) => option.values.length > 1)}
         variants={variants}
       >
-        {({option}) => <ProductOptions key={option.name} option={option} />}
+        {({option}) => <SizePicker key={option.name} option={option} />}
       </VariantSelector>
+
       <br />
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
@@ -49,32 +53,84 @@ export function ProductForm({
     </div>
   );
 }
+type DeepObject = Record<string, any>; // A generic type for deeply nested objects
 
-function ProductOptions({option}: {option: VariantOption}) {
+interface Option {
+  name: string;
+  value: string;
+  values: DeepObject[]; // Array of objects with unknown structure
+}
+export const SizePicker = ({option}: {option: Option}) => {
+  const [selectedSize, setSelectedSize] = useState(option.values[0] || 'S');
+
   return (
-    <div className="product-options" key={option.name}>
-      <h5>{option.name}</h5>
-      <div className="product-options-grid">
-        {option.values.map(({value, isAvailable, isActive, to}) => {
-          return (
-            <Link
-              className="product-options-item"
-              key={option.name + value}
-              prefetch="intent"
-              preventScrollReset
-              replace
-              to={to}
-              style={{
-                border: isActive ? '1px solid black' : '1px solid transparent',
-                opacity: isAvailable ? 1 : 0.3,
-              }}
-            >
-              {value}
-            </Link>
-          );
-        })}
+    <div className="mt-8">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-medium text-gray-900">{option.name}</h2>
+        <a
+          href="/"
+          className="text-sm font-medium text-neutral-900 hover:text-neutral-800"
+        >
+          See sizing chart
+        </a>
       </div>
-      <br />
+
+      <fieldset aria-label={`Choose a ${option.name}`} className="mt-2">
+        <RadioGroup
+          value={selectedSize}
+          onChange={setSelectedSize}
+          className="grid grid-cols-3 gap-3 sm:grid-cols-6"
+        >
+          {reorderSizingArray(option.values).map(
+            ({value, isAvailable, isActive, to}) => (
+              <Link
+                className="product-options-item"
+                key={option.name + value}
+                prefetch="intent"
+                preventScrollReset
+                replace
+                to={to}
+              >
+                <Radio
+                  key={value}
+                  value={value}
+                  disabled={!isAvailable}
+                  className={classNames(
+                    isAvailable
+                      ? 'cursor-pointer focus:outline-none'
+                      : 'cursor-not-allowed opacity-25 text-9xl',
+                    'flex items-center justify-center rounded-md border border-gray-200 bg-white px-3 py-3 text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 data-[checked]:border-transparent data-[checked]:bg-neutral-900 data-[checked]:text-white data-[focus]:ring-2 data-[focus]:ring-neutral-500 data-[focus]:ring-offset-2 data-[checked]:hover:bg-neutral-700 sm:flex-1',
+                  )}
+                >
+                  {value || 'N/A'}
+                </Radio>
+              </Link>
+            ),
+          )}
+        </RadioGroup>
+      </fieldset>
     </div>
   );
+};
+
+// utils
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
 }
+const reorderSizingArray = (
+  sizingArr: {value: string; [key: string]: any}[],
+) => {
+  if (!sizingArr) return [];
+
+  const expectedOrder =
+    sizingArr.length === 4
+      ? ['S', 'M', 'L', 'XL']
+      : sizingArr.length === 5
+      ? ['S', 'M', 'L', 'XL', 'XXL']
+      : sizingArr.map((item) => item.value);
+
+  const sizeMap = new Map(sizingArr.map((item) => [item.value, {...item}])); // Deep copy objects
+
+  // Return reordered array using the expected order
+  return expectedOrder.map((size) => sizeMap.get(size)).filter(Boolean);
+};

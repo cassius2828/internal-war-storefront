@@ -8,10 +8,12 @@ import {
   useOptimisticVariant,
 } from '@shopify/hydrogen';
 import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
+//TODO: Understand the variants and variant urls
 import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import Breadcrumbs from '~/components/BreadCrumbs';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
@@ -125,7 +127,10 @@ function redirectToFirstVariant({
     },
   );
 }
-
+const pages = [
+  {name: 'Collections', href: '/collections', current: false},
+  {name: 'Hoodies', href: '/collections/hoodies', current: true},
+];
 export default function Product() {
   const {product, variants} = useLoaderData<typeof loader>();
   const selectedVariant = useOptimisticVariant(
@@ -134,63 +139,114 @@ export default function Product() {
   );
 
   const {title, descriptionHtml} = product;
-
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
-        <Suspense
-          fallback={
-            <ProductForm
-              product={product}
-              selectedVariant={selectedVariant}
-              variants={[]}
-            />
-          }
-        >
-          <Await
-            errorElement="There was a problem loading product variants"
-            resolve={variants}
-          >
-            {(data) => (
-              <ProductForm
-                product={product}
-                selectedVariant={selectedVariant}
-                variants={data?.product?.variants.nodes || []}
-              />
-            )}
-          </Await>
-        </Suspense>
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
+    <div className=" mt-40 flex flex-col items-center">
+      <div>
+        <Breadcrumbs pages={pages} />
       </div>
-      <Analytics.ProductView
-        data={{
-          products: [
-            {
-              id: product.id,
-              title: product.title,
-              price: selectedVariant?.price.amount || '0',
-              vendor: product.vendor,
-              variantId: selectedVariant?.id || '',
-              variantTitle: selectedVariant?.title || '',
-              quantity: 1,
-            },
-          ],
-        }}
-      />
+      <div className="flex justify-start">
+        {/* gallery */}
+        <div className="flex flex-wrap mx-6">
+          <img
+            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
+            alt="akslfn;as"
+            className="w-full md:w-1/2 lg:w-1/3 object-cover"
+          />
+          <img
+            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
+            alt="akslfn;as"
+            className="w-full md:w-1/2 lg:w-1/3 object-cover"
+          />
+          <img
+            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
+            alt="akslfn;as"
+            className="w-full md:w-1/2 lg:w-1/3 object-cover"
+          />
+          <img
+            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
+            alt="akslfn;as"
+            className="w-full md:w-1/2 lg:w-1/3 object-cover"
+          />
+          <img
+            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
+            alt="akslfn;as"
+            className="w-full md:w-1/2 lg:w-1/3 object-cover"
+          />
+          <img
+            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
+            alt="akslfn;as"
+            className="w-full md:w-1/2 lg:w-1/3 object-cover"
+          />
+        </div>
+        {/* product details */}
+        <div className="flex flex-col min-w-1/2 ">
+          <ProductImage image={selectedVariant?.image} />
+          <div className="product-main flex justify-around  w-full">
+            <div>
+              <div>
+                <h1>{title}</h1>
+                <ProductPrice
+                  price={selectedVariant?.price}
+                  compareAtPrice={selectedVariant?.compareAtPrice}
+                />
+              </div>
+
+              {/* sizing */}
+              <div>
+                <Suspense
+                  fallback={
+                    <ProductForm
+                      product={product}
+                      selectedVariant={selectedVariant}
+                      variants={[]}
+                    />
+                  }
+                >
+                  <Await
+                    errorElement="There was a problem loading product variants"
+                    resolve={variants}
+                  >
+                    {(data) => (
+                      <ProductForm
+                        product={product}
+                        selectedVariant={selectedVariant}
+                        variants={data?.product?.variants.nodes || []}
+                      />
+                    )}
+                  </Await>
+                </Suspense>
+              </div>
+            </div>
+
+            {/* description */}
+
+            <div>
+              <p>
+                <strong>Description</strong>
+              </p>
+              <br />
+              <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
+              <br />
+            </div>
+          </div>
+          {/* //* end */}
+          <Analytics.ProductView
+            data={{
+              products: [
+                {
+                  id: product.id,
+                  title: product.title,
+                  price: selectedVariant?.price.amount || '0',
+                  vendor: product.vendor,
+                  variantId: selectedVariant?.id || '',
+                  variantTitle: selectedVariant?.title || '',
+                  quantity: 1,
+                },
+              ],
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 }

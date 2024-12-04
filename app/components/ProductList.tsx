@@ -80,7 +80,7 @@ export default function ProductCardList() {
         <div className=" grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
             <ProductCard
-              // href={product.href}
+              href={product.href}
               key={product.id}
               id={product.id}
               imageAlt={product.imageAlt}

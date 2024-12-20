@@ -140,7 +140,7 @@ function ProductItem({
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
   console.log(product, ' product');
-  let formattedPrice = formatPrice(product.priceRange.maxVariantPrice.amount);
+
   return (
     // <Link
     //   className="product-item"
@@ -165,14 +165,7 @@ function ProductItem({
     <ProductCard
       // href={product.url}
       // color={product.color}
-      href={product.id}
-      price={formattedPrice || 'no price set'}
-      id={product.id}
-      name={product.title}
-      imageAlt={product.featuredImage?.altText || product.title}
-      imageSrc={product.featuredImage?.url || ''}
-      imageSrcHovered={product.media?.edges[1].node.image?.url || ''}
-      loading={loading}
+      product={product}
     />
   );
 }
@@ -216,7 +209,7 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
         }
       }
     }
-    variants(first: 1) {
+    variants(first: 10) {
       nodes {
         selectedOptions {
           name

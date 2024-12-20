@@ -1,3 +1,5 @@
+import {formatPrice, getAvailableSizeVariants} from '~/lib/utils';
+
 const products = [
   {
     id: 1,
@@ -96,7 +98,7 @@ export default function ProductCardList() {
     </div>
   );
 }
-type ProductCardProps = {
+type Product = {
   id: string | number;
   imageAlt: string;
   imageSrc: string;
@@ -105,67 +107,77 @@ type ProductCardProps = {
   color: string;
   name: string;
   price: string;
+};
+
+type ProductCardProps = {
+  product: Product;
   loading?: 'lazy' | 'eager';
 };
+
 export const ProductCard: React.FC<ProductCardProps> = ({
-  id,
-  imageAlt,
-  imageSrc,
-  imageSrcHovered,
-  // href,
-  // color,
-  name,
-  price,
+  product,
   loading = 'lazy',
 }) => {
+  const formattedPrice = formatPrice(product.priceRange.maxVariantPrice.amount);
+  const availableSizes = getAvailableSizeVariants(product);
   return (
     <div className="group relative">
       <img
-        alt={imageAlt}
-        src={imageSrc}
+        alt={product.featuredImage.altText}
+        src={product.media.edges[0].node.image.url}
         className="group-hover:hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
       />
       <img
-        alt={imageAlt}
-        src={imageSrcHovered}
+        alt={product.featuredImage.altText}
+        src={product.media.edges[1].node.image.url}
         className="group-hover:block hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
       />
       <div className="mt-4 flex justify-between">
         <div>
           <h3 className="text-sm text-gray-700">
-            <a href={`#`}>
+            <a href={product.href}>
               <span aria-hidden="true" className="absolute inset-0" />
-              {name}
+              {product.name}
             </a>
           </h3>
-          <p className="mt-1 text-sm text-gray-500">color</p>
+          <p className="mt-1 text-sm text-gray-500">{product.color}</p>
         </div>
-        <p className="text-sm font-medium text-gray-900">${price}</p>
+        <p className="text-sm font-medium text-gray-900">${formattedPrice}</p>
       </div>
-      <SizeBtnGroup />
+      <SizeBtnGroup sizes={availableSizes} />
     </div>
   );
 };
 
-export const SizeBtnGroup = () => {
+// Typing for the props of SizeBtnGroup
+interface SizeBtnGroupProps {
+  sizes: string[]; // Expecting an array of strings
+}
+
+// SizeBtnGroup component
+export const SizeBtnGroup: React.FC<SizeBtnGroupProps> = ({sizes}) => {
   return (
     <div className="flex gap-6 items-center justify-around my-3">
-      <SizeBtn />
-      <SizeBtn />
-      <SizeBtn />
-      <SizeBtn />
-      <SizeBtn />
+      {sizes?.map((size) => (
+        <SizeBtn key={size} size={size} />
+      ))}
     </div>
   );
 };
 
-export const SizeBtn = () => {
+// Typing for the props of SizeBtn
+interface SizeBtnProps {
+  size: string; // Expecting a single string as the size
+}
+
+// SizeBtn component
+export const SizeBtn: React.FC<SizeBtnProps> = ({size}) => {
   return (
     <button
       type="button"
       className="rounded bg-white/10 px-2 py-1 text-sm font-semibold text-black shadow-sm hover:bg-white/20"
     >
-      XL
+      {size}
     </button>
   );
 };

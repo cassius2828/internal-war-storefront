@@ -13,6 +13,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import BreadCrumbs from '../components/BreadCrumbs';
 import {ProductCard} from '~/components/ProductList';
 import {TwUIFooter} from '~/components/Footer';
+import {formatPrice} from '~/lib/utils';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 };
@@ -139,6 +140,7 @@ function ProductItem({
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
   console.log(product, ' product');
+  let formattedPrice = formatPrice(product.priceRange.maxVariantPrice.amount);
   return (
     // <Link
     //   className="product-item"
@@ -164,7 +166,7 @@ function ProductItem({
       // href={product.url}
       // color={product.color}
       href={product.id}
-      price={product.priceRange.maxVariantPrice.amount || 'no price set'}
+      price={formattedPrice || 'no price set'}
       id={product.id}
       name={product.title}
       imageAlt={product.featuredImage?.altText || product.title}

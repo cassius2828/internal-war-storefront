@@ -364,7 +364,7 @@ export default function Product() {
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {
     availableForSale
-    # metafield(key:'details')
+    # metafield(key:'details')y
     compareAtPrice {
       amount
       currencyCode

@@ -10,6 +10,7 @@ import type {
 } from 'storefrontapi.generated';
 import {TwUIFooter} from '~/components/Footer';
 import NewsCarousel from '../components/NewsCarousel';
+import {PRODUCT_ITEM_FRAGMENT} from './($locale).collections.$handle';
 const heroVideoUrl = `https://cdn.shopify.com/videos/c/o/v/a78e9be02a6840ad9378f5ac9976801d.mp4`;
 export const meta: MetaFunction = () => {
   return [{title: 'Internal War | Home'}];
@@ -34,8 +35,17 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     // Add other queries here, so that they are loaded in parallel
   ]);
+  const allProducts = await context.storefront
+    .query(ALL_PRODUCTS_QUERY)
+    .catch((error) => {
+      // Log query errors, but don't throw them so the page can still render
+      console.error(error);
+      return null;
+    });
+
   return {
     featuredCollection: collections.nodes[0],
+    allProducts,
   };
 }
 
@@ -44,9 +54,9 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
  * fetched after the initial page load. If it's unavailable, the page should still 200.
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
-function loadDeferredData({context}: LoaderFunctionArgs) {
-  const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY)
+async function loadDeferredData({context}: LoaderFunctionArgs) {
+  const recommendedProducts = await context.storefront
+    .query(ALL_PRODUCTS_QUERY)
     .catch((error) => {
       // Log query errors, but don't throw them so the page can still render
       console.error(error);
@@ -96,16 +106,13 @@ function HeroVideo({url}: HeroVideoProps) {
 }
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
-
   return (
     <div className="home">
-      {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <HeroVideo url={heroVideoUrl} />
-      <ProductList />
+      <ProductList products={data.allProducts?.products?.nodes} />
       <CollectionPreviewGrid />
       <NewsCarousel />
       <TwUIFooter />
-      {/* <RecommendedProducts products={data.recommendedProducts} /> */}
     </div>
   );
 }
@@ -218,9 +225,22 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   }
   query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+    products(first: 6, sortKey: UPDATED_AT, reverse: true) {
       nodes {
         ...RecommendedProduct
+      }
+    }
+  }
+` as const;
+
+const ALL_PRODUCTS_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT}
+
+  query AllProducts($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 6, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...ProductItem
       }
     }
   }

@@ -1,5 +1,7 @@
 // Function to format price ensuring two decimal places
 export function formatPrice(price: string): string {
+
+  if (price == undefined) return;
   const centsFromPrice = price.split('.')[1];
   return centsFromPrice && centsFromPrice.length === 1 ? price + '0' : price;
 }

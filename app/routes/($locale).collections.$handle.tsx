@@ -13,7 +13,7 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import BreadCrumbs from '../components/BreadCrumbs';
 import {ProductCard} from '~/components/ProductList';
 import {TwUIFooter} from '~/components/Footer';
-import {formatPrice} from '~/lib/utils';
+
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 };
@@ -91,7 +91,6 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 // ! where to edit collection UI
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
-  console.log(collection, ' collection log');
   return (
     <div className="collection mt-40 flex flex-col items-center">
       {/* <h1>{collection.title}</h1> */}
@@ -139,38 +138,11 @@ function ProductItem({
 }) {
   const variant = product.variants.nodes[0];
   const variantUrl = useVariantUrl(product.handle, variant.selectedOptions);
-  console.log(product, ' product');
 
-  return (
-    // <Link
-    //   className="product-item"
-    //   key={product.id}
-    //   prefetch="intent"
-    //   to={variantUrl}
-    // >
-    //   {product.featuredImage && (
-    //     <Image
-    //       alt={product.featuredImage.altText || product.title}
-    //       aspectRatio="1/1"
-    //       data={product.featuredImage}
-    //       loading={loading}
-    //       sizes="(min-width: 45em) 400px, 100vw"
-    //     />
-    //   )}
-    //   <h4>{product.title}</h4>
-    //   <small>
-    //     <Money data={product.priceRange.minVariantPrice} />
-    //   </small>
-    // </Link>
-    <ProductCard
-      // href={product.url}
-      // color={product.color}
-      product={product}
-    />
-  );
+  return <ProductCard product={product} />;
 }
 
-const PRODUCT_ITEM_FRAGMENT = `#graphql
+export const PRODUCT_ITEM_FRAGMENT = `#graphql
   fragment MoneyProductItem on MoneyV2 {
     amount
     currencyCode
@@ -216,6 +188,10 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
           value
         }
       }
+    }
+    options {
+      name
+      values
     }
   }
 ` as const;

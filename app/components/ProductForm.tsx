@@ -18,7 +18,7 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedVariant'];
   variants: Array<ProductVariantFragment>;
 }) {
-  const {open} = useAside();
+
 
   return (
     <div className="product-form">
@@ -31,25 +31,7 @@ export function ProductForm({
       </VariantSelector>
 
      
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          open('cart');
-        }}
-        lines={
-          selectedVariant
-            ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                  selectedVariant,
-                },
-              ]
-            : []
-        }
-      >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-      </AddToCartButton>
+  
     </div>
   );
 }
@@ -64,7 +46,7 @@ export const SizePicker = ({option}: {option: Option}) => {
   const [selectedSize, setSelectedSize] = useState(option.values[0] || 'S');
 
   return (
-    <div className="mt-8">
+    <div >
       <div className="flex items-center justify-start gap-12">
         <h2 className="text-sm font-medium text-gray-900">{option.name}</h2>
       </div>

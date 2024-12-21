@@ -20,6 +20,7 @@ import {
   getSelectedProductOptions,
   Analytics,
   useOptimisticVariant,
+  Image,
 } from '@shopify/hydrogen';
 import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 //TODO: Understand the variants and variant urls
@@ -28,7 +29,10 @@ import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import Breadcrumbs from '~/components/BreadCrumbs';
-
+import {TwoToneLoader} from '~/components/Loaders';
+import type {Product, ProductVariant} from '@shopify/hydrogen';
+import {AddToCartButton} from '~/components/AddToCartButton';
+import {useAside} from '~/components/Aside';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
 };
@@ -113,9 +117,17 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
       console.error(error);
       return null;
     });
-
+  const productDataWithMedia = context.storefront
+    .query(VARIANTS_PRODUCT_ITEM_QUERY, {
+      variables: {handle: params.handle!},
+    })
+    .catch((error) => {
+      console.error(error);
+      return null;
+    });
   return {
     variants,
+    productDataWithMedia,
   };
 }
 
@@ -141,105 +153,85 @@ function redirectToFirstVariant({
     },
   );
 }
+// Type for the image object inside media.edges.node
+type MediaImage = {
+  id: string;
+  altText?: string;
+  url: string;
+  width: number;
+  height: number;
+};
 
+// Type for the edges inside the product media
+type MediaEdge = {
+  node: {
+    image: MediaImage;
+  };
+};
+
+// Type for the product data, which includes media and variants
+type ProductDataWithMedia = {
+  product: {
+    media: {
+      edges: MediaEdge[];
+    };
+  };
+};
+
+// Type for the selected variant, which contains price and compareAtPrice
+type SelectedVariant = {
+  price: string; // You will need to convert this to MoneyV2 type later
+  compareAtPrice: string | null; // Same as above
+};
+
+// Type for the props for ProductImages
+type ProductImagesProps = {
+  productDataWithMedia: ProductDataWithMedia;
+  product: Product; // Add this to match the product prop passed to ProductImages
+  selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
+};
 const pages = [
   {name: 'Collections', href: '/collections', current: false},
   {name: 'Hoodies', href: '/collections/hoodies', current: true},
 ];
 export default function Product() {
-  const {product, variants} = useLoaderData<typeof loader>();
+  const {product, variants, productDataWithMedia} =
+    useLoaderData<typeof loader>();
   const selectedVariant = useOptimisticVariant(
     product.selectedVariant,
     variants,
   );
-
+  console.log(selectedVariant, ' seclected var');
   const {title, descriptionHtml} = product;
 
   return (
     <div className=" mt-32 flex flex-col items-center">
-      <div className="mb-5">
-        <Breadcrumbs pages={pages} />
-      </div>
-      <div className="flex justify-start">
+      <div className="flex justify-around w-full">
         {/* gallery */}
-        <div className="flex flex-wrap mx-6 h-screen">
-          <img
-            style={{borderRadius: 0}}
-            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
-            alt="akslfn;as"
-            className="w-full md:w-1/2 lg:w-1/3 object-cover"
-          />
-          <img
-            style={{borderRadius: 0}}
-            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
-            alt="akslfn;as"
-            className="w-full md:w-1/2 lg:w-1/3 object-cover"
-          />
-          <img
-            style={{borderRadius: 0}}
-            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
-            alt="akslfn;as"
-            className="w-full md:w-1/2 lg:w-1/3 object-cover"
-          />
-          <img
-            style={{borderRadius: 0}}
-            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
-            alt="akslfn;as"
-            className="w-full md:w-1/2 lg:w-1/3 object-cover"
-          />
-          <img
-            style={{borderRadius: 0}}
-            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
-            alt="akslfn;as"
-            className="w-full md:w-1/2 lg:w-1/3 object-cover"
-          />
-          <img
-            style={{borderRadius: 0}}
-            src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240314_000220_6C7466.jpg?v=1718668112"
-            alt="akslfn;as"
-            className="w-full md:w-1/2 lg:w-1/3 object-cover"
-          />
-        </div>
+        <Suspense
+          fallback={
+            <div className="flex flex-col gap-5 items-center justify-start">
+              <TwoToneLoader />
+              <span>loading images...</span>
+            </div>
+          }
+        >
+          <Await resolve={productDataWithMedia}>
+            {(data) => (
+              <ProductImages
+                product={product}
+                variants={variants}
+                selectedVariant={selectedVariant}
+                productDataWithMedia={data}
+              />
+            )}
+          </Await>
+        </Suspense>
+
         {/* product details */}
         <div className="flex flex-col min-w-1/2 ">
           <ProductImage image={selectedVariant?.image} />
           <div className="product-main flex justify-around  w-full">
-            <div>
-              <div>
-                <h1>{title}</h1>
-                <ProductPrice
-                  price={selectedVariant?.price}
-                  compareAtPrice={selectedVariant?.compareAtPrice}
-                />
-              </div>
-
-              {/* sizing */}
-              <div>
-                <Suspense
-                  fallback={
-                    <ProductForm
-                      product={product}
-                      selectedVariant={selectedVariant}
-                      variants={[]}
-                    />
-                  }
-                >
-                  <Await
-                    errorElement="There was a problem loading product variants"
-                    resolve={variants}
-                  >
-                    {(data) => (
-                      <ProductForm
-                        product={product}
-                        selectedVariant={selectedVariant}
-                        variants={data?.product?.variants.nodes || []}
-                      />
-                    )}
-                  </Await>
-                </Suspense>
-              </div>
-            </div>
-
             {/* description */}
             <div className="flex flex-col items-center justify-center bg-red-400 w-96">
               <div className="mt-6">
@@ -260,7 +252,7 @@ export default function Product() {
                 </h2>
 
                 <div className="divide-y divide-gray-200 border-t">
-                  {product?.details.map((detail) => (
+                  {product?.details?.map((detail) => (
                     <Disclosure key={detail.name} as="div">
                       <h3>
                         <DisclosureButton className="group relative flex w-full items-center justify-between py-6 text-left">
@@ -292,7 +284,6 @@ export default function Product() {
                   ))}
                 </div>
               </section>
-              
             </div>
           </div>
           {/* //* end */}
@@ -316,6 +307,105 @@ export default function Product() {
     </div>
   );
 }
+
+const ProductImages: React.FC<ProductImagesProps> = ({
+  productDataWithMedia,
+  product,
+  selectedVariant,
+  variants,
+}) => {
+  const {title, descriptionHtml} = product;
+  const mediaLength = productDataWithMedia.product?.media.edges.length;
+  const {open} = useAside();
+
+  // Determine the grid class based on the media length
+  let gridClassName: string;
+
+  switch (true) {
+    case mediaLength >= 5:
+      gridClassName = 'grid-cols-3'; // for 6 or more images
+      break;
+    case mediaLength === 4:
+      gridClassName = 'grid-cols-2'; // for 4 to 5 images
+      break;
+    default:
+      gridClassName = 'grid-cols-1'; // for fewer than 3 images
+  }
+
+  return (
+    <div>
+      <div className={`grid ${gridClassName} bg-gray-100`}>
+        {productDataWithMedia.product.media?.edges.map((item: MediaEdge) => (
+          <Image
+            key={item.node.image.id}
+            style={{borderRadius: 0}}
+            src={item.node.image.url}
+            alt={item.node.image.altText || 'Product Image'}
+            className="h-72 object-cover"
+          />
+        ))}
+      </div>
+      {/* breadcrumbs */}
+      <div className="my-5">
+        <Breadcrumbs pages={pages} />
+      </div>
+      <div className="mt-8 w-full  flex flex-col  bg-yellow-400">
+        <div className="flex justify-between items-start bg-blue-500">
+          <div className="w-1/2">
+            <h1>{title}</h1>
+            <ProductPrice
+              price={selectedVariant?.price}
+              compareAtPrice={selectedVariant?.compareAtPrice}
+            />
+          </div>
+          {/* Sizing */}
+
+          <Suspense
+            fallback={
+              <ProductForm
+                product={product}
+                selectedVariant={selectedVariant}
+                variants={[]}
+              />
+            }
+          >
+            <Await
+              errorElement="There was a problem loading product variants"
+              resolve={variants}
+            >
+              {(data) => (
+                <ProductForm
+                  product={product}
+                  selectedVariant={selectedVariant}
+                  variants={data?.product?.variants.nodes || []}
+                />
+              )}
+            </Await>
+          </Suspense>
+        </div>
+        <AddToCartButton
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => {
+            open('cart');
+          }}
+          lines={
+            selectedVariant
+              ? [
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity: 1,
+                    selectedVariant,
+                  },
+                ]
+              : []
+          }
+        >
+          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+        </AddToCartButton>
+      </div>
+    </div>
+  );
+};
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {
@@ -417,6 +507,71 @@ const VARIANTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
       ...ProductVariants
+    }
+  }
+` as const;
+
+const PRODUCT_ITEM_FRAGMENT = `#graphql
+  fragment MoneyProductItem on MoneyV2 {
+    amount
+    currencyCode
+  }
+
+  fragment ProductItem on Product {
+    id
+    handle
+    title
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+      maxVariantPrice {
+        ...MoneyProductItem
+      }
+    }
+    media(first: 6) {
+      edges {
+        node {
+          ... on MediaImage {
+            image {
+              id
+              altText
+              url
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+    variants(first: 10) {
+      nodes {
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
+    options {
+      name
+      values
+    }
+  }
+` as const;
+
+const VARIANTS_PRODUCT_ITEM_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT} 
+
+  query ProductItemFragment($handle: String!) {
+    product(handle: $handle) {
+      ...ProductItem
     }
   }
 ` as const;

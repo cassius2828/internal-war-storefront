@@ -166,7 +166,7 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
         ...MoneyProductItem
       }
     }
-    media(first: 5) {
+    media(first: 6) {
       edges {
         node {
           ... on MediaImage {

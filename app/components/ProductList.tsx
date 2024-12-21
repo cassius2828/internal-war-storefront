@@ -31,7 +31,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       product.priceRange.minVariantPrice?.amount,
   );
   const availableSizes = getAvailableSizeVariants(product);
-  console.log(product, ' <-- product pltsx');
+
   return (
     <div className="group relative">
       <img

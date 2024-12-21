@@ -27,12 +27,14 @@ import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
+import Accordion from '~/components/Accordion';
 import {ProductForm} from '~/components/ProductForm';
 import Breadcrumbs from '~/components/BreadCrumbs';
 import {TwoToneLoader} from '~/components/Loaders';
 import type {Product, ProductVariant} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
+import ProductCardList from '~/components/ProductList';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
 };
@@ -125,9 +127,17 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
       console.error(error);
       return null;
     });
+  const allProducts = context.storefront
+    .query(ALL_PRODUCTS_QUERY)
+    .catch((error) => {
+      // Log query errors, but don't throw them so the page can still render
+      console.error(error);
+      return null;
+    });
   return {
     variants,
     productDataWithMedia,
+    allProducts,
   };
 }
 
@@ -196,19 +206,33 @@ const pages = [
   {name: 'Collections', href: '/collections', current: false},
   {name: 'Hoodies', href: '/collections/hoodies', current: true},
 ];
+const sampleShippingDetails = `
+  <ul class="list-disc pl-5 space-y-2 text-gray-700">
+    <li>Free shipping on orders over $50</li>
+    <li>Standard shipping: 3-5 business days</li>
+    <li>Express shipping: 1-2 business days</li>
+    <li>International shipping available</li>
+    <li>Tracking numbers will be provided once the order ships</li>
+    <li>We currently do not offer Saturday or Sunday delivery.</li>
+    <li>Shipping rates are calculated at checkout based on your location and selected shipping method.</li>
+    <li>If your order is delayed or there is an issue with your shipment, please contact our support team for assistance.</li>
+  </ul>
+`;
+
 export default function Product() {
-  const {product, variants, productDataWithMedia} =
+  const {product, variants, productDataWithMedia, allProducts} =
     useLoaderData<typeof loader>();
   const selectedVariant = useOptimisticVariant(
     product.selectedVariant,
     variants,
   );
-  console.log(selectedVariant, ' seclected var');
+
   const {title, descriptionHtml} = product;
   const [focusedImage, setFocusedImage] = useState<string>(
     selectedVariant?.image,
   );
-  console.log(focusedImage, ' <-- focused image ')
+  console.log(allProducts, ' <-- all oproiduycts ');
+  allProducts.then((res) => console.log(res));
   return (
     <div className=" mt-32 flex flex-col items-center">
       <div className="flex justify-around w-full">
@@ -242,57 +266,13 @@ export default function Product() {
         </Suspense>
       </div>
       {/* detials */}
-      <div className="product-main flex justify-around  w-full">
-        {/* description */}
-        <div className="flex flex-col items-center justify-center bg-red-400 w-96">
-          <div className="mt-6">
-            <h3 className="sr-only">Description</h3>
-
-            <div
-              dangerouslySetInnerHTML={{__html: descriptionHtml}}
-              className="space-y-6 text-base text-gray-700"
-            />
-          </div>
-          {/* additional details */}
-          <section aria-labelledby="details-heading" className="mt-12 w-full">
-            <h2 id="details-heading" className="sr-only">
-              Additional details
-            </h2>
-
-            <div className="divide-y divide-gray-200 border-t">
-              {product?.details?.map((detail) => (
-                <Disclosure key={detail.name} as="div">
-                  <h3>
-                    <DisclosureButton className="group relative flex w-full items-center justify-between py-6 text-left">
-                      <span className="text-sm font-medium text-gray-900 group-data-[open]:text-indigo-600">
-                        {detail.name}
-                      </span>
-                      <span className="ml-6 flex items-center">
-                        <PlusIcon
-                          aria-hidden="true"
-                          className="block size-6 text-gray-400 group-hover:text-gray-500 group-data-[open]:hidden"
-                        />
-                        <MinusIcon
-                          aria-hidden="true"
-                          className="hidden size-6 text-indigo-400 group-hover:text-indigo-500 group-data-[open]:block"
-                        />
-                      </span>
-                    </DisclosureButton>
-                  </h3>
-                  <DisclosurePanel className="pb-6">
-                    <ul className="list-disc space-y-1 pl-5 text-sm/6 text-gray-700 marker:text-gray-300">
-                      {detail.items.map((item) => (
-                        <li key={item} className="pl-2">
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </DisclosurePanel>
-                </Disclosure>
-              ))}
-            </div>
-          </section>
-        </div>
+      <div className=" flex justify-between  gap-12 my-12 w-full bg-green-500">
+        {/* shipping and description */}
+        <Accordion
+          title="Shipping Details"
+          descriptionHtml={sampleShippingDetails}
+        />{' '}
+        <Accordion title="Product Details" descriptionHtml={descriptionHtml} />
       </div>
       {/* //* end */}
       <Analytics.ProductView
@@ -310,6 +290,25 @@ export default function Product() {
           ],
         }}
       />
+      <Suspense
+        fallback={
+          <div className="flex flex-col gap-5 items-center justify-start">
+            <TwoToneLoader />
+            <span>loading images...</span>
+          </div>
+        }
+      >
+        {/* Await resolves the productDataWithMedia promise */}
+        <Await resolve={allProducts}>
+          {(data) => (
+            // Ensure that the resolved data is passed correctly
+            <>
+              <h3 className="text-xl mt-12">More Styles</h3>
+              <ProductCardList products={data?.products?.nodes} />
+            </>
+          )}
+        </Await>
+      </Suspense>
     </div>
   );
 }
@@ -581,6 +580,18 @@ const VARIANTS_PRODUCT_ITEM_QUERY = `#graphql
   query ProductItemFragment($handle: String!) {
     product(handle: $handle) {
       ...ProductItem
+    }
+  }
+` as const;
+const ALL_PRODUCTS_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT}
+
+  query AllProducts($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 6, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...ProductItem
+      }
     }
   }
 ` as const;

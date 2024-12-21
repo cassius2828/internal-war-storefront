@@ -1,4 +1,4 @@
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
 import {
@@ -183,12 +183,14 @@ type SelectedVariant = {
   price: string; // You will need to convert this to MoneyV2 type later
   compareAtPrice: string | null; // Same as above
 };
-
+// Type for the function that sets the focused image
+type SetFocusedImage = (imageId: string) => void;
 // Type for the props for ProductImages
 type ProductImagesProps = {
   productDataWithMedia: ProductDataWithMedia;
   product: Product; // Add this to match the product prop passed to ProductImages
   selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
+  setFocusedImage: SetFocusedImage;
 };
 const pages = [
   {name: 'Collections', href: '/collections', current: false},
@@ -203,7 +205,10 @@ export default function Product() {
   );
   console.log(selectedVariant, ' seclected var');
   const {title, descriptionHtml} = product;
-
+  const [focusedImage, setFocusedImage] = useState<string>(
+    selectedVariant?.image,
+  );
+  console.log(focusedImage, ' <-- focused image ')
   return (
     <div className=" mt-32 flex flex-col items-center">
       <div className="flex justify-around w-full">
@@ -218,92 +223,93 @@ export default function Product() {
         >
           <Await resolve={productDataWithMedia}>
             {(data) => (
-              <ProductImages
-                product={product}
-                variants={variants}
-                selectedVariant={selectedVariant}
-                productDataWithMedia={data}
-              />
+              <>
+                <ProductImages
+                  setFocusedImage={setFocusedImage}
+                  product={product}
+                  variants={variants}
+                  selectedVariant={selectedVariant}
+                  productDataWithMedia={data}
+                />
+
+                {/* product hero image */}
+                <div className="flex flex-col w-full md:w-1/2 ">
+                  <ProductImage full image={focusedImage} />
+                </div>
+              </>
             )}
           </Await>
         </Suspense>
+      </div>
+      {/* detials */}
+      <div className="product-main flex justify-around  w-full">
+        {/* description */}
+        <div className="flex flex-col items-center justify-center bg-red-400 w-96">
+          <div className="mt-6">
+            <h3 className="sr-only">Description</h3>
 
-        {/* product details */}
-        <div className="flex flex-col min-w-1/2 ">
-          <ProductImage image={selectedVariant?.image} />
-          <div className="product-main flex justify-around  w-full">
-            {/* description */}
-            <div className="flex flex-col items-center justify-center bg-red-400 w-96">
-              <div className="mt-6">
-                <h3 className="sr-only">Description</h3>
-
-                <div
-                  dangerouslySetInnerHTML={{__html: descriptionHtml}}
-                  className="space-y-6 text-base text-gray-700"
-                />
-              </div>
-              {/* additional details */}
-              <section
-                aria-labelledby="details-heading"
-                className="mt-12 w-full"
-              >
-                <h2 id="details-heading" className="sr-only">
-                  Additional details
-                </h2>
-
-                <div className="divide-y divide-gray-200 border-t">
-                  {product?.details?.map((detail) => (
-                    <Disclosure key={detail.name} as="div">
-                      <h3>
-                        <DisclosureButton className="group relative flex w-full items-center justify-between py-6 text-left">
-                          <span className="text-sm font-medium text-gray-900 group-data-[open]:text-indigo-600">
-                            {detail.name}
-                          </span>
-                          <span className="ml-6 flex items-center">
-                            <PlusIcon
-                              aria-hidden="true"
-                              className="block size-6 text-gray-400 group-hover:text-gray-500 group-data-[open]:hidden"
-                            />
-                            <MinusIcon
-                              aria-hidden="true"
-                              className="hidden size-6 text-indigo-400 group-hover:text-indigo-500 group-data-[open]:block"
-                            />
-                          </span>
-                        </DisclosureButton>
-                      </h3>
-                      <DisclosurePanel className="pb-6">
-                        <ul className="list-disc space-y-1 pl-5 text-sm/6 text-gray-700 marker:text-gray-300">
-                          {detail.items.map((item) => (
-                            <li key={item} className="pl-2">
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </DisclosurePanel>
-                    </Disclosure>
-                  ))}
-                </div>
-              </section>
-            </div>
+            <div
+              dangerouslySetInnerHTML={{__html: descriptionHtml}}
+              className="space-y-6 text-base text-gray-700"
+            />
           </div>
-          {/* //* end */}
-          <Analytics.ProductView
-            data={{
-              products: [
-                {
-                  id: product.id,
-                  title: product.title,
-                  price: selectedVariant?.price.amount || '0',
-                  vendor: product.vendor,
-                  variantId: selectedVariant?.id || '',
-                  variantTitle: selectedVariant?.title || '',
-                  quantity: 1,
-                },
-              ],
-            }}
-          />
+          {/* additional details */}
+          <section aria-labelledby="details-heading" className="mt-12 w-full">
+            <h2 id="details-heading" className="sr-only">
+              Additional details
+            </h2>
+
+            <div className="divide-y divide-gray-200 border-t">
+              {product?.details?.map((detail) => (
+                <Disclosure key={detail.name} as="div">
+                  <h3>
+                    <DisclosureButton className="group relative flex w-full items-center justify-between py-6 text-left">
+                      <span className="text-sm font-medium text-gray-900 group-data-[open]:text-indigo-600">
+                        {detail.name}
+                      </span>
+                      <span className="ml-6 flex items-center">
+                        <PlusIcon
+                          aria-hidden="true"
+                          className="block size-6 text-gray-400 group-hover:text-gray-500 group-data-[open]:hidden"
+                        />
+                        <MinusIcon
+                          aria-hidden="true"
+                          className="hidden size-6 text-indigo-400 group-hover:text-indigo-500 group-data-[open]:block"
+                        />
+                      </span>
+                    </DisclosureButton>
+                  </h3>
+                  <DisclosurePanel className="pb-6">
+                    <ul className="list-disc space-y-1 pl-5 text-sm/6 text-gray-700 marker:text-gray-300">
+                      {detail.items.map((item) => (
+                        <li key={item} className="pl-2">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </DisclosurePanel>
+                </Disclosure>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
+      {/* //* end */}
+      <Analytics.ProductView
+        data={{
+          products: [
+            {
+              id: product.id,
+              title: product.title,
+              price: selectedVariant?.price.amount || '0',
+              vendor: product.vendor,
+              variantId: selectedVariant?.id || '',
+              variantTitle: selectedVariant?.title || '',
+              quantity: 1,
+            },
+          ],
+        }}
+      />
     </div>
   );
 }
@@ -313,6 +319,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
   product,
   selectedVariant,
   variants,
+  setFocusedImage,
 }) => {
   const {title, descriptionHtml} = product;
   const mediaLength = productDataWithMedia.product?.media.edges.length;
@@ -337,11 +344,13 @@ const ProductImages: React.FC<ProductImagesProps> = ({
       <div className={`grid ${gridClassName} bg-gray-100`}>
         {productDataWithMedia.product.media?.edges.map((item: MediaEdge) => (
           <Image
+            onMouseEnter={() => setFocusedImage(item.node.image)}
             key={item.node.image.id}
             style={{borderRadius: 0}}
             src={item.node.image.url}
             alt={item.node.image.altText || 'Product Image'}
             className="h-72 object-cover"
+            sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
           />
         ))}
       </div>

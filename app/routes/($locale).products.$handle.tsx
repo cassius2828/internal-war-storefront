@@ -35,6 +35,8 @@ import type {Product, ProductVariant} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import ProductCardList from '~/components/ProductList';
+import {BasicMarquee} from '~/components/Marquees'
+
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
 };
@@ -309,6 +311,7 @@ export default function Product() {
           )}
         </Await>
       </Suspense>
+  <BasicMarquee/>
     </div>
   );
 }

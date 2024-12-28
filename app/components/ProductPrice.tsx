@@ -9,6 +9,15 @@ export function ProductPrice({
   price?: MoneyV2;
   compareAtPrice?: MoneyV2 | null;
 }) {
+  console.log(price, ' <-- price without comparePrice');
+  console.log(compareAtPrice, ' <--  comparePrice');
+
+  if (!compareAtPrice)
+    return (
+      <div className="product-price">
+        {price ? <Money data={price} /> : <span>&nbsp;</span>}
+      </div>
+    );
   const result = comparePrice(price?.amount, compareAtPrice?.amount);
 
   return (

@@ -101,7 +101,7 @@ function SearchResultsProducts({
   if (!products?.nodes.length) {
     return null;
   }
-  console.log(products, ' <-- products');
+
   return (
     <div className="flex gap-12 mt-12 p-3">
       {products.nodes.map((product) => {

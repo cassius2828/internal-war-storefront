@@ -234,8 +234,8 @@ export default function Product() {
   const [focusedImage, setFocusedImage] = useState<string>(
     selectedVariant?.image,
   );
-  console.log(allProducts, ' <-- all oproiduycts ');
-  allProducts.then((res) => console.log(res));
+
+
   return (
     <div className=" mt-32 flex flex-col items-center">
       <div className="flex flex-col-reverse md:flex-row justify-around w-full">
@@ -342,7 +342,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
     default:
       gridClassName = 'grid-cols-1'; // for fewer than 3 images
   }
-console.log(selectedVariant, ' <-- sel;ected variant')
+
   return (
     <div>
       <div className={`flex flex-wrap md:grid ${gridClassName} bg-gray-100`}>

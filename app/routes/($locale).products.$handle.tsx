@@ -338,9 +338,12 @@ const ProductImages: React.FC<ProductImagesProps> = ({
       break;
     case mediaLength === 4:
       gridClassName = 'grid-cols-2'; // for 4 to 5 images
+      extraMargin = '';
+
       break;
     default:
       gridClassName = 'grid-cols-1'; // for fewer than 3 images
+      extraMargin = '';
   }
 
   return (

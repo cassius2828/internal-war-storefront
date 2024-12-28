@@ -41,7 +41,7 @@ export function Header({
   const {showDropdown} = useAside();
 
   return (
-    <header className="header fixed z-10 flex justify-between items-center w-full px-5 md:px-20 bg-neutral-100  transition-colors duration-200">
+    <header className="header fixed z-10 flex justify-between items-center w-full px-5 py-4 md:py-0 md:px-20 bg-neutral-100  transition-colors duration-200">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
         <h1 className="uppercase font-light text-3xl">{shop.name}</h1>
       </NavLink>
@@ -132,7 +132,7 @@ export function DropdownHeaderMenuSqrFull({
     <div
       onMouseEnter={() => setShowShopBtn(true)}
       onMouseLeave={() => setShowShopBtn(false)}
-      className=" h-full bg-neutral-200 cursor-pointer relative"
+      className="h-full bg-neutral-200 cursor-pointer relative"
     >
       <img className="w-full h-full object-contain" src={img} alt="" />
       {showShopBtn && <ShopBtnDropdownNav url={url} />}
@@ -189,7 +189,7 @@ export function DropdownHeaderMenu() {
   return (
     <div
       onMouseLeave={() => setShowDropdown(false)}
-      className="w-full h-[20rem] px-20 py-2 bg-neutral-100 flex justify-start gap-2 absolute top-24 left-0"
+      className="hidden md:block w-full h-[20rem] px-20 py-2 bg-neutral-100 flex justify-start gap-2 absolute top-24 left-0"
     >
       {/* col 1 */}
       <DropdownHeaderMenuSqrFull

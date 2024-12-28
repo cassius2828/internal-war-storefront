@@ -92,7 +92,7 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
   return (
-    <div className="collection mt-40 flex flex-col items-center">
+    <div className="collection mt-24 md:mt-40 flex flex-col items-center">
       {/* <h1>{collection.title}</h1> */}
       {/* breadcrubms */}
       <BreadCrumbs pages={pages} />

@@ -50,7 +50,7 @@ export default function Collections() {
 
   return (
     <>
-      <div className="mt-12 md:mt-40 flow-root collections">
+      <div className="mt-20 md:mt-40 flow-root collections">
         <h1 style={{marginBottom: '2rem'}} className="text-center">
           All Collections
         </h1>

@@ -1,17 +1,42 @@
-import {Suspense} from 'react';
+import {Suspense, useState} from 'react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+  Radio,
+  RadioGroup,
+  Tab,
+  TabGroup,
+  TabList,
+  TabPanel,
+  TabPanels,
+} from '@headlessui/react';
+import {StarIcon} from '@heroicons/react/20/solid';
+import {HeartIcon, MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import type {ProductFragment} from 'storefrontapi.generated';
 import {
   getSelectedProductOptions,
   Analytics,
   useOptimisticVariant,
+  Image,
 } from '@shopify/hydrogen';
 import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
+//TODO: Understand the variants and variant urls
 import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
+import Accordion from '~/components/Accordion';
 import {ProductForm} from '~/components/ProductForm';
+import Breadcrumbs from '~/components/BreadCrumbs';
+import {TwoToneLoader} from '~/components/Loaders';
+import type {Product, ProductVariant} from '@shopify/hydrogen';
+import {AddToCartButton} from '~/components/AddToCartButton';
+import {useAside} from '~/components/Aside';
+import ProductCardList from '~/components/ProductList';
+import {BasicMarquee} from '~/components/Marquees';
+import NewsCarousel from '~/components/NewsCarousel';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
@@ -97,9 +122,25 @@ function loadDeferredData({context, params}: LoaderFunctionArgs) {
       console.error(error);
       return null;
     });
-
+  const productDataWithMedia = context.storefront
+    .query(VARIANTS_PRODUCT_ITEM_QUERY, {
+      variables: {handle: params.handle!},
+    })
+    .catch((error) => {
+      console.error(error);
+      return null;
+    });
+  const allProducts = context.storefront
+    .query(ALL_PRODUCTS_QUERY)
+    .catch((error) => {
+      // Log query errors, but don't throw them so the page can still render
+      console.error(error);
+      return null;
+    });
   return {
     variants,
+    productDataWithMedia,
+    allProducts,
   };
 }
 
@@ -125,57 +166,117 @@ function redirectToFirstVariant({
     },
   );
 }
+// Type for the image object inside media.edges.node
+type MediaImage = {
+  id: string;
+  altText?: string;
+  url: string;
+  width: number;
+  height: number;
+};
+
+// Type for the edges inside the product media
+type MediaEdge = {
+  node: {
+    image: MediaImage;
+  };
+};
+
+// Type for the product data, which includes media and variants
+type ProductDataWithMedia = {
+  product: {
+    media: {
+      edges: MediaEdge[];
+    };
+  };
+};
+
+// Type for the selected variant, which contains price and compareAtPrice
+type SelectedVariant = {
+  price: string; // You will need to convert this to MoneyV2 type later
+  compareAtPrice: string | null; // Same as above
+};
+// Type for the function that sets the focused image
+type SetFocusedImage = (imageId: string) => void;
+// Type for the props for ProductImages
+type ProductImagesProps = {
+  productDataWithMedia: ProductDataWithMedia;
+  product: Product; // Add this to match the product prop passed to ProductImages
+  selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
+  setFocusedImage: SetFocusedImage;
+};
+const pages = [
+  {name: 'Collections', href: '/collections', current: false},
+  {name: 'Hoodies', href: '/collections/hoodies', current: true},
+];
+const sampleShippingDetails = `
+  <ul class="list-disc pl-5 space-y-2 text-gray-700">
+    <li>Free shipping on orders over $50</li>
+    <li>Standard shipping: 3-5 business days</li>
+    <li>Express shipping: 1-2 business days</li>
+    <li>International shipping available</li>
+    <li>Tracking numbers will be provided once the order ships</li>
+    <li>We currently do not offer Saturday or Sunday delivery.</li>
+    <li>Shipping rates are calculated at checkout based on your location and selected shipping method.</li>
+    <li>If your order is delayed or there is an issue with your shipment, please contact our support team for assistance.</li>
+  </ul>
+`;
 
 export default function Product() {
-  const {product, variants} = useLoaderData<typeof loader>();
+  const {product, variants, productDataWithMedia, allProducts} =
+    useLoaderData<typeof loader>();
   const selectedVariant = useOptimisticVariant(
     product.selectedVariant,
     variants,
   );
 
   const {title, descriptionHtml} = product;
+  const [focusedImage, setFocusedImage] = useState<string>(
+    selectedVariant?.image,
+  );
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
+    <div className=" mt-32 flex flex-col items-center">
+      <div className="flex flex-col-reverse md:flex-row justify-around w-full">
+        {/* gallery */}
         <Suspense
           fallback={
-            <ProductForm
-              product={product}
-              selectedVariant={selectedVariant}
-              variants={[]}
-            />
+            <div className="flex flex-col gap-5 items-center justify-start">
+              <TwoToneLoader />
+              <span>loading images...</span>
+            </div>
           }
         >
-          <Await
-            errorElement="There was a problem loading product variants"
-            resolve={variants}
-          >
+          <Await resolve={productDataWithMedia}>
             {(data) => (
-              <ProductForm
-                product={product}
-                selectedVariant={selectedVariant}
-                variants={data?.product?.variants.nodes || []}
-              />
+              <>
+                <ProductImages
+                  setFocusedImage={setFocusedImage}
+                  product={product}
+                  variants={variants}
+                  selectedVariant={selectedVariant}
+                  productDataWithMedia={data}
+                />
+
+                {/* product hero image */}
+                <div className="flex flex-col w-full md:w-1/2 ">
+                  <ProductImage full image={focusedImage} />
+                </div>
+              </>
             )}
           </Await>
         </Suspense>
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
       </div>
+      {/* detials */}
+      <div className=" flex flex-col-reverse md:flex-row items-center md:justify-between  gap-12 my-12 w-full ">
+        {/* shipping and description */}
+        <Accordion
+          title="Shipping Details"
+          descriptionHtml={sampleShippingDetails}
+        />{' '}
+        <Accordion title="Product Details" descriptionHtml={descriptionHtml} />
+      </div>
+      {/* //* end */}
       <Analytics.ProductView
         data={{
           products: [
@@ -191,13 +292,151 @@ export default function Product() {
           ],
         }}
       />
+      <Suspense
+        fallback={
+          <div className="flex flex-col gap-5 items-center justify-start">
+            <TwoToneLoader />
+            <span>loading images...</span>
+          </div>
+        }
+      >
+        {/* Await resolves the productDataWithMedia promise */}
+        <Await resolve={allProducts}>
+          {(data) => (
+            // Ensure that the resolved data is passed correctly
+            <>
+              <h3 className="text-xl mt-12 newsreader">More Styles</h3>
+              <ProductCardList products={data?.products?.nodes} />
+            </>
+          )}
+        </Await>
+      </Suspense>
+      <BasicMarquee />
+      <NewsCarousel />
     </div>
   );
 }
 
+const ProductImages: React.FC<ProductImagesProps> = ({
+  productDataWithMedia,
+  product,
+  selectedVariant,
+  variants,
+  setFocusedImage,
+}) => {
+  const {title, descriptionHtml} = product;
+  const mediaLength = productDataWithMedia.product?.media.edges.length;
+  const {open} = useAside();
+
+  // Determine the grid class based on the media length
+  let gridClassName: string;
+  let extraMargin: string;
+  switch (true) {
+    case mediaLength >= 5:
+      gridClassName = 'grid-cols-3'; // for 6 or more images
+      extraMargin = 'md:ml-20';
+      break;
+    case mediaLength === 4:
+      gridClassName = 'grid-cols-2'; // for 4 to 5 images
+      break;
+    default:
+      gridClassName = 'grid-cols-1'; // for fewer than 3 images
+  }
+
+  return (
+    <div className={extraMargin}>
+      <div className={`flex flex-wrap md:grid ${gridClassName} bg-gray-100`}>
+        {productDataWithMedia.product.media?.edges.map((item: MediaEdge) => (
+          <>
+            {/* mobile */}
+            <Image
+              onMouseEnter={() => setFocusedImage(item.node.image)}
+              key={item.node.image.id + 'mobile'}
+              style={{borderRadius: 0, width: '50%'}}
+              src={item.node.image.url}
+              alt={item.node.image.altText || 'Product Image'}
+              className="h-72 object-cover md:hidden"
+              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
+            />
+            {/* desktop */}
+            <Image
+              onMouseEnter={() => setFocusedImage(item.node.image)}
+              key={item.node.image.id + 'desktop'}
+              style={{borderRadius: 0, width: '100%'}}
+              src={item.node.image.url}
+              alt={item.node.image.altText || 'Product Image'}
+              className="h-72 object-cover hidden md:block"
+              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
+            />
+          </>
+        ))}
+      </div>
+      {/* breadcrumbs */}
+      <div className="my-5 flex justify-center md:justify-start">
+        <Breadcrumbs pages={pages} />
+      </div>
+      <div className="mt-8 w-full  flex flex-col p-3 md:p-0  ">
+        <div className="flex flex-col md:flex-row justify-between items-start ">
+          <div className="w-1/2">
+            <h1>{title}</h1>
+            <ProductPrice
+              price={selectedVariant?.price}
+              compareAtPrice={selectedVariant?.compareAtPrice}
+            />
+          </div>
+          {/* Sizing */}
+
+          <Suspense
+            fallback={
+              <ProductForm
+                product={product}
+                selectedVariant={selectedVariant}
+                variants={[]}
+              />
+            }
+          >
+            <Await
+              errorElement="There was a problem loading product variants"
+              resolve={variants}
+            >
+              {(data) => (
+                <ProductForm
+                  product={product}
+                  selectedVariant={selectedVariant}
+                  variants={data?.product?.variants.nodes || []}
+                />
+              )}
+            </Await>
+          </Suspense>
+        </div>
+        <AddToCartButton
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => {
+            open('cart');
+          }}
+          lines={
+            selectedVariant
+              ? [
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity: 1,
+                    selectedVariant,
+                  },
+                ]
+              : []
+          }
+        >
+          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+        </AddToCartButton>
+      </div>
+    </div>
+  );
+};
+
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {
     availableForSale
+    # metafield(key:'details')y
     compareAtPrice {
       amount
       currencyCode
@@ -294,6 +533,83 @@ const VARIANTS_QUERY = `#graphql
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
       ...ProductVariants
+    }
+  }
+` as const;
+
+const PRODUCT_ITEM_FRAGMENT = `#graphql
+  fragment MoneyProductItem on MoneyV2 {
+    amount
+    currencyCode
+  }
+
+  fragment ProductItem on Product {
+    id
+    handle
+    title
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+      maxVariantPrice {
+        ...MoneyProductItem
+      }
+    }
+    media(first: 6) {
+      edges {
+        node {
+          ... on MediaImage {
+            image {
+              id
+              altText
+              url
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+    variants(first: 10) {
+      nodes {
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
+    options {
+      name
+      values
+    }
+  }
+` as const;
+
+const VARIANTS_PRODUCT_ITEM_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT} 
+
+  query ProductItemFragment($handle: String!) {
+    product(handle: $handle) {
+      ...ProductItem
+    }
+  }
+` as const;
+const ALL_PRODUCTS_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT}
+
+  query AllProducts($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 6, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...ProductItem
+      }
     }
   }
 ` as const;

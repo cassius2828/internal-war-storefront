@@ -51,7 +51,11 @@ export function links() {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    {
+      rel: 'icon',
+      type: 'image/svg+xml',
+      href: 'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_0451.png?v=1708993664',
+    },
   ];
 }
 

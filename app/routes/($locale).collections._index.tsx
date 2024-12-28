@@ -1,8 +1,11 @@
- import {useLoaderData, Link} from '@remix-run/react';
+import {useLoaderData, Link} from '@remix-run/react';
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {useState} from 'react';
+import NewsCarousel from '~/components/NewsCarousel';
+
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -46,21 +49,29 @@ export default function Collections() {
   const {collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collections">
-      <h1>Collections</h1>
-      <PaginatedResourceSection
-        connection={collections}
-        resourcesClassName="collections-grid"
-      >
-        {({node: collection, index}) => (
-          <CollectionItem
-            key={collection.id}
-            collection={collection}
-            index={index}
-          />
-        )}
-      </PaginatedResourceSection>
-    </div>
+    <>
+      <div className="mt-20 md:mt-40 flow-root collections">
+        <h1 style={{marginBottom: '2rem'}} className="text-center">
+          All Collections
+        </h1>
+        <div className="-my-2">
+          <div className="flex justify-center relative box-content  py-2 mb-12 md:mb-24 ">
+            <div className="  grid grid-cols-1 md:grid-cols-3 w-full max-w-[80rem] gap-6">
+              {collections.nodes
+                .slice(1)
+                .map((collection: CollectionFragment, index: number) => (
+                  <CollectionItem
+                    key={collection.id}
+                    collection={collection}
+                    index={index}
+                  />
+                ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <NewsCarousel />
+    </>
   );
 }
 
@@ -71,22 +82,56 @@ function CollectionItem({
   collection: CollectionFragment;
   index: number;
 }) {
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  let secondaryImgUrl = '';
+
+  switch (collection.handle) {
+    case 'black-sweatsuits':
+      secondaryImgUrl =
+        'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240218_145459_E3FD09.jpg?v=1708490463';
+      break;
+    case 'hoodies':
+      secondaryImgUrl =
+        'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_6553.jpg?v=1733445542';
+      break;
+    case 'sweats':
+      secondaryImgUrl =
+        'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_6691.jpg?v=1732660138';
+      break;
+    default:
+      secondaryImgUrl = '';
+  }
   return (
     <Link
-      className="collection-item"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="collection-item shadow-md rounded-md p-3 transition-all duration-300 hover:shadow-lg hover:bg-transparent"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
     >
-      {collection?.image && (
+      <span aria-hidden="true" className=" inset-0">
         <Image
-          alt={collection.image.altText || collection.title}
+          className={isHovered ? 'hidden ' : ''}
+          alt={collection.image?.altText || collection.title}
           aspectRatio="1/1"
           data={collection.image}
           loading={index < 3 ? 'eager' : undefined}
+          sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-      )}
-      <h5>{collection.title}</h5>
+        <Image
+          className={`${!isHovered ? 'hidden' : ''} object-cover fade-in`}
+          alt={collection.title}
+          aspectRatio="1/1"
+          src={secondaryImgUrl}
+          loading={index < 3 ? 'eager' : undefined}
+          sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+      </span>
+
+      <span className="relative mt-auto text-center text-xl font-bold text-neutral-900 ">
+        {collection.title}
+      </span>
     </Link>
   );
 }

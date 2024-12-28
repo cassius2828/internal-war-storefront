@@ -32,8 +32,8 @@ const NewsCarousel = () => {
   return (
     <div className="flex flex-col bg-neutral-900 justify-center items-center text-gray-100 py-12">
       {/* grpoup 1 */}
-      <div className="flex items-center justify-center w-full relative">
-        <span className="pointer-events-none uppercase font-thin [writing-mode:vertical-lr] rotate-180 text-2xl tracking-[12px] absolute left-24">
+      <div className="flex flex-col md:flex-row items-center justify-center w-full relative">
+        <span className="pointer-events-none uppercase font-thin md:[writing-mode:vertical-lr] md:rotate-180 text-2xl tracking-[8px] md:absolute mb-6 md:mb-0 left-24">
           behind the lines
         </span>
         <img
@@ -50,9 +50,17 @@ const NewsCarousel = () => {
           <span className="border-b pb-2 uppercase">discover</span>
         </div>
         {/* gorup 3b */}
-        <div className="flex justify-center items-center gap-8 ">
-          <FontAwesomeIcon size="xl" icon={faArrowLeft} />
-          <FontAwesomeIcon size="xl" icon={faArrowRight} />
+        <div className="flex justify-center items-center gap-8">
+          <FontAwesomeIcon
+            className="cursor-pointer"
+            size="xl"
+            icon={faArrowLeft}
+          />
+          <FontAwesomeIcon
+            className="cursor-pointer"
+            size="xl"
+            icon={faArrowRight}
+          />
         </div>
       </div>
     </div>

@@ -77,7 +77,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 >
                   <button
                     type="button"
-                    className="rounded bg-gray-200 drop-shadow-md px-2 py-1 text-sm font-semibold text-black shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200"
+                    className="rounded-sm bg-gray-200 drop-shadow-md px-2 py-1 text-sm font-semibold text-black shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader"
                   >
                     {value}
                   </button>

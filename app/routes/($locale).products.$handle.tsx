@@ -306,7 +306,7 @@ export default function Product() {
           {(data) => (
             // Ensure that the resolved data is passed correctly
             <>
-              <h3 className="text-xl mt-12">More Styles</h3>
+              <h3 className="text-xl mt-12 newsreader">More Styles</h3>
               <ProductCardList products={data?.products?.nodes} />
             </>
           )}

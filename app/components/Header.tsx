@@ -189,7 +189,7 @@ export function DropdownHeaderMenu() {
   return (
     <div
       onMouseLeave={() => setShowDropdown(false)}
-      className="hidden md:block w-full h-[20rem] px-20 py-2 bg-neutral-100 flex justify-start gap-2 absolute top-24 left-0"
+      className="hidden md:flex w-full h-[20rem] px-20 py-2 bg-neutral-100 flex justify-start gap-2 absolute top-24 left-0"
     >
       {/* col 1 */}
       <DropdownHeaderMenuSqrFull

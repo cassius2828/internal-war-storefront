@@ -10,6 +10,7 @@ import {
 } from '@remix-run/react';
 import {
   type CartViewPayload,
+  Image,
   useAnalytics,
   useOptimisticCart,
 } from '@shopify/hydrogen';
@@ -134,7 +135,7 @@ export function DropdownHeaderMenuSqrFull({
       onMouseLeave={() => setShowShopBtn(false)}
       className="h-full bg-neutral-200 cursor-pointer relative"
     >
-      <img className="w-full h-full object-contain" src={img} alt="" />
+      <Image className="w-full h-full object-contain" src={img} alt="" />
       {showShopBtn && <ShopBtnDropdownNav url={url} />}
     </div>
   );
@@ -155,9 +156,8 @@ export function DropdownHeaderMenuSqrHalf({
       onMouseLeave={() => setShowShopBtn(false)}
       className=" h-[48.75%] bg-neutral-300 cursor-pointer relative"
     >
-      <img className="w-full h-full object-contain" src={img} alt="" />
+      <Image className="w-full h-full object-contain" src={img} alt="" />
       <ShopBtnDropdownNav url={url} />
-      {/* {showShopBtn && <ShopBtnDropdownNav url={url} />} */}
     </div>
   );
 }
@@ -186,6 +186,11 @@ export function DropdownHeaderMenu() {
 
   const imagePath = imagesMap[hoveredHandle || ''] || imagesMap.default;
 
+  if (
+    hoveredCollectionUrl === '/pages/about' ||
+    hoveredCollectionUrl === '/pages/contact'
+  )
+    return <></>;
   return (
     <div
       onMouseLeave={() => setShowDropdown(false)}

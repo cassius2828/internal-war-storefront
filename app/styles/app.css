@@ -575,3 +575,9 @@ button.reset:hover:not(:has(> *)) {
 .marquee-animation-mobile ul {
   animation: scrollMobile 80s linear infinite;
 }
+
+
+/* about section */
+.about-horizontal-img {
+  object-position: 50% 20%;
+}

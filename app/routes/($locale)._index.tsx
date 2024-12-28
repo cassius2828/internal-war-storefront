@@ -80,15 +80,17 @@ function HeroVideo({url}: HeroVideoProps) {
         </h2>
         <h3 className="uppercase text-3xl">slogan here</h3>
         <span className=" capitalize">shop our latest collection now!</span>
-        <button
-          type="button"
-          className=" bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6"
-        >
-          shop
-        </button>
+        <Link  to={'/collections'}>
+          <button
+            type="button"
+            className=" bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6"
+          >
+            shop
+          </button>
+        </Link>
       </div>
       <video
-        className="max-h-[50rem] w-screen object-center object-cover"
+        className="max-h-[50rem] w-screen object-center object-cover relative -z-10"
         src={url}
         width="100%"
         autoPlay

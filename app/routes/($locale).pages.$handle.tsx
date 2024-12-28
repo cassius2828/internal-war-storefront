@@ -1,6 +1,7 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 import Contact from '../components/Contact';
+import About from '../components/About';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
 };
@@ -55,6 +56,9 @@ export default function Page() {
   const {page} = useLoaderData<typeof loader>();
   if (page.title === 'Contact') {
     return <Contact />;
+  }
+  if(page.title === 'About'){
+    return <About/>
   }
   return (
     <div className="page">

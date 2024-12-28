@@ -1,18 +1,20 @@
+import {Link} from '@remix-run/react';
+
 const CollectionPreviewGrid = () => {
   return (
     <div className="bg-gray-50">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="sm:flex sm:items-baseline sm:justify-between">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Shop by Category
+            Shop by Collection
           </h2>
-          <a
-            href="#"
+          <Link
+            to="/collections"
             className="hidden text-sm font-semibold text-neutral-600 hover:text-neutral-500 sm:block"
           >
-            Browse all categories
+            Browse all collections
             <span aria-hidden="true"> &rarr;</span>
-          </a>
+          </Link>
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-6 lg:gap-8">
@@ -30,10 +32,10 @@ const CollectionPreviewGrid = () => {
             <div className="absolute inset-0 flex items-end p-6">
               <div>
                 <h3 className="font-semibold text-white">
-                  <a href="#">
+                  <Link to="/collections/sweats">
                     <span className="absolute inset-0" />
                     Bottoms
-                  </a>
+                  </Link>
                 </h3>
                 <p aria-hidden="true" className="mt-1 text-sm text-white">
                   Shop now
@@ -55,7 +57,7 @@ const CollectionPreviewGrid = () => {
             <div className="absolute inset-0 flex items-end p-6">
               <div>
                 <h3 className="font-semibold text-white">
-                  <a href="#">
+                  <a href="/collections/hoodies">
                     <span className="absolute inset-0" />
                     Hoodies
                   </a>
@@ -80,10 +82,10 @@ const CollectionPreviewGrid = () => {
             <div className="absolute inset-0 flex items-end p-6">
               <div>
                 <h3 className="font-semibold text-white">
-                  <a href="#">
+                  <Link to="/collections/black-sweatsuits">
                     <span className="absolute inset-0" />
                     Full Sets
-                  </a>
+                  </Link>
                 </h3>
                 <p aria-hidden="true" className="mt-1 text-sm text-white">
                   Shop now
@@ -94,13 +96,13 @@ const CollectionPreviewGrid = () => {
         </div>
 
         <div className="mt-6 sm:hidden">
-          <a
-            href="#"
+          <Link
+            to="/collections"
             className="block text-sm font-semibold text-neutral-600 hover:text-neutral-500"
           >
             Browse all categories
             <span aria-hidden="true"> &rarr;</span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>

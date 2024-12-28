@@ -1,6 +1,7 @@
+import {StringValueNode} from 'graphql';
+
 // Function to format price ensuring two decimal places
 export function formatPrice(price: string): string {
-
   if (price == undefined) return;
   const centsFromPrice = price.split('.')[1];
   return centsFromPrice && centsFromPrice.length === 1 ? price + '0' : price;
@@ -37,4 +38,23 @@ export function getAvailableSizeVariants(product: Product): string[] {
 
   // Convert Set to array and return
   return Array.from(availableSizes);
+}
+type ComparePrice = {
+  basePrice: string;
+  comparedPrice: string;
+  isBasePriceLessThanComparedPrice: boolean; // New field for the comparison result
+};
+
+export function comparePrice(
+  basePrice: string,
+  comparedPrice: string,
+): ComparePrice {
+  const baseNum = Number(basePrice?.slice(0, 2));
+  const comparedNum = Number(comparedPrice?.slice(0, 2));
+
+  return {
+    basePrice,
+    comparedPrice,
+    isBasePriceLessThanComparedPrice: baseNum < comparedNum,
+  };
 }

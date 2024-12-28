@@ -50,5 +50,8 @@ export const BasicMarquee: React.FC = () => {
       </div>
     </section>
   );
-  ƒ;
 };
+
+// start with extraction then go to processing | DE
+
+// something in open source | any contribution

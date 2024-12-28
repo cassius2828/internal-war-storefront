@@ -1,5 +1,5 @@
 import {EnvelopeIcon, PhoneIcon} from '@heroicons/react/24/outline';
-import {TwUIFooter} from './Footer';
+
 //TODO: Remove fontawesome and use heroicons instead
 export default function Contact() {
   return (
@@ -196,7 +196,6 @@ export default function Contact() {
           </div>
         </div>
       </div>
-      <TwUIFooter />
     </>
   );
 }

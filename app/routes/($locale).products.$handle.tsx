@@ -35,7 +35,8 @@ import type {Product, ProductVariant} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import ProductCardList from '~/components/ProductList';
-import {BasicMarquee} from '~/components/Marquees'
+import {BasicMarquee} from '~/components/Marquees';
+import NewsCarousel from '~/components/NewsCarousel';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
@@ -237,7 +238,7 @@ export default function Product() {
   allProducts.then((res) => console.log(res));
   return (
     <div className=" mt-32 flex flex-col items-center">
-      <div className="flex justify-around w-full">
+      <div className="flex flex-col-reverse md:flex-row justify-around w-full">
         {/* gallery */}
         <Suspense
           fallback={
@@ -268,7 +269,7 @@ export default function Product() {
         </Suspense>
       </div>
       {/* detials */}
-      <div className=" flex justify-between  gap-12 my-12 w-full bg-green-500">
+      <div className=" flex flex-col-reverse md:flex-row items-center md:justify-between  gap-12 my-12 w-full ">
         {/* shipping and description */}
         <Accordion
           title="Shipping Details"
@@ -311,7 +312,8 @@ export default function Product() {
           )}
         </Await>
       </Suspense>
-  <BasicMarquee/>
+      <BasicMarquee />
+      <NewsCarousel />
     </div>
   );
 }
@@ -340,28 +342,41 @@ const ProductImages: React.FC<ProductImagesProps> = ({
     default:
       gridClassName = 'grid-cols-1'; // for fewer than 3 images
   }
-
+console.log(selectedVariant, ' <-- sel;ected variant')
   return (
     <div>
-      <div className={`grid ${gridClassName} bg-gray-100`}>
+      <div className={`flex flex-wrap md:grid ${gridClassName} bg-gray-100`}>
         {productDataWithMedia.product.media?.edges.map((item: MediaEdge) => (
-          <Image
-            onMouseEnter={() => setFocusedImage(item.node.image)}
-            key={item.node.image.id}
-            style={{borderRadius: 0}}
-            src={item.node.image.url}
-            alt={item.node.image.altText || 'Product Image'}
-            className="h-72 object-cover"
-            sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
-          />
+          <>
+            {/* mobile */}
+            <Image
+              onMouseEnter={() => setFocusedImage(item.node.image)}
+              key={item.node.image.id + 'mobile'}
+              style={{borderRadius: 0, width: '50%'}}
+              src={item.node.image.url}
+              alt={item.node.image.altText || 'Product Image'}
+              className="h-72 object-cover md:hidden"
+              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
+            />
+            {/* desktop */}
+            <Image
+              onMouseEnter={() => setFocusedImage(item.node.image)}
+              key={item.node.image.id + 'desktop'}
+              style={{borderRadius: 0, width: '100%'}}
+              src={item.node.image.url}
+              alt={item.node.image.altText || 'Product Image'}
+              className="h-72 object-cover hidden md:block"
+              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
+            />
+          </>
         ))}
       </div>
       {/* breadcrumbs */}
-      <div className="my-5">
+      <div className="my-5 flex justify-center md:justify-start">
         <Breadcrumbs pages={pages} />
       </div>
-      <div className="mt-8 w-full  flex flex-col  bg-yellow-400">
-        <div className="flex justify-between items-start bg-blue-500">
+      <div className="mt-8 w-full  flex flex-col p-3 md:p-0  ">
+        <div className="flex flex-col md:flex-row justify-between items-start ">
           <div className="w-1/2">
             <h1>{title}</h1>
             <ProductPrice

@@ -16,7 +16,7 @@ const Accordion: React.FC<AccordionProps> = ({descriptionHtml, title}) => {
   return (
     <div
       id="accordion-collapse"
-      className="w-3/4 md:w-1/2 border-b border-gray-300 "
+      className="w-full md:w-1/2 border-b border-gray-300 "
       data-accordion="collapse"
     >
       <h2 id="accordion-collapse-heading-1">

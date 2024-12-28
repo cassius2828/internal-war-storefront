@@ -8,7 +8,6 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-import {TwUIFooter} from '~/components/Footer';
 import NewsCarousel from '../components/NewsCarousel';
 import {PRODUCT_ITEM_FRAGMENT} from './($locale).collections.$handle';
 const heroVideoUrl = `https://cdn.shopify.com/videos/c/o/v/a78e9be02a6840ad9378f5ac9976801d.mp4`;
@@ -112,7 +111,6 @@ export default function Homepage() {
       <ProductList products={data.allProducts?.products?.nodes} />
       <CollectionPreviewGrid />
       <NewsCarousel />
-      <TwUIFooter />
     </div>
   );
 }

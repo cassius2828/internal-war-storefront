@@ -18,10 +18,8 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedVariant'];
   variants: Array<ProductVariantFragment>;
 }) {
-
-
   return (
-    <div className="product-form">
+    <div className="product-form w-full">
       <VariantSelector
         handle={product.handle}
         options={product.options.filter((option) => option.values.length > 1)}
@@ -29,9 +27,6 @@ export function ProductForm({
       >
         {({option}) => <SizePicker key={option.name} option={option} />}
       </VariantSelector>
-
-     
-  
     </div>
   );
 }
@@ -46,7 +41,7 @@ export const SizePicker = ({option}: {option: Option}) => {
   const [selectedSize, setSelectedSize] = useState(option.values[0] || 'S');
 
   return (
-    <div >
+    <div>
       <div className="flex items-center justify-start gap-12">
         <h2 className="text-sm font-medium text-gray-900">{option.name}</h2>
       </div>
@@ -55,12 +50,12 @@ export const SizePicker = ({option}: {option: Option}) => {
         <RadioGroup
           value={selectedSize}
           onChange={setSelectedSize}
-          className="grid grid-cols-3 gap-8 sm:grid-cols-6"
+          className="flex gap-8"
         >
           {reorderSizingArray(option.values).map(
             ({value, isAvailable, isActive, to}) => (
               <Link
-                className={'p-0'}
+                className={'p-0 max-w-32'}
                 key={option.name + value}
                 prefetch="intent"
                 preventScrollReset

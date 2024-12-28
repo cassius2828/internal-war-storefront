@@ -5,7 +5,7 @@ import type {CollectionFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {useState} from 'react';
 import NewsCarousel from '~/components/NewsCarousel';
-import {TwUIFooter} from '~/components/Footer';
+
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -71,7 +71,6 @@ export default function Collections() {
         </div>
       </div>
       <NewsCarousel />
-      <TwUIFooter />
     </>
   );
 }

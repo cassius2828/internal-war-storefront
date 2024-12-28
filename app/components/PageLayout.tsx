@@ -68,7 +68,7 @@ function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
 function SearchAside() {
   return (
     <Aside type="search" heading="SEARCH">
-      <div className="predictive-search">
+      <div className="predictive-search md:mt-20 newsreader">
         <br />
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (

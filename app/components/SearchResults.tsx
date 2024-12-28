@@ -1,6 +1,7 @@
 import {Link} from '@remix-run/react';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams, type RegularSearchReturn} from '~/lib/search';
+import {formatPrice} from '~/lib/utils';
 
 type SearchItems = RegularSearchReturn['result']['items'];
 type PartialSearchResult<ItemType extends keyof SearchItems> = Pick<
@@ -100,62 +101,94 @@ function SearchResultsProducts({
   if (!products?.nodes.length) {
     return null;
   }
-
+  console.log(products, ' <-- products');
   return (
-    <div className="search-result">
-      <h2>Products</h2>
-      <Pagination connection={products}>
-        {({nodes, isLoading, NextLink, PreviousLink}) => {
-          const ItemsMarkup = nodes.map((product) => {
-            const productUrl = urlWithTrackingParams({
-              baseUrl: `/products/${product.handle}`,
-              trackingParams: product.trackingParameters,
-              term,
-            });
-
-            return (
-              <div className="search-results-item" key={product.id}>
-                <Link prefetch="intent" to={productUrl}>
-                  {product.variants.nodes[0].image && (
-                    <Image
-                      data={product.variants.nodes[0].image}
-                      alt={product.title}
-                      width={50}
-                    />
-                  )}
-                  <div>
-                    <p>{product.title}</p>
-                    <small>
-                      <Money data={product.variants.nodes[0].price} />
-                    </small>
-                  </div>
-                </Link>
-              </div>
-            );
-          });
-
-          return (
-            <div>
-              <div>
-                <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-                </PreviousLink>
-              </div>
-              <div>
-                {ItemsMarkup}
-                <br />
-              </div>
-              <div>
-                <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-                </NextLink>
-              </div>
+    <div className="flex gap-12 mt-12 p-3">
+      {products.nodes.map((product) => {
+        return (
+          <Link
+            className="collection-item shadow-md rounded-md p-3 transition-all duration-300 hover:shadow-lg hover:bg-transparent"
+            key={product.id}
+            to={`/products/${product.handle}`}
+            prefetch="intent"
+          >
+            <span aria-hidden="true" className="inset-0">
+              <Image
+                className={`object-cover fade-in`}
+                alt={product.variants.nodes[0].image?.altText || product.title}
+                aspectRatio="1/1"
+                src={product?.variants?.nodes[0]?.image?.url}
+                loading="lazy"
+                width={300}
+                sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+            </span>
+            <div className="flex flex-col items-start">
+              <span className="relative mt-auto text-center text-xl font-bold text-neutral-900 ">
+                {product.title}
+              </span>
+              <span className="relative mt-auto text-center text-xl font-bold text-neutral-900 ">
+                ${formatPrice(product.variants.nodes[0].price.amount)}
+              </span>
             </div>
-          );
-        }}
-      </Pagination>
-      <br />
+          </Link>
+        );
+      })}
     </div>
+    // <div className="search-result">
+    //   <h2>Products</h2>
+    //   <Pagination connection={products}>
+    //     {({nodes, isLoading, NextLink, PreviousLink}) => {
+    //       const ItemsMarkup = nodes.map((product) => {
+    //         const productUrl = urlWithTrackingParams({
+    //           baseUrl: `/products/${product.handle}`,
+    //           trackingParams: product.trackingParameters,
+    //           term,
+    //         });
+
+    //         return (
+    //           <div className="search-results-item" key={product.id}>
+    //             <Link prefetch="intent" to={productUrl}>
+    //               {product.variants.nodes[0].image && (
+    //                 <Image
+    //                   data={product.variants.nodes[0].image}
+    //                   alt={product.title}
+    //                   width={50}
+    //                 />
+    //               )}
+    //               <div>
+    //                 <p>{product.title}</p>
+    //                 <small>
+    //                   <Money data={product.variants.nodes[0].price} />
+    //                 </small>
+    //               </div>
+    //             </Link>
+    //           </div>
+    //         );
+    //       });
+
+    //       return (
+    //         <div>
+    //           <div>
+    //             <PreviousLink>
+    //               {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+    //             </PreviousLink>
+    //           </div>
+    //           <div>
+    //             {ItemsMarkup}
+    //             <br />
+    //           </div>
+    //           <div>
+    //             <NextLink>
+    //               {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+    //             </NextLink>
+    //           </div>
+    //         </div>
+    //       );
+    //     }}
+    //   </Pagination>
+    //   <br />
+    // </div>
   );
 }
 

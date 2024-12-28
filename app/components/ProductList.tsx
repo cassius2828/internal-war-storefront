@@ -63,9 +63,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         variants={product.variants}
       >
         {({option}) => (
-          <div className='my-4'>
+          <div className="my-4">
             <div>{option.name}</div>
-            <div className="flex gap-8 items-center  my-3 relative z-20  justify-center ">
+            <div className="flex gap-8 items-center  my-3 relative   justify-center ">
               {option.values.map(({value, isAvailable, to, isActive}) => (
                 <Link
                   to={to}

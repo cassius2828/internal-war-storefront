@@ -12,6 +12,8 @@ import {
   type PredictiveSearchReturn,
   getEmptyPredictiveSearchResult,
 } from '~/lib/search';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
 export const meta: MetaFunction = () => {
   return [{title: `Hydrogen | Search`}];
@@ -40,7 +42,7 @@ export default function SearchPage() {
   if (type === 'predictive') return null;
 
   return (
-    <div className="search">
+    <div className="search md:mt-32 p-3">
       <h1>Search</h1>
       <SearchForm>
         {({inputRef}) => (
@@ -53,7 +55,9 @@ export default function SearchPage() {
               type="search"
             />
             &nbsp;
-            <button type="submit">Search</button>
+            <button className="pl-3" type="submit">
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
           </>
         )}
       </SearchForm>

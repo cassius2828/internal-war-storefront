@@ -190,6 +190,8 @@ button.reset:hover:not(:has(> *)) {
   display: flex;
   grid-gap: 1rem;
   margin-left: auto;
+  position: relative;
+  z-index: 20;
 }
 
 /*

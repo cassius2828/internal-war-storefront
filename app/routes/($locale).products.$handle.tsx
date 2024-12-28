@@ -235,7 +235,6 @@ export default function Product() {
     selectedVariant?.image,
   );
 
-
   return (
     <div className=" mt-32 flex flex-col items-center">
       <div className="flex flex-col-reverse md:flex-row justify-around w-full">
@@ -331,10 +330,11 @@ const ProductImages: React.FC<ProductImagesProps> = ({
 
   // Determine the grid class based on the media length
   let gridClassName: string;
-
+  let extraMargin: string;
   switch (true) {
     case mediaLength >= 5:
       gridClassName = 'grid-cols-3'; // for 6 or more images
+      extraMargin = 'ml-20'
       break;
     case mediaLength === 4:
       gridClassName = 'grid-cols-2'; // for 4 to 5 images
@@ -344,7 +344,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
   }
 
   return (
-    <div>
+    <div className={extraMargin}>
       <div className={`flex flex-wrap md:grid ${gridClassName} bg-gray-100`}>
         {productDataWithMedia.product.media?.edges.map((item: MediaEdge) => (
           <>

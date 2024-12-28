@@ -302,7 +302,7 @@ function CartBadge({count}: {count: number | null}) {
       {count === null ? (
         <span>&nbsp;</span>
       ) : (
-        <span className="absolute top-4">{count}</span>
+        <span className="absolute -top-4">{count}</span>
       )}
     </a>
   );

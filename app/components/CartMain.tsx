@@ -29,11 +29,11 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   const cartHasItems = cart?.totalQuantity! > 0;
 
   return (
-    <div className={className + ' mt-40'}>
+    <div className={className + ' mt-20'}>
       <CartEmpty hidden={linesCount} layout={layout} />
       <div className="cart-details">
         <div aria-labelledby="cart-lines">
-          <ul>
+          <ul className="divide-y divide-gray-200 border-b border-t border-gray-200 h-96">
             {(cart?.lines?.nodes ?? []).map((line) => (
               <CartLineItem key={line.id} line={line} layout={layout} />
             ))}
@@ -53,15 +53,20 @@ function CartEmpty({
 }) {
   const {close} = useAside();
   return (
-    <div hidden={hidden}>
+    <div className="newsreader" hidden={hidden}>
       <br />
       <p>
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
+        Your cart is waiting for its first items. Explore our collection and add
+        some bold new pieces.
       </p>
       <br />
       <Link to="/collections" onClick={close} prefetch="viewport">
-        Continue shopping →
+        <button
+          type="button"
+          className=" bg-neutral-800 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-neutral-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Continue shopping →
+        </button>
       </Link>
     </div>
   );

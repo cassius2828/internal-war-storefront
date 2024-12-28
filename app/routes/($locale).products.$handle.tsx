@@ -334,7 +334,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
   switch (true) {
     case mediaLength >= 5:
       gridClassName = 'grid-cols-3'; // for 6 or more images
-      extraMargin = 'ml-20'
+      extraMargin = 'ml-20';
       break;
     case mediaLength === 4:
       gridClassName = 'grid-cols-2'; // for 4 to 5 images

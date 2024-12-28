@@ -27,11 +27,10 @@ export function CartLineItem({
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
-  console.log(line, ' <-- line cart line');
-  console.log(product, ' <-- product cart line');
+
   return (
     <>
-      <li key={product.id} className="flex py-6">
+      <li key={product.id} className="flex py-6 px-3 newsreader">
         <div className="shrink-0">
           {image && (
             <Image

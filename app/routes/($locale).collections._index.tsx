@@ -85,7 +85,7 @@ function CollectionItem({
   let secondaryImgUrl = '';
 
   switch (collection.handle) {
-    case 'black-sweatsuits':
+    case 'sweatsuits':
       secondaryImgUrl =
         'https://cdn.shopify.com/s/files/1/0640/4082/9110/files/20240218_145459_E3FD09.jpg?v=1708490463';
       break;

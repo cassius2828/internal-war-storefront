@@ -82,7 +82,7 @@ const CollectionPreviewGrid = () => {
             <div className="absolute inset-0 flex items-end p-6">
               <div>
                 <h3 className="font-semibold text-white">
-                  <Link to="/collections/black-sweatsuits">
+                  <Link to="/collections/sweatsuits">
                     <span className="absolute inset-0" />
                     Full Sets
                   </Link>

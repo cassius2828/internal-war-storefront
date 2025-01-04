@@ -101,6 +101,7 @@ async function loadCriticalData({
     product,
   };
 }
+const pages = [{name: 'Hoodies', href: '/collections/hoodies', current: false}];
 
 /**
  * Load data for rendering content below the fold. This data is deferred and will be
@@ -205,10 +206,7 @@ type ProductImagesProps = {
   selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
   setFocusedImage: SetFocusedImage;
 };
-const pages = [
-  {name: 'Collections', href: '/collections', current: false},
-  {name: 'Hoodies', href: '/collections/hoodies', current: true},
-];
+
 const sampleShippingDetails = `
   <ul class="list-disc pl-5 space-y-2 text-gray-700">
     <li>Free shipping on orders over $50</li>
@@ -376,7 +374,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
       </div>
       {/* breadcrumbs */}
       <div className="my-5 flex justify-center md:justify-start">
-        <Breadcrumbs pages={pages} />
+        <Breadcrumbs pageType="products" />
       </div>
       <div className="mt-8 w-full  flex flex-col p-3 md:p-0  ">
         <div className="flex flex-col md:flex-row justify-between items-start ">

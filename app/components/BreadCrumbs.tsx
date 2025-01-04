@@ -1,6 +1,22 @@
+'use client';
 import {HomeIcon} from '@heroicons/react/20/solid';
-
-export default function Breadcrumbs({pages}) {
+import {useParams} from '@remix-run/react';
+import {useEffect} from 'react';
+interface BreadcrumbsProps {
+  pageType: string;
+}
+// you get the handle by default, you choose the prefix based on file location manually
+export default function Breadcrumbs({pageType}: BreadcrumbsProps) {
+  const path = useParams();
+  // * For now this satisfies all potential product / collection pages
+  const pages = [
+    {
+      name: pageType,
+      href: `/${pageType}`,
+      current: false,
+    },
+    {name: path.handle, href: `/${pageType}/${path.handle}`, current: true},
+  ];
   return (
     <nav aria-label="Breadcrumb" className="flex">
       <ol className="flex items-center space-x-4">

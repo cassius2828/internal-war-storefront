@@ -13,14 +13,10 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import BreadCrumbs from '../components/BreadCrumbs';
 import {ProductCard} from '~/components/ProductList';
 
-
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 };
-const pages = [
-  {name: 'Collections', href: '/collections', current: false},
-  {name: 'Hoodies', href: '/collections/hoodies', current: true},
-];
+
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -67,7 +63,7 @@ async function loadCriticalData({
     collection,
   };
 }
-
+const pages = [{name: 'Hoodies', href: '/collections/hoodies', current: false}];
 /**
  * Load data for rendering content below the fold. This data is deferred and will be
  * fetched after the initial page load. If it's unavailable, the page should still 200.
@@ -88,14 +84,16 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
     },
   };
 }
+
 // ! where to edit collection UI
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
+  console.log(collection, ' <-- collection: find page structure');
   return (
     <div className="collection mt-24 md:mt-40 flex flex-col items-center">
       {/* <h1>{collection.title}</h1> */}
       {/* breadcrubms */}
-      <BreadCrumbs pages={pages} />
+      <BreadCrumbs pageType="collections" />
       <div className="flex items-center gap-4 w-3/4">
         <span>{collection.title}</span>
         <span className="text-xs text-gray-500">

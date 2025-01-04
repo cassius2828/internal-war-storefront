@@ -19,7 +19,7 @@ const CollectionPreviewGrid = () => {
 
         <div className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-6 lg:gap-8">
           {/* group 1 */}
-          <div className="group bg-neutral-900 relative aspect-[2/1] overflow-hidden rounded-lg sm:row-span-2 sm:aspect-square">
+          <div className="group bg-neutral-900 relative aspect-[2/1] overflow-hidden sm:row-span-2 sm:aspect-square">
             <img
               alt="Two models wearing women's black cotton crewneck tee and off-white cotton crewneck tee."
               src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_6691.jpg?v=1732660138"
@@ -44,7 +44,7 @@ const CollectionPreviewGrid = () => {
             </div>
           </div>
           {/* group 2 */}
-          <div className="group bg-neutral-900 relative aspect-[2/1] overflow-hidden rounded-lg sm:row-span-2 sm:aspect-square">
+          <div className="group bg-neutral-900 relative aspect-[2/1] overflow-hidden sm:row-span-2 sm:aspect-square">
             <img
               alt="Two models wearing women's black cotton crewneck tee and off-white cotton crewneck tee."
               src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5076.jpg?v=1732660176"
@@ -69,7 +69,7 @@ const CollectionPreviewGrid = () => {
             </div>
           </div>
           {/* groupo 3 */}
-          <div className="group bg-neutral-900 relative overflow-hidden rounded-lg sm:col-span-2 sm:row-span-2 sm:aspect-video">
+          <div className="group bg-neutral-900 relative overflow-hidden sm:col-span-2 sm:row-span-2 sm:aspect-video">
             <img
               alt="Walnut desk organizer set with white modular trays, next to porcelain mug on wooden desk."
               src="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5300.jpg?v=1732660176"

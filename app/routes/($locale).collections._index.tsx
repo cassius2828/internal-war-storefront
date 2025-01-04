@@ -6,7 +6,6 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {useState} from 'react';
 import NewsCarousel from '~/components/NewsCarousel';
 
-
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -105,14 +104,15 @@ function CollectionItem({
     <Link
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="collection-item shadow-md rounded-md p-3 transition-all duration-300 hover:shadow-lg hover:bg-transparent"
+      className="collection-item shadow-md rounded-none p-3 transition-all duration-300 hover:shadow-lg hover:bg-transparent"
       key={collection.id}
       to={`/collections/${collection.handle}`}
       prefetch="intent"
     >
       <span aria-hidden="true" className=" inset-0">
         <Image
-          className={isHovered ? 'hidden ' : ''}
+          style={{borderRadius: '0'}}
+          className={isHovered ? 'hidden' : ''}
           alt={collection.image?.altText || collection.title}
           aspectRatio="1/1"
           data={collection.image}
@@ -120,7 +120,8 @@ function CollectionItem({
           sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <Image
-          className={`${!isHovered ? 'hidden' : ''} object-cover fade-in`}
+          className={`${!isHovered ? 'hidden ' : ''} object-cover fade-in `}
+          style={{borderRadius: '0'}}
           alt={collection.title}
           aspectRatio="1/1"
           src={secondaryImgUrl}

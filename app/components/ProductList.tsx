@@ -6,7 +6,7 @@ export default function ProductCardList({products}) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
-        <div className=" grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+        <div className=" grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
             <ProductCard product={product} />
           ))}
@@ -33,28 +33,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const availableSizes = getAvailableSizeVariants(product);
 
   return (
-    <div className="group relative">
-      <img
-        alt={product.featuredImage?.altText}
-        src={product.media?.edges[0].node.image.url}
-        className="group-hover:hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
-      />
-      <img
-        alt={product.featuredImage?.altText}
-        src={product.media?.edges[1].node.image.url}
-        className="group-hover:block hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
-      />
-      <div className="mt-4 flex justify-between">
-        <div>
-          <h3 className="text-sm text-gray-700">
-            <a href={product.onlineStoreUrl || ''}>
-              <span aria-hidden="true" className="absolute inset-0" />
-              {product.title}
-            </a>
-          </h3>
-          {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
+    <div className="group relative flex flex-col justify-between">
+      <div>
+        <img
+          alt={product.featuredImage?.altText}
+          src={product.media?.edges[0].node.image.url}
+          className="group-hover:hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
+        />
+        <img
+          alt={product.featuredImage?.altText}
+          src={product.media?.edges[1].node.image.url}
+          className="group-hover:block hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
+        />
+        <div className="mt-4 flex justify-between">
+          <div>
+            <h3 className="text-sm text-gray-700">
+              <a href={product.onlineStoreUrl || ''}>
+                <span aria-hidden="true" className="absolute inset-0" />
+                {product.title}
+              </a>
+            </h3>
+            {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
+          </div>
+          <p className="text-sm font-medium text-gray-900">${formattedPrice}</p>
         </div>
-        <p className="text-sm font-medium text-gray-900">${formattedPrice}</p>
       </div>
       {/* Size Selector using VariantSelector */}
       <VariantSelector
@@ -63,9 +65,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         variants={product.variants}
       >
         {({option}) => (
-          <div className="my-4">
+          <div className="mt-4">
             <div>{option.name}</div>
-            <div className="flex gap-8 items-center  my-3 relative   justify-center ">
+            <div className="flex gap-4 items-center  my-3 relative   justify-center ">
               {option.values.map(({value, isAvailable, to, isActive}) => (
                 <Link
                   to={to}
@@ -77,7 +79,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 >
                   <button
                     type="button"
-                    className="rounded-sm bg-gray-200 drop-shadow-md px-2 py-1 text-sm font-semibold text-black shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader"
+                    className="rounded-sm bg-gray-200 drop-shadow-md px-2 py-1 text-xs md:text-sm font-semibold text-gray-500 shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader"
                   >
                     {value}
                   </button>

@@ -42,7 +42,7 @@ export default function Breadcrumbs({pageType}: BreadcrumbsProps) {
               <a
                 href={page.href}
                 aria-current={page.current ? 'page' : undefined}
-                className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+                className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 capitalize"
               >
                 {page.name}
               </a>

@@ -521,7 +521,10 @@ export type ProductItemFragment = Pick<
     edges: Array<{
       node: {
         image?: StorefrontAPI.Maybe<
-          Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
+          Pick<
+            StorefrontAPI.Image,
+            'id' | 'altText' | 'url' | 'width' | 'height'
+          >
         >;
       };
     }>;
@@ -784,7 +787,11 @@ export type ProductFragment = Pick<
   StorefrontAPI.Product,
   'id' | 'title' | 'vendor' | 'handle' | 'descriptionHtml' | 'description'
 > & {
-  options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+  options: Array<
+    Pick<StorefrontAPI.ProductOption, 'name'> & {
+      optionValues: Array<Pick<StorefrontAPI.ProductOptionValue, 'name'>>;
+    }
+  >;
   selectedVariant?: StorefrontAPI.Maybe<
     Pick<
       StorefrontAPI.ProductVariant,
@@ -853,7 +860,11 @@ export type ProductQuery = {
       StorefrontAPI.Product,
       'id' | 'title' | 'vendor' | 'handle' | 'descriptionHtml' | 'description'
     > & {
-      options: Array<Pick<StorefrontAPI.ProductOption, 'name' | 'values'>>;
+      options: Array<
+        Pick<StorefrontAPI.ProductOption, 'name'> & {
+          optionValues: Array<Pick<StorefrontAPI.ProductOptionValue, 'name'>>;
+        }
+      >;
       selectedVariant?: StorefrontAPI.Maybe<
         Pick<
           StorefrontAPI.ProductVariant,

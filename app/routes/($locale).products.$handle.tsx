@@ -481,9 +481,11 @@ const PRODUCT_FRAGMENT = `#graphql
     descriptionHtml
     description
     options {
-      name
-      values
-    }
+        name
+        optionValues {
+          name
+        }
+      }
     selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
       ...ProductVariant
     }
@@ -587,9 +589,11 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
       }
     }
     options {
-      name
-      values
-    }
+        name
+       optionValues {
+       name
+            }
+      }
   }
 ` as const;
 

@@ -18,12 +18,14 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedVariant'];
   variants: Array<ProductVariantFragment>;
 }) {
-  console.log(selectedVariant, ' <-- selected var');
+  console.log(product, ' <-- deprecated product.options.option.value');
   return (
     <div className="product-form w-full">
       <VariantSelector
         handle={product.handle}
-        options={product.options.filter((option) => option.values.length > 1)}
+        options={product.options.filter(
+          (option) => option.optionValues.length > 1,
+        )}
         variants={variants}
       >
         {({option}) => <SizePicker key={option.name} option={option} />}

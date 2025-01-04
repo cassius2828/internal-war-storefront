@@ -18,6 +18,7 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedVariant'];
   variants: Array<ProductVariantFragment>;
 }) {
+  console.log(selectedVariant, ' <-- selected var');
   return (
     <div className="product-form w-full">
       <VariantSelector
@@ -70,7 +71,11 @@ export const SizePicker = ({option}: {option: Option}) => {
                     isAvailable
                       ? 'cursor-pointer focus:outline-none'
                       : 'cursor-not-allowed opacity-25 text-9xl',
-                    'flex items-center justify-center rounded-md border border-gray-200 bg-white px-3 py-3 text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 data-[checked]:border-transparent data-[checked]:bg-neutral-900 data-[checked]:text-white data-[focus]:ring-2 data-[focus]:ring-neutral-500 data-[focus]:ring-offset-2 data-[checked]:hover:bg-neutral-700 sm:flex-1',
+                    `flex items-center justify-center rounded-md border  px-3 py-3 text-sm font-medium uppercase sm:flex-1 ${
+                      isActive
+                        ? 'border-transparent bg-neutral-900 text-white ring-2 ring-neutral-500 ring-offset-2 hover:bg-neutral-700'
+                        : 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 '
+                    }`,
                   )}
                 >
                   {value || 'N/A'}

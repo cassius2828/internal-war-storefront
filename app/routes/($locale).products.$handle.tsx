@@ -39,7 +39,7 @@ import {BasicMarquee} from '~/components/Marquees';
 import NewsCarousel from '~/components/NewsCarousel';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
+  return [{title: `Internal War | ${data?.product.title ?? ''}`}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {

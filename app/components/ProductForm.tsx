@@ -19,7 +19,6 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedVariant'];
   variants: Array<ProductVariantFragment>;
 }) {
-  console.log(product, ' <-- deprecated product.options.option.value');
   return (
     <div className="product-form w-full">
       <VariantSelector
@@ -40,11 +39,10 @@ interface Option {
   name: string;
   optionValues: DeepObject[]; // Array of objects with unknown structure
 }
+// temp deleting option?.optionValues[0]
 export const SizePicker = ({option}: {option: Option}) => {
-  const [selectedSize, setSelectedSize] = useState(
-    option.optionValues[0] || 'S',
-  );
-  console.log(option, ' <-- option proform');
+  const [selectedSize, setSelectedSize] = useState(option?.values[0] || 'S');
+
   return (
     <div>
       <div className="flex items-center justify-start gap-12">
@@ -57,7 +55,7 @@ export const SizePicker = ({option}: {option: Option}) => {
           onChange={setSelectedSize}
           className="flex gap-8"
         >
-          {/* {reorderSizingArray(option.optionValues).map(
+          {reorderSizingArray(option.values).map(
             ({value, isAvailable, isActive, to}) => (
               <Link
                 className={'p-0 max-w-32'}
@@ -86,7 +84,7 @@ export const SizePicker = ({option}: {option: Option}) => {
                 </Radio>
               </Link>
             ),
-          )} */}
+          )}
         </RadioGroup>
       </fieldset>
       {/* <a

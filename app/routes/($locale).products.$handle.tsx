@@ -232,7 +232,6 @@ export default function Product() {
   const [focusedImage, setFocusedImage] = useState<string>(
     selectedVariant?.image,
   );
-  productDataWithMedia.then((res) => console.log(res));
   return (
     <div className=" mt-32 flex flex-col items-center">
       <div className="flex flex-col-reverse md:flex-row justify-around w-full">
@@ -304,7 +303,7 @@ export default function Product() {
             // Ensure that the resolved data is passed correctly
             <>
               <h3 className="text-xl mt-12 newsreader">More Styles</h3>
-              <ProductCardList products={data?.products?.nodes} />
+              <ProductCardList products={data?.products?.nodes || []} />
             </>
           )}
         </Await>
@@ -584,9 +583,7 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
       nodes {
         selectedOptions  {
         name
-       optionValues {
-       name
-            }
+      value
       }
       }
     }

@@ -186,7 +186,9 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     options {
       name
-      values
+      optionValues {
+        name
+      }
     }
   }
 ` as const;

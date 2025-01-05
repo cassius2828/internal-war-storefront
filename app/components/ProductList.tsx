@@ -1,16 +1,17 @@
 import {Link} from '@remix-run/react';
 import {VariantSelector} from '@shopify/hydrogen';
 import {formatPrice, getAvailableSizeVariants} from '~/lib/utils';
-import type {Product} from '@shopify/hydrogen/storefront-api-types';
+import type {
+  Product,
+  ProductOption,
+} from '@shopify/hydrogen/storefront-api-types';
 
-export default function ProductCardList(products: Product[]) {
-  console.log(products, ' <-- products card list all');
+export default function ProductCardList({products}: {products: Product[]}) {
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <div className=" grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {products.map((product: Product) => {
-            console.log(product, ' <-- product above product card');
+          {products?.map((product: Product) => {
             return <ProductCard key={product.id} product={product} />;
           })}
         </div>
@@ -67,32 +68,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         variants={product.variants}
       >
         {({option}) => {
-          console.log(option, ' <-- option prod card');
           return (
             <>
               <div className="mt-4">
                 <div>{option.name}</div>
-                {/* <div className="flex gap-4 items-center  my-3 relative   justify-center ">
-              {option.optionValues.map(({value, isAvailable, to, isActive}) => (
-                <Link
-                  to={to}
-                  prefetch="intent"
-                  className={`${
-                    isActive ? 'active' : isAvailable ? '' : 'opacity-80'
-                  }`}
-                  key={value}
-                >
-                  <button
-                    type="button"
-                    className="rounded-sm bg-gray-200 drop-shadow-md md:min-w-8 px-2 py-1 text-xs md:text-sm font-semibold text-neautral-800 shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader"
-                  >
-                    {value}
-                  </button>
-                </Link>
-              ))}
-            </div> */}
+                <div className="flex gap-4 items-center  my-3 relative   justify-center ">
+                  {option.values.map(({value, isAvailable, to, isActive}) => (
+                    <Link
+                      to={to}
+                      prefetch="intent"
+                      className={`${
+                        isActive ? 'active' : isAvailable ? '' : 'opacity-80'
+                      }`}
+                      key={value}
+                    >
+                      <button
+                        type="button"
+                        className="rounded-sm bg-gray-200 drop-shadow-md md:min-w-8 px-2 py-1 text-xs md:text-sm font-semibold text-neautral-800 shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader"
+                      >
+                        {value}
+                      </button>
+                    </Link>
+                  ))}
+                </div>
               </div>
-              ,
             </>
           );
         }}

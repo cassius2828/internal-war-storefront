@@ -2,14 +2,17 @@ import {Link} from '@remix-run/react';
 import {VariantSelector} from '@shopify/hydrogen';
 import {formatPrice, getAvailableSizeVariants} from '~/lib/utils';
 import type {Product} from '@shopify/hydrogen/storefront-api-types';
-export default function ProductCardList({products}) {
+
+export default function ProductCardList(products: Product[]) {
+  console.log(products, ' <-- products card list all');
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <div className=" grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-          {products.map((product) => (
-            <ProductCard product={product} />
-          ))}
+          {products.map((product: Product) => {
+            console.log(product, ' <-- product above product card');
+            return <ProductCard key={product.id} product={product} />;
+          })}
         </div>
       </div>
     </div>
@@ -23,7 +26,6 @@ type ProductCardProps = {
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
-
   loading = 'lazy',
 }) => {
   const formattedPrice = formatPrice(
@@ -64,11 +66,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         options={product.options}
         variants={product.variants}
       >
-        {({option}) => (
-          <div className="mt-4">
-            <div>{option.name}</div>
-            <div className="flex gap-4 items-center  my-3 relative   justify-center ">
-              {option.values.map(({value, isAvailable, to, isActive}) => (
+        {({option}) => {
+          console.log(option, ' <-- option prod card');
+          return (
+            <>
+              <div className="mt-4">
+                <div>{option.name}</div>
+                {/* <div className="flex gap-4 items-center  my-3 relative   justify-center ">
+              {option.optionValues.map(({value, isAvailable, to, isActive}) => (
                 <Link
                   to={to}
                   prefetch="intent"
@@ -85,9 +90,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   </button>
                 </Link>
               ))}
-            </div>
-          </div>
-        )}
+            </div> */}
+              </div>
+              ,
+            </>
+          );
+        }}
       </VariantSelector>
       {/* <SizeBtnGroup product={product} sizes={availableSizes} /> */}
     </div>

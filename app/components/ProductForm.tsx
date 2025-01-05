@@ -1,5 +1,5 @@
 import {Link} from '@remix-run/react';
-import {type VariantOption, VariantSelector} from '@shopify/hydrogen';
+
 import {Radio, RadioGroup} from '@headlessui/react';
 import type {
   ProductFragment,
@@ -8,6 +8,7 @@ import type {
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {useState} from 'react';
+import {VariantSelector} from '@shopify/hydrogen';
 
 export function ProductForm({
   product,
@@ -37,12 +38,13 @@ type DeepObject = Record<string, any>; // A generic type for deeply nested objec
 
 interface Option {
   name: string;
-  value: string;
-  values: DeepObject[]; // Array of objects with unknown structure
+  optionValues: DeepObject[]; // Array of objects with unknown structure
 }
 export const SizePicker = ({option}: {option: Option}) => {
-  const [selectedSize, setSelectedSize] = useState(option.values[0] || 'S');
-
+  const [selectedSize, setSelectedSize] = useState(
+    option.optionValues[0] || 'S',
+  );
+  console.log(option, ' <-- option proform');
   return (
     <div>
       <div className="flex items-center justify-start gap-12">
@@ -55,7 +57,7 @@ export const SizePicker = ({option}: {option: Option}) => {
           onChange={setSelectedSize}
           className="flex gap-8"
         >
-          {reorderSizingArray(option.values).map(
+          {/* {reorderSizingArray(option.optionValues).map(
             ({value, isAvailable, isActive, to}) => (
               <Link
                 className={'p-0 max-w-32'}
@@ -84,7 +86,7 @@ export const SizePicker = ({option}: {option: Option}) => {
                 </Radio>
               </Link>
             ),
-          )}
+          )} */}
         </RadioGroup>
       </fieldset>
       {/* <a

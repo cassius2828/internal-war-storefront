@@ -88,7 +88,6 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 // ! where to edit collection UI
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
-  console.log(collection, ' <-- collection: find page structure');
   return (
     <div className="collection mt-24 md:mt-40 flex flex-col items-center">
       {/* <h1>{collection.title}</h1> */}

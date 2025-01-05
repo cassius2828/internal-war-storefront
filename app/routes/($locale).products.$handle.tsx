@@ -232,7 +232,7 @@ export default function Product() {
   const [focusedImage, setFocusedImage] = useState<string>(
     selectedVariant?.image,
   );
-
+  productDataWithMedia.then((res) => console.log(res));
   return (
     <div className=" mt-32 flex flex-col items-center">
       <div className="flex flex-col-reverse md:flex-row justify-around w-full">
@@ -582,10 +582,12 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     variants(first: 10) {
       nodes {
-        selectedOptions {
-          name
-          value
-        }
+        selectedOptions  {
+        name
+       optionValues {
+       name
+            }
+      }
       }
     }
     options {

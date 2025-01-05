@@ -123,11 +123,11 @@ function SearchResultsProducts({
                 sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
               />
             </span>
-            <div className="flex flex-col items-start">
-              <span className="relative mt-auto text-center text-xl font-bold text-neutral-900 ">
+            <div className="flex flex-col items-start ">
+              <span className="relative mt-auto text-center text-xs my-2 md:my-auto sm:text-lg md:text-xl text-neutral-900 ">
                 {product.title}
               </span>
-              <span className="relative mt-auto text-center text-xl font-bold text-neutral-900 ">
+              <span className="relative mt-auto text-center md:text-xl font-bold text-neutral-900 ">
                 ${formatPrice(product.variants.nodes[0].price.amount)}
               </span>
             </div>
@@ -135,60 +135,6 @@ function SearchResultsProducts({
         );
       })}
     </div>
-    // <div className="search-result">
-    //   <h2>Products</h2>
-    //   <Pagination connection={products}>
-    //     {({nodes, isLoading, NextLink, PreviousLink}) => {
-    //       const ItemsMarkup = nodes.map((product) => {
-    //         const productUrl = urlWithTrackingParams({
-    //           baseUrl: `/products/${product.handle}`,
-    //           trackingParams: product.trackingParameters,
-    //           term,
-    //         });
-
-    //         return (
-    //           <div className="search-results-item" key={product.id}>
-    //             <Link prefetch="intent" to={productUrl}>
-    //               {product.variants.nodes[0].image && (
-    //                 <Image
-    //                   data={product.variants.nodes[0].image}
-    //                   alt={product.title}
-    //                   width={50}
-    //                 />
-    //               )}
-    //               <div>
-    //                 <p>{product.title}</p>
-    //                 <small>
-    //                   <Money data={product.variants.nodes[0].price} />
-    //                 </small>
-    //               </div>
-    //             </Link>
-    //           </div>
-    //         );
-    //       });
-
-    //       return (
-    //         <div>
-    //           <div>
-    //             <PreviousLink>
-    //               {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-    //             </PreviousLink>
-    //           </div>
-    //           <div>
-    //             {ItemsMarkup}
-    //             <br />
-    //           </div>
-    //           <div>
-    //             <NextLink>
-    //               {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-    //             </NextLink>
-    //           </div>
-    //         </div>
-    //       );
-    //     }}
-    //   </Pagination>
-    //   <br />
-    // </div>
   );
 }
 

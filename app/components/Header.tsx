@@ -22,7 +22,7 @@ import {
   faShoppingCart,
   faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import {loader} from '../routes/($locale).collections.$handle';
+
 interface HeaderProps {
   header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
@@ -136,7 +136,7 @@ export function DropdownHeaderMenuSqrFull({
       className="h-full bg-neutral-200 cursor-pointer relative"
     >
       <Image className="w-full h-full object-contain" src={img} alt="" />
-      {showShopBtn && <ShopBtnDropdownNav url={url} />}
+      {showShopBtn && <ShopBtnDropdownNav actionDescription={null} url={url} />}
     </div>
   );
 }
@@ -157,7 +157,7 @@ export function DropdownHeaderMenuSqrHalf({
       className=" h-[48.75%] bg-neutral-300 cursor-pointer relative"
     >
       <Image className="w-full h-full object-contain" src={img} alt="" />
-      <ShopBtnDropdownNav url={url} />
+      <ShopBtnDropdownNav actionDescription={null} url={url} />
     </div>
   );
 }
@@ -229,7 +229,7 @@ export function ShopBtnDropdownNav({
   actionDescription = 'shop',
 }: {
   url: string;
-  actionDescription: string;
+  actionDescription: string | null;
 }) {
   return (
     <div className="opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -250,12 +250,12 @@ function HeaderCtas({
   return (
     <nav className="header-ctas" role="navigation">
       <NavLink prefetch="intent" to="/account">
-        <Suspense fallback="Sign in">
-          {/* <Await resolve={isLoggedIn} errorElement="Sign in">
+        {/* <Suspense fallback="Sign in">
+          <Await resolve={isLoggedIn} errorElement="Sign in">
             {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
-          </Await> */}
+          </Await>
           <FontAwesomeIcon icon={faUser} />
-        </Suspense>
+        </Suspense> */}
       </NavLink>
       <SearchToggle />
       <CartToggle cart={cart} />

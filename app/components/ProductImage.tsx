@@ -1,13 +1,11 @@
-import type {ProductVariantFragment} from 'storefrontapi.generated';
 import {Image} from '@shopify/hydrogen';
 import {TwoToneLoader} from './Loaders';
-// Type for the function that sets the focused image
-type SetFocusedImage = (imageId: string) => void;
+import type {MediaImage} from '~/routes/($locale).products.$handle';
 export function ProductImage({
   image,
   full,
 }: {
-  image: ProductVariantFragment['image'];
+  image: MediaImage;
   full: boolean;
 }) {
   if (!image) {

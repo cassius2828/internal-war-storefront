@@ -8,7 +8,7 @@ import type {
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {useState} from 'react';
-import {VariantSelector} from '@shopify/hydrogen';
+import {VariantSelector, ProductVariant} from '@shopify/hydrogen';
 
 export function ProductForm({
   product,
@@ -34,15 +34,24 @@ export function ProductForm({
   );
 }
 type DeepObject = Record<string, any>; // A generic type for deeply nested objects
-
+type ProductOptionValueCustom = {
+  value: string;
+  optionValue: {name: string};
+  search: string;
+  isActive: boolean;
+  isAvailable: boolean;
+  to: string;
+  variant: ProductVariant;
+};
 interface Option {
   name: string;
   optionValues: DeepObject[]; // Array of objects with unknown structure
+  values: ProductOptionValueCustom[];
 }
 // temp deleting option?.optionValues[0]
 export const SizePicker = ({option}: {option: Option}) => {
   const [selectedSize, setSelectedSize] = useState(option?.values[0] || 'S');
-
+  console.log(option.values, ' option values');
   return (
     <div>
       <div className="flex items-center justify-start gap-12">

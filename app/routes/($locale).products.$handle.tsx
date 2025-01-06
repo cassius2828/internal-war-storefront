@@ -1,20 +1,7 @@
 import {Suspense, useState} from 'react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Radio,
-  RadioGroup,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from '@headlessui/react';
-import {StarIcon} from '@heroicons/react/20/solid';
-import {HeartIcon, MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
+
 import type {ProductFragment} from 'storefrontapi.generated';
 import {
   getSelectedProductOptions,
@@ -168,7 +155,7 @@ function redirectToFirstVariant({
   );
 }
 // Type for the image object inside media.edges.node
-type MediaImage = {
+export type MediaImage = {
   id: string;
   altText?: string;
   url: string;
@@ -197,14 +184,20 @@ type SelectedVariant = {
   price: string; // You will need to convert this to MoneyV2 type later
   compareAtPrice: string | null; // Same as above
 };
+
+type ProductVariants = {
+  product: Product;
+};
+
 // Type for the function that sets the focused image
-type SetFocusedImage = (imageId: string) => void;
+type SetFocusedImage = (mediaImage: MediaImage) => void;
 // Type for the props for ProductImages
 type ProductImagesProps = {
   productDataWithMedia: ProductDataWithMedia;
   product: Product; // Add this to match the product prop passed to ProductImages
   selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
   setFocusedImage: SetFocusedImage;
+  variants: ProductVariants;
 };
 
 const sampleShippingDetails = `
@@ -227,10 +220,10 @@ export default function Product() {
     product.selectedVariant,
     variants,
   );
-
   const {title, descriptionHtml} = product;
-  const [focusedImage, setFocusedImage] = useState<string>(
-    selectedVariant?.image,
+  // Assuming MediaImage is a type defined elsewhere
+  const [focusedImage, setFocusedImage] = useState<MediaImage>(
+    selectedVariant?.image, // This is allowed to be undefined
   );
   return (
     <div className=" mt-32 flex flex-col items-center">
@@ -324,7 +317,6 @@ const ProductImages: React.FC<ProductImagesProps> = ({
   const {title, descriptionHtml} = product;
   const mediaLength = productDataWithMedia.product?.media.edges.length;
   const {open} = useAside();
-
   // Determine the grid class based on the media length
   let gridClassName: string;
   let extraMargin: string;
@@ -351,7 +343,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
             {/* mobile */}
             <Image
               onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={item.node.image.id + 'mobile'}
+              key={`${item.node.image.id}-mobile`}
               style={{borderRadius: 0, width: '50%'}}
               src={item.node.image.url}
               alt={item.node.image.altText || 'Product Image'}
@@ -361,7 +353,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
             {/* desktop */}
             <Image
               onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={item.node.image.id + 'desktop'}
+              key={`${item.node.image.id}-desktop`}
               style={{borderRadius: 0, width: '100%'}}
               src={item.node.image.url}
               alt={item.node.image.altText || 'Product Image'}

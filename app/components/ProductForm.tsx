@@ -51,7 +51,6 @@ interface Option {
 // temp deleting option?.optionValues[0]
 export const SizePicker = ({option}: {option: Option}) => {
   const [selectedSize, setSelectedSize] = useState(option?.values[0] || 'S');
-  console.log(option.values, ' option values');
   return (
     <div>
       <div className="flex items-center justify-start gap-12">
@@ -64,36 +63,34 @@ export const SizePicker = ({option}: {option: Option}) => {
           onChange={setSelectedSize}
           className="flex gap-8"
         >
-          {reorderSizingArray(option.values).map(
-            ({value, isAvailable, isActive, to}) => (
-              <Link
-                className={'p-0 max-w-32'}
-                key={option.name + value}
-                prefetch="intent"
-                preventScrollReset
-                replace
-                to={to}
+          {option.values.map(({value, isAvailable, isActive, to}) => (
+            <Link
+              className={'p-0 max-w-32'}
+              key={option.name + value}
+              prefetch="intent"
+              preventScrollReset
+              replace
+              to={to}
+            >
+              <Radio
+                key={value}
+                value={value}
+                disabled={!isAvailable}
+                className={classNames(
+                  isAvailable
+                    ? 'cursor-pointer focus:outline-none'
+                    : 'cursor-not-allowed opacity-25 text-9xl',
+                  `flex items-center justify-center rounded-md border  px-3 py-3 text-sm font-medium uppercase sm:flex-1 ${
+                    isActive
+                      ? 'border-transparent bg-neutral-900 text-white ring-2 ring-neutral-500 ring-offset-2 hover:bg-neutral-700'
+                      : 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 '
+                  }`,
+                )}
               >
-                <Radio
-                  key={value}
-                  value={value}
-                  disabled={!isAvailable}
-                  className={classNames(
-                    isAvailable
-                      ? 'cursor-pointer focus:outline-none'
-                      : 'cursor-not-allowed opacity-25 text-9xl',
-                    `flex items-center justify-center rounded-md border  px-3 py-3 text-sm font-medium uppercase sm:flex-1 ${
-                      isActive
-                        ? 'border-transparent bg-neutral-900 text-white ring-2 ring-neutral-500 ring-offset-2 hover:bg-neutral-700'
-                        : 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 '
-                    }`,
-                  )}
-                >
-                  {value || 'N/A'}
-                </Radio>
-              </Link>
-            ),
-          )}
+                {value || 'N/A'}
+              </Radio>
+            </Link>
+          ))}
         </RadioGroup>
       </fieldset>
       {/* <a
@@ -110,20 +107,3 @@ export const SizePicker = ({option}: {option: Option}) => {
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
-const reorderSizingArray = (
-  sizingArr: {value: string; [key: string]: any}[],
-) => {
-  if (!sizingArr) return [];
-
-  const expectedOrder =
-    sizingArr.length === 4
-      ? ['S', 'M', 'L', 'XL']
-      : sizingArr.length === 5
-      ? ['S', 'M', 'L', 'XL', 'XXL']
-      : sizingArr.map((item) => item.value);
-
-  const sizeMap = new Map(sizingArr.map((item) => [item.value, {...item}])); // Deep copy objects
-
-  // Return reordered array using the expected order
-  return expectedOrder.map((size) => sizeMap.get(size)).filter(Boolean);
-};

@@ -1,20 +1,7 @@
 import {Suspense, useState} from 'react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Radio,
-  RadioGroup,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from '@headlessui/react';
-import {StarIcon} from '@heroicons/react/20/solid';
-import {HeartIcon, MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
+
 import type {ProductFragment} from 'storefrontapi.generated';
 import {
   getSelectedProductOptions,
@@ -39,7 +26,7 @@ import {BasicMarquee} from '~/components/Marquees';
 import NewsCarousel from '~/components/NewsCarousel';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.product.title ?? ''}`}];
+  return [{title: `Internal War | ${data?.product.title ?? ''}`}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -101,6 +88,7 @@ async function loadCriticalData({
     product,
   };
 }
+const pages = [{name: 'Hoodies', href: '/collections/hoodies', current: false}];
 
 /**
  * Load data for rendering content below the fold. This data is deferred and will be
@@ -167,7 +155,7 @@ function redirectToFirstVariant({
   );
 }
 // Type for the image object inside media.edges.node
-type MediaImage = {
+export type MediaImage = {
   id: string;
   altText?: string;
   url: string;
@@ -196,19 +184,22 @@ type SelectedVariant = {
   price: string; // You will need to convert this to MoneyV2 type later
   compareAtPrice: string | null; // Same as above
 };
+
+type ProductVariants = {
+  product: Product;
+};
+
 // Type for the function that sets the focused image
-type SetFocusedImage = (imageId: string) => void;
+type SetFocusedImage = (mediaImage: MediaImage) => void;
 // Type for the props for ProductImages
 type ProductImagesProps = {
   productDataWithMedia: ProductDataWithMedia;
   product: Product; // Add this to match the product prop passed to ProductImages
   selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
   setFocusedImage: SetFocusedImage;
+  variants: ProductVariants;
 };
-const pages = [
-  {name: 'Collections', href: '/collections', current: false},
-  {name: 'Hoodies', href: '/collections/hoodies', current: true},
-];
+
 const sampleShippingDetails = `
   <ul class="list-disc pl-5 space-y-2 text-gray-700">
     <li>Free shipping on orders over $50</li>
@@ -229,12 +220,11 @@ export default function Product() {
     product.selectedVariant,
     variants,
   );
-
   const {title, descriptionHtml} = product;
-  const [focusedImage, setFocusedImage] = useState<string>(
-    selectedVariant?.image,
+  // Assuming MediaImage is a type defined elsewhere
+  const [focusedImage, setFocusedImage] = useState<MediaImage>(
+    selectedVariant?.image, // This is allowed to be undefined
   );
-
   return (
     <div className=" mt-32 flex flex-col items-center">
       <div className="flex flex-col-reverse md:flex-row justify-around w-full">
@@ -306,7 +296,7 @@ export default function Product() {
             // Ensure that the resolved data is passed correctly
             <>
               <h3 className="text-xl mt-12 newsreader">More Styles</h3>
-              <ProductCardList products={data?.products?.nodes} />
+              <ProductCardList products={data?.products?.nodes || []} />
             </>
           )}
         </Await>
@@ -327,7 +317,6 @@ const ProductImages: React.FC<ProductImagesProps> = ({
   const {title, descriptionHtml} = product;
   const mediaLength = productDataWithMedia.product?.media.edges.length;
   const {open} = useAside();
-
   // Determine the grid class based on the media length
   let gridClassName: string;
   let extraMargin: string;
@@ -354,7 +343,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
             {/* mobile */}
             <Image
               onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={item.node.image.id + 'mobile'}
+              key={`${item.node.image.id}-mobile`}
               style={{borderRadius: 0, width: '50%'}}
               src={item.node.image.url}
               alt={item.node.image.altText || 'Product Image'}
@@ -364,7 +353,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
             {/* desktop */}
             <Image
               onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={item.node.image.id + 'desktop'}
+              key={`${item.node.image.id}-desktop`}
               style={{borderRadius: 0, width: '100%'}}
               src={item.node.image.url}
               alt={item.node.image.altText || 'Product Image'}
@@ -376,7 +365,7 @@ const ProductImages: React.FC<ProductImagesProps> = ({
       </div>
       {/* breadcrumbs */}
       <div className="my-5 flex justify-center md:justify-start">
-        <Breadcrumbs pages={pages} />
+        <Breadcrumbs pageType="products" />
       </div>
       <div className="mt-8 w-full  flex flex-col p-3 md:p-0  ">
         <div className="flex flex-col md:flex-row justify-between items-start ">
@@ -483,9 +472,11 @@ const PRODUCT_FRAGMENT = `#graphql
     descriptionHtml
     description
     options {
-      name
-      values
-    }
+        name
+        optionValues {
+          name
+        }
+      }
     selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
       ...ProductVariant
     }
@@ -582,16 +573,18 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     variants(first: 10) {
       nodes {
-        selectedOptions {
-          name
-          value
-        }
+        selectedOptions  {
+        name
+      value
+      }
       }
     }
     options {
-      name
-      values
-    }
+        name
+       optionValues {
+       name
+            }
+      }
   }
 ` as const;
 

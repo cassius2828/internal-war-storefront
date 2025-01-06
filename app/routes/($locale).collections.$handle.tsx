@@ -13,14 +13,10 @@ import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import BreadCrumbs from '../components/BreadCrumbs';
 import {ProductCard} from '~/components/ProductList';
 
-
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
 };
-const pages = [
-  {name: 'Collections', href: '/collections', current: false},
-  {name: 'Hoodies', href: '/collections/hoodies', current: true},
-];
+
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -67,7 +63,7 @@ async function loadCriticalData({
     collection,
   };
 }
-
+const pages = [{name: 'Hoodies', href: '/collections/hoodies', current: false}];
 /**
  * Load data for rendering content below the fold. This data is deferred and will be
  * fetched after the initial page load. If it's unavailable, the page should still 200.
@@ -88,6 +84,7 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
     },
   };
 }
+
 // ! where to edit collection UI
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
@@ -95,7 +92,7 @@ export default function Collection() {
     <div className="collection mt-24 md:mt-40 flex flex-col items-center">
       {/* <h1>{collection.title}</h1> */}
       {/* breadcrubms */}
-      <BreadCrumbs pages={pages} />
+      <BreadCrumbs pageType="collections" />
       <div className="flex items-center gap-4 w-3/4">
         <span>{collection.title}</span>
         <span className="text-xs text-gray-500">
@@ -105,7 +102,7 @@ export default function Collection() {
       {/* <p className="collection-description">{collection.description}</p> */}
       <PaginatedResourceSection
         connection={collection.products}
-        resourcesClassName="products-grid"
+        resourcesClassName=" grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
       >
         {({node: product, index}) => (
           <ProductItem
@@ -189,7 +186,9 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     options {
       name
-      values
+      optionValues {
+        name
+      }
     }
   }
 ` as const;

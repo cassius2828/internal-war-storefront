@@ -1,5 +1,5 @@
 import {Link} from '@remix-run/react';
-import {type VariantOption, VariantSelector} from '@shopify/hydrogen';
+
 import {Radio, RadioGroup} from '@headlessui/react';
 import type {
   ProductFragment,
@@ -8,6 +8,7 @@ import type {
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {useState} from 'react';
+import {VariantSelector, ProductVariant} from '@shopify/hydrogen';
 
 export function ProductForm({
   product,
@@ -22,7 +23,9 @@ export function ProductForm({
     <div className="product-form w-full">
       <VariantSelector
         handle={product.handle}
-        options={product.options.filter((option) => option.values.length > 1)}
+        options={product.options.filter(
+          (option) => option.optionValues.length > 1,
+        )}
         variants={variants}
       >
         {({option}) => <SizePicker key={option.name} option={option} />}
@@ -31,15 +34,23 @@ export function ProductForm({
   );
 }
 type DeepObject = Record<string, any>; // A generic type for deeply nested objects
-
+type ProductOptionValueCustom = {
+  value: string;
+  optionValue: {name: string};
+  search: string;
+  isActive: boolean;
+  isAvailable: boolean;
+  to: string;
+  variant: ProductVariant;
+};
 interface Option {
   name: string;
-  value: string;
-  values: DeepObject[]; // Array of objects with unknown structure
+  optionValues: DeepObject[]; // Array of objects with unknown structure
+  values: ProductOptionValueCustom[];
 }
+// temp deleting option?.optionValues[0]
 export const SizePicker = ({option}: {option: Option}) => {
-  const [selectedSize, setSelectedSize] = useState(option.values[0] || 'S');
-
+  const [selectedSize, setSelectedSize] = useState(option?.values[0] || 'S');
   return (
     <div>
       <div className="flex items-center justify-start gap-12">
@@ -52,32 +63,34 @@ export const SizePicker = ({option}: {option: Option}) => {
           onChange={setSelectedSize}
           className="flex gap-8"
         >
-          {reorderSizingArray(option.values).map(
-            ({value, isAvailable, isActive, to}) => (
-              <Link
-                className={'p-0 max-w-32'}
-                key={option.name + value}
-                prefetch="intent"
-                preventScrollReset
-                replace
-                to={to}
+          {option.values.map(({value, isAvailable, isActive, to}) => (
+            <Link
+              className={'p-0 max-w-32'}
+              key={option.name + value}
+              prefetch="intent"
+              preventScrollReset
+              replace
+              to={to}
+            >
+              <Radio
+                key={value}
+                value={value}
+                disabled={!isAvailable}
+                className={classNames(
+                  isAvailable
+                    ? 'cursor-pointer focus:outline-none'
+                    : 'cursor-not-allowed opacity-25 text-9xl',
+                  `flex items-center justify-center rounded-md border  px-3 py-3 text-sm font-medium uppercase sm:flex-1 ${
+                    isActive
+                      ? 'border-transparent bg-neutral-900 text-white ring-2 ring-neutral-500 ring-offset-2 hover:bg-neutral-700'
+                      : 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 '
+                  }`,
+                )}
               >
-                <Radio
-                  key={value}
-                  value={value}
-                  disabled={!isAvailable}
-                  className={classNames(
-                    isAvailable
-                      ? 'cursor-pointer focus:outline-none'
-                      : 'cursor-not-allowed opacity-25 text-9xl',
-                    'flex items-center justify-center rounded-md border border-gray-200 bg-white px-3 py-3 text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 data-[checked]:border-transparent data-[checked]:bg-neutral-900 data-[checked]:text-white data-[focus]:ring-2 data-[focus]:ring-neutral-500 data-[focus]:ring-offset-2 data-[checked]:hover:bg-neutral-700 sm:flex-1',
-                  )}
-                >
-                  {value || 'N/A'}
-                </Radio>
-              </Link>
-            ),
-          )}
+                {value || 'N/A'}
+              </Radio>
+            </Link>
+          ))}
         </RadioGroup>
       </fieldset>
       {/* <a
@@ -94,20 +107,3 @@ export const SizePicker = ({option}: {option: Option}) => {
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
-const reorderSizingArray = (
-  sizingArr: {value: string; [key: string]: any}[],
-) => {
-  if (!sizingArr) return [];
-
-  const expectedOrder =
-    sizingArr.length === 4
-      ? ['S', 'M', 'L', 'XL']
-      : sizingArr.length === 5
-      ? ['S', 'M', 'L', 'XL', 'XXL']
-      : sizingArr.map((item) => item.value);
-
-  const sizeMap = new Map(sizingArr.map((item) => [item.value, {...item}])); // Deep copy objects
-
-  // Return reordered array using the expected order
-  return expectedOrder.map((size) => sizeMap.get(size)).filter(Boolean);
-};

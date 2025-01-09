@@ -239,7 +239,7 @@ export function ShopBtnDropdownNav({
       <Link to={url}>
         <div className="bg-black opacity-40  w-full h-full absolute top-0 left-0"></div>
         <button className=" text-gray-100 border px-4 py-2 rounded-sm absolute top-1/2 left-1/2 -translate-1/2 cursor-pointer uppercase">
-          {actionDescription}
+          {actionDescription || 'shop'}
         </button>
       </Link>
     </div>

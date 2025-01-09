@@ -72,7 +72,7 @@ interface HeroVideoProps {
 }
 function HeroVideo({url}: HeroVideoProps) {
   return (
-    <div className="hero-video w-screen max-h-[50rem] relative">
+    <div style={{maxHeight: '50rem'}} className="hero-video w-screen relative">
       {/* //TODO change the fonts later */}
       <div className="absolute left-1/5 top-1/2 flex flex-col gap-4 justify-center items-start">
         <h2 className="uppercase tracking-widest font-light flex">
@@ -80,7 +80,7 @@ function HeroVideo({url}: HeroVideoProps) {
         </h2>
         <h3 className="uppercase text-3xl">slogan here</h3>
         <span className=" capitalize">shop our latest collection now!</span>
-        <Link  to={'/collections'}>
+        <Link to={'/collections'}>
           <button
             type="button"
             className=" bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6"
@@ -90,7 +90,8 @@ function HeroVideo({url}: HeroVideoProps) {
         </Link>
       </div>
       <video
-        className="max-h-[50rem] w-screen object-center object-cover relative -z-10"
+        style={{maxHeight: '50rem'}}
+        className=" w-screen object-center object-cover relative -z-10"
         src={url}
         width="100%"
         autoPlay

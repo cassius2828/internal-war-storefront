@@ -105,8 +105,9 @@ export default function About() {
         {/* Hero section */}
         <div className="relative isolate -z-10">
           <svg
+            style={{height: '64rem'}}
             aria-hidden="true"
-            className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+            className="absolute inset-x-0 top-0 -z-10 w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
           >
             <defs>
               <pattern
@@ -139,18 +140,22 @@ export default function About() {
           >
             <div
               style={{
+                width: '50.0625rem',
                 clipPath:
                   'polygon(63.1% 29.5%, 100% 17.1%, 76.6% 3%, 48.4% 0%, 44.6% 4.7%, 54.5% 25.3%, 59.8% 49%, 55.2% 57.8%, 44.4% 57.2%, 27.8% 47.9%, 35.1% 81.5%, 0% 97.7%, 39.2% 100%, 35.2% 81.4%, 97.2% 52.8%, 63.1% 29.5%)',
               }}
-              //   className="aspect-[801/1036] w-[50.0625rem] bg-gradient-to-tr from-[#b6b6b6] to-[#5b5b5b] opacity-30"
-              className="aspect-[801/1036] w-[50.0625rem] bg-gradient-to-tr from-[#eaa9c4] to-[#ec79ea] opacity-30"
+              //   className="aspect-[801/1036] bg-gradient-to-tr from-[#b6b6b6] to-[#5b5b5b] opacity-30"
+              className="aspect-[801/1036] bg-gradient-to-tr from-[#eaa9c4] to-[#ec79ea] opacity-30"
             />
           </div>
           <div className="overflow-hidden">
             <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl">
-                  <h1 style={{fontSize:'1.5rem'}} className="text-pretty font-semibold tracking-tight text-gray-900 ">
+                  <h1
+                    style={{fontSize: '1.5rem'}}
+                    className="text-pretty font-semibold tracking-tight text-gray-900 "
+                  >
                     What is Internal War?
                   </h1>
                   <p
@@ -299,8 +304,9 @@ export default function About() {
         <div className="relative isolate -z-10 mt-32 sm:mt-48">
           <div className="absolute inset-x-0 top-1/2 -z-10 flex -translate-y-1/2 justify-center overflow-hidden [mask-image:radial-gradient(50%_45%_at_50%_55%,white,transparent)]">
             <svg
+              style={{height: '40rem', width: '80rem'}}
               aria-hidden="true"
-              className="h-[40rem] w-[80rem] flex-none stroke-gray-200"
+              className="flex-none stroke-gray-200"
             >
               <defs>
                 <pattern

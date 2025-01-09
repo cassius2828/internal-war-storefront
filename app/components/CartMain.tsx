@@ -1,5 +1,5 @@
 import {useOptimisticCart} from '@shopify/hydrogen';
-import {Link} from '@remix-run/react';
+import {Link, useFetcher} from '@remix-run/react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
@@ -27,7 +27,6 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
   const cartHasItems = cart?.totalQuantity! > 0;
-
   return (
     <div className={className + ' mt-20'}>
       <CartEmpty hidden={linesCount} layout={layout} />
@@ -51,7 +50,19 @@ function CartEmpty({
   hidden: boolean;
   layout?: CartMainProps['layout'];
 }) {
+  const fetcher = useFetcher();
   const {close} = useAside();
+  const handleNavigateToCollections = async () => {
+    close();
+
+    // Trigger fetcher to load the cart from the server
+    fetcher.load('/cart'); // Replace '/cart' with the endpoint for loading your cart
+
+    // Use a short delay to wait for fetcher to complete (optional)
+    setTimeout(() => {
+      console.log(fetcher.data, '<-- Fetched cart data'); // Log the cart data
+    }, 1000); // Adjust the delay as needed
+  };
   return (
     <div className="newsreader" hidden={hidden}>
       <br />
@@ -60,14 +71,15 @@ function CartEmpty({
         some bold new pieces.
       </p>
       <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
-        <button
-          type="button"
-          className=" bg-neutral-800 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-neutral-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Continue shopping →
-        </button>
-      </Link>
+      {/* when i navigate to a new page, i need to ensure the cart stays updated */}
+
+      <button
+        onClick={close}
+        type="button"
+        className=" bg-neutral-800 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-neutral-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      >
+        Continue shopping →
+      </button>
     </div>
   );
 }

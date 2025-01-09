@@ -152,9 +152,10 @@ export function DropdownHeaderMenuSqrHalf({
 
   return (
     <div
+      style={{height: '48.75%'}}
       onMouseEnter={() => setShowShopBtn(true)}
       onMouseLeave={() => setShowShopBtn(false)}
-      className=" h-[48.75%] bg-neutral-300 cursor-pointer relative"
+      className="  bg-neutral-300 cursor-pointer relative"
     >
       <Image className="w-full h-full object-contain" src={img} alt="" />
       <ShopBtnDropdownNav actionDescription={null} url={url} />
@@ -193,8 +194,9 @@ export function DropdownHeaderMenu() {
     return <></>;
   return (
     <div
+      style={{height: '20rem'}}
       onMouseLeave={() => setShowDropdown(false)}
-      className="hidden md:flex w-full h-[20rem] px-20 py-2 bg-neutral-100 flex justify-start gap-2 absolute top-24 left-0"
+      className="hidden md:flex w-full px-20 py-2 bg-neutral-100 justify-start gap-2 absolute top-24 left-0"
     >
       {/* col 1 */}
       <DropdownHeaderMenuSqrFull

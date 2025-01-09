@@ -55,7 +55,10 @@ export default function Collections() {
         </h1>
         <div className="-my-2">
           <div className="flex justify-center relative box-content  py-2 mb-12 md:mb-24 ">
-            <div className="  grid grid-cols-1 md:grid-cols-3 w-full max-w-[80rem] gap-6">
+            <div
+              style={{maxWidth: '80rem'}}
+              className="  grid grid-cols-1 md:grid-cols-3 w-full gap-6"
+            >
               {collections.nodes
                 .slice(1)
                 .map((collection: CollectionFragment, index: number) => (

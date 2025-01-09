@@ -56,7 +56,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 {product.title}
               </a>
             </h3>
-            {/* <p className="mt-1 text-sm text-gray-500">{product.color}</p> */}
           </div>
           <p className="text-sm font-medium text-gray-900">${formattedPrice}</p>
         </div>
@@ -71,7 +70,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           return (
             <>
               <div className="mt-4">
-                <div>{option.name}</div>
                 <div className="flex gap-4 items-center  my-3 relative   justify-center ">
                   {option.values.map(({value, isAvailable, to, isActive}) => (
                     <Link

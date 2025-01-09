@@ -81,7 +81,7 @@ export async function action({request, context}: ActionFunctionArgs) {
     status = 303;
     headers.set('Location', redirectTo);
   }
-
+  console.log(cartResult.totalQuantity, ' <-- cart result: server');
   return json(
     {
       cart: cartResult,
@@ -97,7 +97,6 @@ export async function action({request, context}: ActionFunctionArgs) {
 export default function Cart() {
   const rootData = useRouteLoaderData<RootLoader>('root');
   if (!rootData) return null;
-
   return (
     <div className="cart">
       <h1>Cart</h1>

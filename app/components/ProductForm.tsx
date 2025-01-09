@@ -45,18 +45,14 @@ type ProductOptionValueCustom = {
 };
 interface Option {
   name: string;
-  optionValues: DeepObject[]; // Array of objects with unknown structure
+  // optionValues: DeepObject[]; // Array of objects with unknown structure
   values: ProductOptionValueCustom[];
 }
-// temp deleting option?.optionValues[0]
 export const SizePicker = ({option}: {option: Option}) => {
   const [selectedSize, setSelectedSize] = useState(option?.values[0] || 'S');
+
   return (
     <div>
-      <div className="flex items-center justify-start gap-12">
-        <h2 className="text-sm font-medium text-gray-900">{option.name}</h2>
-      </div>
-
       <fieldset aria-label={`Choose a ${option.name}`} className="mt-3">
         <RadioGroup
           value={selectedSize}

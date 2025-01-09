@@ -27,9 +27,6 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
   const cartHasItems = cart?.totalQuantity! > 0;
-  if (cart.isOptimistic) {
-    console.log(cart.totalQuantity, ' <-- optimistic cart.totalQuantity');
-  } else console.log(cart.totalQuantity, ' <-- regualr cart (non opt)');
   return (
     <div className={className + ' mt-20'}>
       <CartEmpty hidden={linesCount} layout={layout} />

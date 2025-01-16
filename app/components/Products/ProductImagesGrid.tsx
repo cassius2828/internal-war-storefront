@@ -13,6 +13,8 @@ const ProductImagesGrid: React.FC<ProductImagesGridProps> = ({
             <>
               {/* desktop */}
               <Image
+                fetchPriority="high"
+                loading="eager"
                 onMouseEnter={() => setFocusedImage(item.node.image)}
                 key={item.node.image.id}
                 style={{borderRadius: 0, width: '100%'}}

@@ -37,6 +37,8 @@ export const BasicMarquee: React.FC = () => {
             return (
               <li className="h-96" key={imgLink + idx}>
                 <Image
+                  loading="lazy"
+                  fetchPriority="low"
                   className="object-cover"
                   width={300}
                   height={400}

@@ -41,6 +41,7 @@ export function Header({
   const {shop, menu} = header;
   const {showDropdown} = useAside();
   console.log(header, ' <-- header');
+
   return (
     <header className="header fixed z-10 flex justify-between items-center w-full px-5 py-4 md:py-0 md:px-20 bg-neutral-100  transition-colors duration-200">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>

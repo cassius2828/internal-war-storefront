@@ -173,6 +173,8 @@ export default function About() {
                   <div className="ml-auto w-44 flex-none space-y-8 pt-32 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
                     <div className="relative">
                       <Image
+                        fetchPriority="high"
+                        loading="eager"
                         alt=""
                         src={landingImages[0]}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -183,6 +185,8 @@ export default function About() {
                   <div className="mr-auto w-44 flex-none space-y-8 sm:mr-0 sm:pt-52 lg:pt-36">
                     <div className="relative">
                       <Image
+                        fetchPriority="high"
+                        loading="eager"
                         alt=""
                         src={landingImages[1]}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -191,6 +195,8 @@ export default function About() {
                     </div>
                     <div className="relative">
                       <Image
+                        fetchPriority="high"
+                        loading="eager"
                         alt=""
                         src={landingImages[2]}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -201,6 +207,8 @@ export default function About() {
                   <div className="w-44 flex-none space-y-8 pt-32 sm:pt-0">
                     <div className="relative">
                       <Image
+                        fetchPriority="high"
+                        loading="eager"
                         alt=""
                         src={landingImages[3]}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -209,6 +217,8 @@ export default function About() {
                     </div>
                     <div className="relative">
                       <Image
+                        fetchPriority="high"
+                        loading="eager"
                         alt=""
                         src={landingImages[4]}
                         className="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
@@ -268,6 +278,8 @@ export default function About() {
         {/* Image section */}
         <div className="mt-32 sm:mt-40 xl:mx-auto xl:max-w-7xl xl:px-8">
           <Image
+            loading="lazy"
+            fetchPriority="low"
             alt=""
             src={landingImages[5]}
             className="aspect-[5/2] w-full  object-cover xl:rounded-3xl about-horizontal-img"
@@ -353,7 +365,9 @@ export default function About() {
             {team.map((person) => (
               <li key={person.name}>
                 <img
-                  alt=""
+                  loading="lazy"
+                  fetchPriority="low"
+                  alt="Founder"
                   src={person.imageUrl}
                   className="mx-auto size-48 rounded-full object-cover"
                 />
@@ -383,7 +397,9 @@ export default function About() {
                 className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl bg-gray-900 px-8 pb-8 pt-80 sm:pt-48 lg:pt-80"
               >
                 <img
-                  alt=""
+                  alt="News Carousel"
+                  loading="lazy"
+                  fetchPriority="low"
                   src={post.imageUrl}
                   className="absolute inset-0 -z-10 size-full object-cover"
                 />

@@ -37,12 +37,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <img
           alt={product.featuredImage?.altText}
           src={product.media?.edges[0].node.image.url}
-          className="group-hover:hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
+          className="group-hover:hidden aspect-square w-full md:min-w-70 rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
         />
+        {/* later loading since these are hidden wihtout hover */}
         <img
+          loading={loading}
+          fetchPriority="low"
           alt={product.featuredImage?.altText}
           src={product.media?.edges[1].node.image.url}
-          className="group-hover:block hidden aspect-square w-full rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
+          className="group-hover:block hidden aspect-square w-full md:min-w-70 rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
         />
         <div className="mt-4 flex justify-between">
           <div>

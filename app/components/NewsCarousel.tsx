@@ -37,6 +37,8 @@ const NewsCarousel = () => {
           behind the lines
         </span>
         <img
+          fetchPriority="low"
+          loading="lazy"
           className="w-3/4 aspect-[5/2] object-cover"
           src={newsSlides[0].img}
           alt={newsSlides[0].alt}

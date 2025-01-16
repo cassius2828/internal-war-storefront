@@ -57,8 +57,8 @@ export default function Page() {
   if (page.title === 'Contact') {
     return <Contact />;
   }
-  if(page.title === 'About'){
-    return <About/>
+  if (page.title === 'About') {
+    return <About />;
   }
   return (
     <div className="page">

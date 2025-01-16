@@ -29,7 +29,7 @@ const ProductImagesCarousel = ({
   return (
     <div
       id="default-carousel"
-      className="relative w-full md:hidden mt-3"
+      className="relative w-full z-0 md:hidden mt-3"
       data-carousel="slide"
     >
       {/* Carousel wrapper */}

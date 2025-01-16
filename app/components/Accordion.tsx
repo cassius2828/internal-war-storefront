@@ -16,13 +16,13 @@ const Accordion: React.FC<AccordionProps> = ({descriptionHtml, title}) => {
   return (
     <div
       id="accordion-collapse"
-      className="w-full md:w-1/2 border-b border-gray-300 "
+      className="w-96 border-b border-gray-300  "
       data-accordion="collapse"
     >
       <h2 id="accordion-collapse-heading-1">
         <button
           type="button"
-          className="flex items-center justify-between w-full p-5 font-medium text-gray-700 border border-b-0 border-gray-300 rounded-t-xl focus:ring-4 focus:ring-gray-200 hover:bg-gray-100 gap-3"
+          className="flex items-center justify-between w-full p-5 font-medium text-gray-700   rounded-t-xl focus:border focus:border-gray-300 hover:border-gray-100 gap-3"
           aria-expanded={isOpen ? 'true' : 'false'}
           aria-controls="accordion-collapse-body-1"
           onClick={toggleAccordion}
@@ -55,7 +55,7 @@ const Accordion: React.FC<AccordionProps> = ({descriptionHtml, title}) => {
         >
           <div
             dangerouslySetInnerHTML={{__html: descriptionHtml}}
-            className="p-5 border border-b-0 border-gray-300 bg-white"
+            className="p-5 bg-white"
           ></div>
         </div>
       )}

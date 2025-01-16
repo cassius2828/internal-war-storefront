@@ -5,6 +5,7 @@ import type {
   Product,
   ProductOption,
 } from '@shopify/hydrogen/storefront-api-types';
+import {ProductCardProps} from 'customTypes';
 
 export default function ProductCardList({products}: {products: Product[]}) {
   return (
@@ -19,11 +20,6 @@ export default function ProductCardList({products}: {products: Product[]}) {
     </div>
   );
 }
-
-type ProductCardProps = {
-  product: Product;
-  loading?: 'lazy' | 'eager';
-};
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,

@@ -7,24 +7,23 @@ import {
   getSelectedProductOptions,
   Analytics,
   useOptimisticVariant,
-  Image,
 } from '@shopify/hydrogen';
 import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 //TODO: Understand the variants and variant urls
 import {getVariantUrl} from '~/lib/variants';
-import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImage} from '~/components/ProductImage';
+import {ProductPrice} from '~/components/Products/ProductPrice';
 import Accordion from '~/components/Accordion';
-import {ProductForm} from '~/components/ProductForm';
+import {ProductForm} from '~/components/Products/ProductForm';
 import Breadcrumbs from '~/components/BreadCrumbs';
 import {TwoToneLoader} from '~/components/Loaders';
-import type {Product, ProductVariant} from '@shopify/hydrogen';
+import type {Product} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
-import {useAside} from '~/components/Aside';
-import ProductCardList from '~/components/ProductList';
+import ProductCardList from '~/components/Products/ProductList';
 import {BasicMarquee} from '~/components/Marquees';
 import NewsCarousel from '~/components/NewsCarousel';
-
+import type {MediaImage} from 'customTypes';
+import ProductImages from '~/components/Products/ProductImages';
+import {useAside} from '~/components/Aside';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Internal War | ${data?.product.title ?? ''}`}];
 };
@@ -154,51 +153,6 @@ function redirectToFirstVariant({
     },
   );
 }
-// Type for the image object inside media.edges.node
-export type MediaImage = {
-  id: string;
-  altText?: string;
-  url: string;
-  width: number;
-  height: number;
-};
-
-// Type for the edges inside the product media
-type MediaEdge = {
-  node: {
-    image: MediaImage;
-  };
-};
-
-// Type for the product data, which includes media and variants
-type ProductDataWithMedia = {
-  product: {
-    media: {
-      edges: MediaEdge[];
-    };
-  };
-};
-
-// Type for the selected variant, which contains price and compareAtPrice
-type SelectedVariant = {
-  price: string; // You will need to convert this to MoneyV2 type later
-  compareAtPrice: string | null; // Same as above
-};
-
-type ProductVariants = {
-  product: Product;
-};
-
-// Type for the function that sets the focused image
-type SetFocusedImage = (mediaImage: MediaImage) => void;
-// Type for the props for ProductImages
-type ProductImagesProps = {
-  productDataWithMedia: ProductDataWithMedia;
-  product: Product; // Add this to match the product prop passed to ProductImages
-  selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
-  setFocusedImage: SetFocusedImage;
-  variants: ProductVariants;
-};
 
 const sampleShippingDetails = `
   <ul class="list-disc pl-5 space-y-2 text-gray-700">
@@ -221,13 +175,13 @@ export default function Product() {
     variants,
   );
   const {title, descriptionHtml} = product;
-  // Assuming MediaImage is a type defined elsewhere
   const [focusedImage, setFocusedImage] = useState<MediaImage>(
     selectedVariant?.image, // This is allowed to be undefined
   );
+  const {open} = useAside();
   return (
-    <div className=" mt-32 flex flex-col items-center">
-      <div className="flex flex-col-reverse md:flex-row justify-around w-full">
+    <div className="mt-12 md:mt-32 flex flex-col items-center">
+      <div className="flex flex-col md:flex-row justify-start gap-12 w-full">
         {/* gallery */}
         <Suspense
           fallback={
@@ -248,24 +202,91 @@ export default function Product() {
                   productDataWithMedia={data}
                 />
 
-                {/* product hero image */}
-                <div className="flex flex-col w-full md:w-1/2 ">
-                  <ProductImage full image={focusedImage} />
+                {/* Product Info Section*/}
+                <div className="flex flex-col min-w-96 ">
+                  <div className="w-full flex flex-col p-3 md:p-0 md:sticky md:top-24 ">
+                    {' '}
+                    <div className="my-5 flex justify-start">
+                      <Breadcrumbs pageType="products" />
+                    </div>
+                    <div className="flex flex-col md:flex-row justify-between items-start ">
+                      <div className="w-1/2">
+                        <span aria-label={`Product title: ${title}`}>
+                          {title}
+                        </span>
+                        <ProductPrice
+                          price={selectedVariant?.price}
+                          compareAtPrice={selectedVariant?.compareAtPrice}
+                        />
+                      </div>
+                      {/* Sizing */}
+
+                      <Suspense
+                        fallback={
+                          <ProductForm
+                            product={product}
+                            selectedVariant={selectedVariant}
+                            variants={[]}
+                          />
+                        }
+                      >
+                        <Await
+                          errorElement="There was a problem loading product variants"
+                          resolve={variants}
+                        >
+                          {(data) => (
+                            <ProductForm
+                              product={product}
+                              selectedVariant={selectedVariant}
+                              variants={data?.product?.variants.nodes || []}
+                            />
+                          )}
+                        </Await>
+                      </Suspense>
+                    </div>
+                    <AddToCartButton
+                      disabled={
+                        !selectedVariant || !selectedVariant.availableForSale
+                      }
+                      onClick={() => {
+                        open('cart');
+                      }}
+                      lines={
+                        selectedVariant
+                          ? [
+                              {
+                                merchandiseId: selectedVariant.id,
+                                quantity: 1,
+                                selectedVariant,
+                              },
+                            ]
+                          : []
+                      }
+                    >
+                      {selectedVariant?.availableForSale
+                        ? 'Add to cart'
+                        : 'Sold out'}
+                    </AddToCartButton>
+                    {/* detials */}
+                    <div className=" flex flex-col-reverse  items-center md:justify-between  gap-3 my-12 ">
+                      {/* shipping and description */}
+                      <Accordion
+                        title="Shipping Details"
+                        descriptionHtml={sampleShippingDetails}
+                      />{' '}
+                      <Accordion
+                        title="Product Details"
+                        descriptionHtml={descriptionHtml}
+                      />
+                    </div>
+                  </div>
                 </div>
               </>
             )}
           </Await>
         </Suspense>
       </div>
-      {/* detials */}
-      <div className=" flex flex-col-reverse md:flex-row items-center md:justify-between  gap-12 my-12 w-full ">
-        {/* shipping and description */}
-        <Accordion
-          title="Shipping Details"
-          descriptionHtml={sampleShippingDetails}
-        />{' '}
-        <Accordion title="Product Details" descriptionHtml={descriptionHtml} />
-      </div>
+
       {/* //* end */}
       <Analytics.ProductView
         data={{
@@ -306,124 +327,6 @@ export default function Product() {
     </div>
   );
 }
-
-const ProductImages: React.FC<ProductImagesProps> = ({
-  productDataWithMedia,
-  product,
-  selectedVariant,
-  variants,
-  setFocusedImage,
-}) => {
-  const {title, descriptionHtml} = product;
-  const mediaLength = productDataWithMedia.product?.media.edges.length;
-  const {open} = useAside();
-  // Determine the grid class based on the media length
-  let gridClassName: string;
-  let extraMargin: string;
-  switch (true) {
-    case mediaLength >= 5:
-      gridClassName = 'grid-cols-3'; // for 6 or more images
-      extraMargin = 'md:ml-20';
-      break;
-    case mediaLength === 4:
-      gridClassName = 'grid-cols-2'; // for 4 to 5 images
-      extraMargin = '';
-
-      break;
-    default:
-      gridClassName = 'grid-cols-1'; // for fewer than 3 images
-      extraMargin = '';
-  }
-
-  return (
-    <div className={extraMargin}>
-      <div className={`flex flex-wrap md:grid ${gridClassName} bg-gray-100`}>
-        {productDataWithMedia.product.media?.edges.map((item: MediaEdge) => (
-          <>
-            {/* mobile */}
-            <Image
-              onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={`${item.node.image.id}-mobile`}
-              style={{borderRadius: 0, width: '50%'}}
-              src={item.node.image.url}
-              alt={item.node.image.altText || 'Product Image'}
-              className="h-72 object-cover md:hidden"
-              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
-            />
-            {/* desktop */}
-            <Image
-              onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={`${item.node.image.id}-desktop`}
-              style={{borderRadius: 0, width: '100%'}}
-              src={item.node.image.url}
-              alt={item.node.image.altText || 'Product Image'}
-              className="h-72 object-cover hidden md:block"
-              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
-            />
-          </>
-        ))}
-      </div>
-      {/* breadcrumbs */}
-      <div className="my-5 flex justify-center md:justify-start">
-        <Breadcrumbs pageType="products" />
-      </div>
-      <div className="mt-8 w-full  flex flex-col p-3 md:p-0  ">
-        <div className="flex flex-col md:flex-row justify-between items-start ">
-          <div className="w-1/2">
-            <h1>{title}</h1>
-            <ProductPrice
-              price={selectedVariant?.price}
-              compareAtPrice={selectedVariant?.compareAtPrice}
-            />
-          </div>
-          {/* Sizing */}
-
-          <Suspense
-            fallback={
-              <ProductForm
-                product={product}
-                selectedVariant={selectedVariant}
-                variants={[]}
-              />
-            }
-          >
-            <Await
-              errorElement="There was a problem loading product variants"
-              resolve={variants}
-            >
-              {(data) => (
-                <ProductForm
-                  product={product}
-                  selectedVariant={selectedVariant}
-                  variants={data?.product?.variants.nodes || []}
-                />
-              )}
-            </Await>
-          </Suspense>
-        </div>
-        <AddToCartButton
-          disabled={!selectedVariant || !selectedVariant.availableForSale}
-          onClick={() => {
-            open('cart');
-          }}
-          lines={
-            selectedVariant
-              ? [
-                  {
-                    merchandiseId: selectedVariant.id,
-                    quantity: 1,
-                    selectedVariant,
-                  },
-                ]
-              : []
-          }
-        >
-          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-        </AddToCartButton>
-      </div>
-    </div>
-  );
-};
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {

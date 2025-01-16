@@ -1,7 +1,7 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {Suspense} from 'react';
-import ProductList from '../components/ProductList';
+import ProductList from '../components/Products/ProductList';
 import CollectionPreviewGrid from '../components/CollectionPreviewGrid';
 import {Image, Money, Video} from '@shopify/hydrogen';
 import type {

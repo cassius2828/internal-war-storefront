@@ -173,3 +173,8 @@ code {
     font-size: 0.85rem;
   }
 }
+
+/* hide video controls */
+video::-webkit-media-controls {
+  display: none;
+}

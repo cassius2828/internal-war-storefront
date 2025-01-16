@@ -24,6 +24,7 @@ import {useAside} from '~/components/Aside';
 import ProductCardList from '~/components/ProductList';
 import {BasicMarquee} from '~/components/Marquees';
 import NewsCarousel from '~/components/NewsCarousel';
+import ProductImagesCarousel from '~/components/ProductImagesCarousel';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Internal War | ${data?.product.title ?? ''}`}];
@@ -164,17 +165,17 @@ export type MediaImage = {
 };
 
 // Type for the edges inside the product media
-type MediaEdge = {
+export type CustomMediaEdge = {
   node: {
     image: MediaImage;
   };
 };
 
 // Type for the product data, which includes media and variants
-type ProductDataWithMedia = {
+export type ProductDataWithMedia = {
   product: {
     media: {
-      edges: MediaEdge[];
+      edges: CustomMediaEdge[];
     };
   };
 };
@@ -226,8 +227,8 @@ export default function Product() {
     selectedVariant?.image, // This is allowed to be undefined
   );
   return (
-    <div className=" mt-32 flex flex-col items-center">
-      <div className="flex flex-col-reverse md:flex-row justify-around w-full">
+    <div className="mt-12 md:mt-32 flex flex-col items-center">
+      <div className="flex flex-col md:flex-row justify-start gap-12 w-full">
         {/* gallery */}
         <Suspense
           fallback={
@@ -248,24 +249,89 @@ export default function Product() {
                   productDataWithMedia={data}
                 />
 
-                {/* product hero image */}
-                <div className="flex flex-col w-full md:w-1/2 ">
-                  <ProductImage full image={focusedImage} />
+                {/* Product Info Section*/}
+                <div className="flex flex-col min-w-96 ">
+                  <div className="w-full flex flex-col p-3 md:p-0 md:sticky md:top-24 ">
+                    {' '}
+                    <div className="my-5 flex justify-start">
+                      <Breadcrumbs pageType="products" />
+                    </div>
+                    <div className="flex flex-col md:flex-row justify-between items-start ">
+                      <div className="w-1/2">
+                        <h1>{title}</h1>
+                        <ProductPrice
+                          price={selectedVariant?.price}
+                          compareAtPrice={selectedVariant?.compareAtPrice}
+                        />
+                      </div>
+                      {/* Sizing */}
+
+                      <Suspense
+                        fallback={
+                          <ProductForm
+                            product={product}
+                            selectedVariant={selectedVariant}
+                            variants={[]}
+                          />
+                        }
+                      >
+                        <Await
+                          errorElement="There was a problem loading product variants"
+                          resolve={variants}
+                        >
+                          {(data) => (
+                            <ProductForm
+                              product={product}
+                              selectedVariant={selectedVariant}
+                              variants={data?.product?.variants.nodes || []}
+                            />
+                          )}
+                        </Await>
+                      </Suspense>
+                    </div>
+                    <AddToCartButton
+                      disabled={
+                        !selectedVariant || !selectedVariant.availableForSale
+                      }
+                      onClick={() => {
+                        open('cart');
+                      }}
+                      lines={
+                        selectedVariant
+                          ? [
+                              {
+                                merchandiseId: selectedVariant.id,
+                                quantity: 1,
+                                selectedVariant,
+                              },
+                            ]
+                          : []
+                      }
+                    >
+                      {selectedVariant?.availableForSale
+                        ? 'Add to cart'
+                        : 'Sold out'}
+                    </AddToCartButton>
+                    {/* detials */}
+                    <div className=" flex flex-col-reverse  items-center md:justify-between  gap-3 my-12 ">
+                      {/* shipping and description */}
+                      <Accordion
+                        title="Shipping Details"
+                        descriptionHtml={sampleShippingDetails}
+                      />{' '}
+                      <Accordion
+                        title="Product Details"
+                        descriptionHtml={descriptionHtml}
+                      />
+                    </div>
+                  </div>
                 </div>
               </>
             )}
           </Await>
         </Suspense>
       </div>
-      {/* detials */}
-      <div className=" flex flex-col-reverse md:flex-row items-center md:justify-between  gap-12 my-12 w-full ">
-        {/* shipping and description */}
-        <Accordion
-          title="Shipping Details"
-          descriptionHtml={sampleShippingDetails}
-        />{' '}
-        <Accordion title="Product Details" descriptionHtml={descriptionHtml} />
-      </div>
+
       {/* //* end */}
       <Analytics.ProductView
         data={{
@@ -319,108 +385,53 @@ const ProductImages: React.FC<ProductImagesProps> = ({
   const {open} = useAside();
   // Determine the grid class based on the media length
   let gridClassName: string;
-  let extraMargin: string;
-  switch (true) {
-    case mediaLength >= 5:
-      gridClassName = 'grid-cols-3'; // for 6 or more images
-      extraMargin = 'md:ml-20';
-      break;
-    case mediaLength === 4:
-      gridClassName = 'grid-cols-2'; // for 4 to 5 images
-      extraMargin = '';
-
-      break;
-    default:
-      gridClassName = 'grid-cols-1'; // for fewer than 3 images
-      extraMargin = '';
-  }
 
   return (
-    <div className={extraMargin}>
-      <div className={`flex flex-wrap md:grid ${gridClassName} bg-gray-100`}>
-        {productDataWithMedia.product.media?.edges.map((item: MediaEdge) => (
-          <>
-            {/* mobile */}
-            <Image
-              onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={`${item.node.image.id}-mobile`}
-              style={{borderRadius: 0, width: '50%'}}
-              src={item.node.image.url}
-              alt={item.node.image.altText || 'Product Image'}
-              className="h-72 object-cover md:hidden"
-              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
-            />
-            {/* desktop */}
-            <Image
-              onMouseEnter={() => setFocusedImage(item.node.image)}
-              key={`${item.node.image.id}-desktop`}
-              style={{borderRadius: 0, width: '100%'}}
-              src={item.node.image.url}
-              alt={item.node.image.altText || 'Product Image'}
-              className="h-72 object-cover hidden md:block"
-              sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
-            />
-          </>
-        ))}
+    <>
+      <ProductImagesGrid
+        gridClassName={gridClassName}
+        productDataWithMedia={productDataWithMedia}
+        setFocusedImage={setFocusedImage}
+      />
+      <ProductImagesCarousel productDataWithMedia={productDataWithMedia} />
+    </>
+  );
+};
+
+type ProductImagesGridProps = {
+  gridClassName: string;
+  productDataWithMedia: ProductDataWithMedia;
+  setFocusedImage: SetFocusedImage;
+};
+
+const ProductImagesGrid: React.FC<ProductImagesGridProps> = ({
+  gridClassName,
+  productDataWithMedia,
+  setFocusedImage,
+}) => {
+  return (
+    <div style={{maxWidth: '70rem'}} className={` hidden md:block ml-5`}>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 ${gridClassName} bg-gray-100`}
+      >
+        {productDataWithMedia.product.media?.edges.map(
+          (item: CustomMediaEdge) => (
+            <>
+              {/* desktop */}
+              <Image
+                onMouseEnter={() => setFocusedImage(item.node.image)}
+                key={item.node.image.id}
+                style={{borderRadius: 0, width: '100%'}}
+                src={item.node.image.url}
+                alt={item.node.image.altText || 'Product Image'}
+                className="h-screen w-full object-cover hidden md:block"
+                sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
+              />
+            </>
+          ),
+        )}
       </div>
       {/* breadcrumbs */}
-      <div className="my-5 flex justify-center md:justify-start">
-        <Breadcrumbs pageType="products" />
-      </div>
-      <div className="mt-8 w-full  flex flex-col p-3 md:p-0  ">
-        <div className="flex flex-col md:flex-row justify-between items-start ">
-          <div className="w-1/2">
-            <h1>{title}</h1>
-            <ProductPrice
-              price={selectedVariant?.price}
-              compareAtPrice={selectedVariant?.compareAtPrice}
-            />
-          </div>
-          {/* Sizing */}
-
-          <Suspense
-            fallback={
-              <ProductForm
-                product={product}
-                selectedVariant={selectedVariant}
-                variants={[]}
-              />
-            }
-          >
-            <Await
-              errorElement="There was a problem loading product variants"
-              resolve={variants}
-            >
-              {(data) => (
-                <ProductForm
-                  product={product}
-                  selectedVariant={selectedVariant}
-                  variants={data?.product?.variants.nodes || []}
-                />
-              )}
-            </Await>
-          </Suspense>
-        </div>
-        <AddToCartButton
-          disabled={!selectedVariant || !selectedVariant.availableForSale}
-          onClick={() => {
-            open('cart');
-          }}
-          lines={
-            selectedVariant
-              ? [
-                  {
-                    merchandiseId: selectedVariant.id,
-                    quantity: 1,
-                    selectedVariant,
-                  },
-                ]
-              : []
-          }
-        >
-          {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
-        </AddToCartButton>
-      </div>
     </div>
   );
 };

@@ -48,7 +48,7 @@ const ProductImagesCarousel = ({
                   className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                   src={item.node.image.url}
                   alt={item.node.image.altText || 'Product Image'}
-                  sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
+                  sizes="100vw"
                 />
               </div>
             );

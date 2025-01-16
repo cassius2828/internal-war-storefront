@@ -6,7 +6,7 @@ const ProductImagesGrid: React.FC<ProductImagesGridProps> = ({
   setFocusedImage,
 }) => {
   return (
-    <div style={{maxWidth: '70rem'}} className={` hidden md:block ml-5`}>
+    <div style={{maxWidth: '70rem'}} className={`w-full hidden md:block ml-5`}>
       <div className={`grid grid-cols-1 md:grid-cols-2  bg-gray-100`}>
         {productDataWithMedia.product.media?.edges.map(
           (item: CustomMediaEdge) => (
@@ -19,7 +19,7 @@ const ProductImagesGrid: React.FC<ProductImagesGridProps> = ({
                 src={item.node.image.url}
                 alt={item.node.image.altText || 'Product Image'}
                 className="h-full lg:h-screen w-full object-cover hidden md:block"
-                sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
+                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 16vw, (min-width: 1280px) 45vw, 50vw"
               />
             </>
           ),

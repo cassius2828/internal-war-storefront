@@ -33,7 +33,7 @@ const ProductImagesCarousel = ({
       data-carousel="slide"
     >
       {/* Carousel wrapper */}
-      <div className="relative h-96 overflow-hidden">
+      <div style={{height:'35rem'}} className="relative overflow-hidden">
         {productDataWithMedia.product.media?.edges.map(
           (item: CustomMediaEdge, idx: number) => {
             return (

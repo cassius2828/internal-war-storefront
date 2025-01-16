@@ -204,12 +204,12 @@ export default function Product() {
 
                 {/* Product Info Section*/}
                 <div className="flex flex-col min-w-96 ">
-                  <div className="w-full flex flex-col p-3 md:p-0 md:sticky md:top-24 ">
+                  <div className="w-full flex flex-col p-3 md:p-0 md:sticky md:top-32 ">
                     {' '}
-                    <div className="my-5 flex justify-start">
+                    {/* <div className="my-5 flex justify-start">
                       <Breadcrumbs pageType="products" />
-                    </div>
-                    <div className="flex flex-col md:flex-row justify-between items-start ">
+                    </div> */}
+                    <div className="flex flex-col justify-between items-start ">
                       <div className="w-1/2">
                         <span aria-label={`Product title: ${title}`}>
                           {title}

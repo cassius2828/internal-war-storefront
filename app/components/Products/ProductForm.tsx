@@ -8,7 +8,8 @@ import type {
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {useState} from 'react';
-import {VariantSelector, ProductVariant} from '@shopify/hydrogen';
+import {VariantSelector} from '@shopify/hydrogen';
+import type {ProductVariant} from '@shopify/hydrogen';
 
 export function ProductForm({
   product,

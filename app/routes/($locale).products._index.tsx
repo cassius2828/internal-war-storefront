@@ -1,7 +1,7 @@
 import {defer, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, type MetaFunction} from '@remix-run/react';
 
-import ProductCardList from '~/components/ProductList';
+import ProductCardList from '~/components/Products/ProductList';
 
 import {PRODUCT_ITEM_FRAGMENT} from './($locale).collections.$handle';
 

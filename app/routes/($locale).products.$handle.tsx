@@ -7,25 +7,23 @@ import {
   getSelectedProductOptions,
   Analytics,
   useOptimisticVariant,
-  Image,
 } from '@shopify/hydrogen';
 import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 //TODO: Understand the variants and variant urls
 import {getVariantUrl} from '~/lib/variants';
-import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImage} from '~/components/ProductImage';
+import {ProductPrice} from '~/components/Products/ProductPrice';
 import Accordion from '~/components/Accordion';
-import {ProductForm} from '~/components/ProductForm';
+import {ProductForm} from '~/components/Products/ProductForm';
 import Breadcrumbs from '~/components/BreadCrumbs';
 import {TwoToneLoader} from '~/components/Loaders';
-import type {Product, ProductVariant} from '@shopify/hydrogen';
+import type {Product} from '@shopify/hydrogen';
 import {AddToCartButton} from '~/components/AddToCartButton';
-import {useAside} from '~/components/Aside';
-import ProductCardList from '~/components/ProductList';
+import ProductCardList from '~/components/Products/ProductList';
 import {BasicMarquee} from '~/components/Marquees';
 import NewsCarousel from '~/components/NewsCarousel';
-import ProductImagesCarousel from '~/components/ProductImagesCarousel';
-
+import type {MediaImage} from 'customTypes';
+import ProductImages from '~/components/Products/ProductImages';
+import {useAside} from '~/components/Aside';
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Internal War | ${data?.product.title ?? ''}`}];
 };
@@ -155,51 +153,6 @@ function redirectToFirstVariant({
     },
   );
 }
-// Type for the image object inside media.edges.node
-export type MediaImage = {
-  id: string;
-  altText?: string;
-  url: string;
-  width: number;
-  height: number;
-};
-
-// Type for the edges inside the product media
-export type CustomMediaEdge = {
-  node: {
-    image: MediaImage;
-  };
-};
-
-// Type for the product data, which includes media and variants
-export type ProductDataWithMedia = {
-  product: {
-    media: {
-      edges: CustomMediaEdge[];
-    };
-  };
-};
-
-// Type for the selected variant, which contains price and compareAtPrice
-type SelectedVariant = {
-  price: string; // You will need to convert this to MoneyV2 type later
-  compareAtPrice: string | null; // Same as above
-};
-
-type ProductVariants = {
-  product: Product;
-};
-
-// Type for the function that sets the focused image
-type SetFocusedImage = (mediaImage: MediaImage) => void;
-// Type for the props for ProductImages
-type ProductImagesProps = {
-  productDataWithMedia: ProductDataWithMedia;
-  product: Product; // Add this to match the product prop passed to ProductImages
-  selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
-  setFocusedImage: SetFocusedImage;
-  variants: ProductVariants;
-};
 
 const sampleShippingDetails = `
   <ul class="list-disc pl-5 space-y-2 text-gray-700">
@@ -222,10 +175,10 @@ export default function Product() {
     variants,
   );
   const {title, descriptionHtml} = product;
-  // Assuming MediaImage is a type defined elsewhere
   const [focusedImage, setFocusedImage] = useState<MediaImage>(
     selectedVariant?.image, // This is allowed to be undefined
   );
+  const {open} = useAside();
   return (
     <div className="mt-12 md:mt-32 flex flex-col items-center">
       <div className="flex flex-col md:flex-row justify-start gap-12 w-full">
@@ -372,69 +325,6 @@ export default function Product() {
     </div>
   );
 }
-
-const ProductImages: React.FC<ProductImagesProps> = ({
-  productDataWithMedia,
-  product,
-  selectedVariant,
-  variants,
-  setFocusedImage,
-}) => {
-  const {title, descriptionHtml} = product;
-  const mediaLength = productDataWithMedia.product?.media.edges.length;
-  const {open} = useAside();
-  // Determine the grid class based on the media length
-  let gridClassName: string;
-
-  return (
-    <>
-      <ProductImagesGrid
-        gridClassName={gridClassName}
-        productDataWithMedia={productDataWithMedia}
-        setFocusedImage={setFocusedImage}
-      />
-      <ProductImagesCarousel productDataWithMedia={productDataWithMedia} />
-    </>
-  );
-};
-
-type ProductImagesGridProps = {
-  gridClassName: string;
-  productDataWithMedia: ProductDataWithMedia;
-  setFocusedImage: SetFocusedImage;
-};
-
-const ProductImagesGrid: React.FC<ProductImagesGridProps> = ({
-  gridClassName,
-  productDataWithMedia,
-  setFocusedImage,
-}) => {
-  return (
-    <div style={{maxWidth: '70rem'}} className={` hidden md:block ml-5`}>
-      <div
-        className={`grid grid-cols-1 md:grid-cols-2 ${gridClassName} bg-gray-100`}
-      >
-        {productDataWithMedia.product.media?.edges.map(
-          (item: CustomMediaEdge) => (
-            <>
-              {/* desktop */}
-              <Image
-                onMouseEnter={() => setFocusedImage(item.node.image)}
-                key={item.node.image.id}
-                style={{borderRadius: 0, width: '100%'}}
-                src={item.node.image.url}
-                alt={item.node.image.altText || 'Product Image'}
-                className="h-screen w-full object-cover hidden md:block"
-                sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
-              />
-            </>
-          ),
-        )}
-      </div>
-      {/* breadcrumbs */}
-    </div>
-  );
-};
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {

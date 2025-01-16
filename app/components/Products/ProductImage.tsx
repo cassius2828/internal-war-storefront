@@ -1,6 +1,8 @@
 import {Image} from '@shopify/hydrogen';
-import {TwoToneLoader} from './Loaders';
-import type {MediaImage} from '~/routes/($locale).products.$handle';
+
+import {MediaImage} from 'customTypes';
+import {TwoToneLoader} from '../Loaders';
+
 export function ProductImage({
   image,
   full,

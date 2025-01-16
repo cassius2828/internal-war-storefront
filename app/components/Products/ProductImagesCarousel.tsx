@@ -1,10 +1,6 @@
 import {Image} from '@shopify/hydrogen';
+import type {CustomMediaEdge, ProductDataWithMedia} from 'customTypes';
 import {useState} from 'react';
-
-import type {
-  CustomMediaEdge,
-  ProductDataWithMedia,
-} from '~/routes/($locale).products.$handle';
 
 const ProductImagesCarousel = ({
   productDataWithMedia,

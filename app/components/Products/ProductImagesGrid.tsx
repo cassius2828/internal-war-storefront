@@ -18,7 +18,7 @@ const ProductImagesGrid: React.FC<ProductImagesGridProps> = ({
                 style={{borderRadius: 0, width: '100%'}}
                 src={item.node.image.url}
                 alt={item.node.image.altText || 'Product Image'}
-                className="h-screen w-full object-cover hidden md:block"
+                className="h-full lg:h-screen w-full object-cover hidden md:block"
                 sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 100vw"
               />
             </>

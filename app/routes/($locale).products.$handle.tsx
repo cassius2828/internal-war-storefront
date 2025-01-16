@@ -211,7 +211,9 @@ export default function Product() {
                     </div>
                     <div className="flex flex-col md:flex-row justify-between items-start ">
                       <div className="w-1/2">
-                        <h1>{title}</h1>
+                        <span aria-label={`Product title: ${title}`}>
+                          {title}
+                        </span>
                         <ProductPrice
                           price={selectedVariant?.price}
                           compareAtPrice={selectedVariant?.compareAtPrice}

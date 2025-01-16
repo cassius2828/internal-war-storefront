@@ -76,8 +76,8 @@ export const SizePicker = ({option}: {option: Option}) => {
                 className={classNames(
                   isAvailable
                     ? 'cursor-pointer focus:outline-none'
-                    : 'cursor-not-allowed opacity-25 text-9xl',
-                  `flex items-center justify-center rounded-md border  px-3 py-3 text-sm font-medium uppercase sm:flex-1 ${
+                    : 'cursor-not-allowed opacity-25 text-xl',
+                  `flex items-center justify-center rounded-md border px-3 py-3  md:px-2 md:py-2 lg:px-3 text-xs font-medium uppercase sm:flex-1 ${
                     isActive
                       ? 'border-transparent bg-neutral-900 text-white ring-2 ring-neutral-500 ring-offset-2 hover:bg-neutral-700'
                       : 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 '

@@ -12,7 +12,7 @@ import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 //TODO: Understand the variants and variant urls
 import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/Products/ProductPrice';
-import Accordion from '~/components/Accordion';
+import Accordion, { ShippingDetailsHTML } from '~/components/Accordion';
 import {ProductForm} from '~/components/Products/ProductForm';
 import Breadcrumbs from '~/components/BreadCrumbs';
 import {TwoToneLoader} from '~/components/Loaders';
@@ -270,11 +270,12 @@ export default function Product() {
                     {/* detials */}
                     <div className=" flex flex-col-reverse  items-center md:justify-between  gap-3 my-12 ">
                       {/* shipping and description */}
-                      <Accordion
+                      <ShippingDetailsHTML
                         title="Shipping Details"
                         descriptionHtml={sampleShippingDetails}
                       />{' '}
-                      <Accordion
+
+                      <ShippingDetailsHTML
                         title="Product Details"
                         descriptionHtml={descriptionHtml}
                       />

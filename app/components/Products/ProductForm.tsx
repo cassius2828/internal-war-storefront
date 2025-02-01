@@ -5,11 +5,23 @@ import type {
   ProductFragment,
   ProductVariantFragment,
 } from 'storefrontapi.generated';
-import {AddToCartButton} from '~/components/AddToCartButton';
-import {useAside} from '~/components/Aside';
 import {useState} from 'react';
 import {VariantSelector} from '@shopify/hydrogen';
 import type {ProductVariant} from '@shopify/hydrogen';
+
+type ProductOptionValueCustom = {
+  value: string;
+  optionValue: {name: string};
+  search: string;
+  isActive: boolean;
+  isAvailable: boolean;
+  to: string;
+  variant: ProductVariant;
+};
+interface Option {
+  name: string;
+  values: ProductOptionValueCustom[];
+}
 
 export function ProductForm({
   product,
@@ -34,21 +46,7 @@ export function ProductForm({
     </div>
   );
 }
-type DeepObject = Record<string, any>; // A generic type for deeply nested objects
-type ProductOptionValueCustom = {
-  value: string;
-  optionValue: {name: string};
-  search: string;
-  isActive: boolean;
-  isAvailable: boolean;
-  to: string;
-  variant: ProductVariant;
-};
-interface Option {
-  name: string;
-  // optionValues: DeepObject[]; // Array of objects with unknown structure
-  values: ProductOptionValueCustom[];
-}
+
 export const SizePicker = ({option}: {option: Option}) => {
   const [selectedSize, setSelectedSize] = useState(option?.values[0] || 'S');
 

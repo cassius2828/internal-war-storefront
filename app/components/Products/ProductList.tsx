@@ -6,6 +6,7 @@ import type {
   ProductOption,
 } from '@shopify/hydrogen/storefront-api-types';
 import {ProductCardProps} from 'customTypes';
+import {useState} from 'react';
 
 export default function ProductCardList({products}: {products: Product[]}) {
   return (
@@ -30,35 +31,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       product.priceRange.minVariantPrice?.amount,
   );
   const availableSizes = getAvailableSizeVariants(product);
-
+  const [showAddToCart, setShowAddToCart] = useState<boolean>(false);
   return (
-    <div className="group relative flex flex-col justify-between">
-      <div>
-        <img
-          alt={product.featuredImage?.altText}
-          src={product.media?.edges[0].node.image.url}
-          className="group-hover:hidden fade-in-quick aspect-square w-full md:min-w-70 rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
-        />
-        {/* later loading since these are hidden wihtout hover */}
-        <img
-          loading={loading}
-          fetchPriority="low"
-          alt={product.featuredImage?.altText}
-          src={product.media?.edges[1].node.image.url}
-          className="group-hover:block fade-in-quick hidden aspect-square w-full md:min-w-70 rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
-        />
-        <div className="mt-4 flex justify-between">
-          <div>
-            <h3 className="text-sm text-gray-700">
-              <a href={product.onlineStoreUrl || ''}>
-                <span aria-hidden="true" className="absolute inset-0" />
-                {product.title}
-              </a>
-            </h3>
+    <div className="group relative flex flex-col justify-between relative">
+      {/* //TODO: when no query it auto adds ?Size=S; locate origin and find out if this could be change to not include a query by default */}
+      <Link prefetch="intent" to={`/products/${product.handle}?Size=M`}>
+        <div>
+          <img
+            alt={product.featuredImage?.altText}
+            src={product.media?.edges[0].node.image.url}
+            className="group-hover:hidden fade-in-quick aspect-square w-full md:min-w-70 rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
+          />
+          {/* later loading since these are hidden wihtout hover */}
+          <img
+            loading={loading}
+            fetchPriority="low"
+            alt={product.featuredImage?.altText}
+            src={product.media?.edges[1].node.image.url}
+            className="group-hover:block fade-in-quick hidden aspect-square w-full md:min-w-70 rounded-md bg-gray-200 object-cover lg:aspect-auto lg:h-80"
+          />
+          <div className="mt-4 flex justify-between">
+            <div>
+              <h3 className="text-sm text-gray-700">
+                <a href={product.onlineStoreUrl || ''}>
+                  <span aria-hidden="true" className="absolute inset-0" />
+                  {product.title}
+                </a>
+              </h3>
+            </div>
+            <p className="text-sm font-medium text-gray-900">
+              ${formattedPrice}
+            </p>
           </div>
-          <p className="text-sm font-medium text-gray-900">${formattedPrice}</p>
         </div>
-      </div>
+      </Link>
       {/* Size Selector using VariantSelector */}
       <VariantSelector
         handle={product.handle}
@@ -66,26 +72,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         variants={product.variants}
       >
         {({option}) => {
+          console.log(option, ' <-- option in variant selector');
           return (
             <>
               <div className="mt-4">
                 <div className="flex gap-4 items-center  my-3 relative   justify-center ">
                   {option.values.map(({value, isAvailable, to, isActive}) => (
-                    <Link
-                      to={to}
-                      prefetch="intent"
+                    <button
+                      onClick={() => setShowAddToCart((prev) => !prev)}
+                      key={value}
+                      type="button"
                       className={`${
                         isActive ? 'active' : isAvailable ? '' : 'opacity-80'
-                      }`}
-                      key={value}
+                      } rounded-sm bg-gray-200 drop-shadow-md md:min-w-8 px-2 py-1 text-xs md:text-sm font-semibold text-neautral-800 shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader`}
                     >
-                      <button
-                        type="button"
-                        className="rounded-sm bg-gray-200 drop-shadow-md md:min-w-8 px-2 py-1 text-xs md:text-sm font-semibold text-neautral-800 shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader"
-                      >
-                        {value}
-                      </button>
-                    </Link>
+                      {value}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -93,6 +95,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           );
         }}
       </VariantSelector>
+
+      <div className="flex justify-center items-center h-12 ">
+        {showAddToCart && (
+          <button className=" bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6">
+            add to cart
+          </button>
+        )}
+      </div>
+
       {/* <SizeBtnGroup product={product} sizes={availableSizes} /> */}
     </div>
   );

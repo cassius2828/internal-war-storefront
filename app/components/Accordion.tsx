@@ -64,3 +64,23 @@ const Accordion: React.FC<AccordionProps> = ({descriptionHtml, title}) => {
 };
 
 export default Accordion;
+
+export const ShippingDetailsHTML: React.FC<AccordionProps> = ({
+  descriptionHtml,
+  title,
+}) => {
+  return (
+    <div
+      id="accordion-collapse-body-1"
+      aria-labelledby="accordion-collapse-heading-1"
+      className=" max-w-4xl "
+    >
+      <h3 className="font-medium mb-3">{title}</h3>
+      <hr />
+      <div
+        dangerouslySetInnerHTML={{__html: descriptionHtml}}
+        className="p-5 bg-white"
+      ></div>
+    </div>
+  );
+};

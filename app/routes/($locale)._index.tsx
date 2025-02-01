@@ -76,10 +76,10 @@ function HeroVideo({url}: HeroVideoProps) {
       {/* //TODO change the fonts later */}
       <div className="absolute left-1/5 top-1/2 flex flex-col gap-4 justify-center items-start">
         <h2 className="uppercase tracking-widest font-light flex">
-          welcome message
+          Welcome to the Store
         </h2>
-        <h3 className="uppercase text-3xl">slogan here</h3>
-        <span className=" capitalize">shop our latest collection now!</span>
+        <h3 className="uppercase text-3xl">Internal War</h3>
+        <span className=" capitalize">shop our collections now!</span>
         <Link to={'/collections'}>
           <button
             type="button"

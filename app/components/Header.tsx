@@ -40,7 +40,6 @@ export function Header({
 }: HeaderProps) {
   const {shop, menu} = header;
   const {showDropdown} = useAside();
-  console.log(header, ' <-- header');
 
   return (
     <header className="header fixed z-10 flex justify-between items-center w-full px-5 py-4 md:py-0 md:px-20 bg-neutral-100  transition-colors duration-200">
@@ -110,7 +109,10 @@ export function HeaderMenu({
             className="header-menu-item relative"
             end
             key={item.id}
-            onClick={close}
+            onClick={() => {
+              close();
+              setShowDropdown(false);
+            }}
             prefetch="intent"
             style={activeLinkStyle}
             to={url}
@@ -125,15 +127,21 @@ export function HeaderMenu({
 export function DropdownHeaderMenuSqrFull({
   img,
   url,
+  setShowDropdown,
 }: {
   img: string;
   url: string;
+  setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [showShopBtn, setShowShopBtn] = useState<boolean>(false);
   return (
     <div
       onMouseEnter={() => setShowShopBtn(true)}
       onMouseLeave={() => setShowShopBtn(false)}
+      onClick={() => setShowDropdown(false)}
+      onKeyDown={() => setShowDropdown(false)}
+      role="button"
+      tabIndex={0}
       className="h-full bg-neutral-200 cursor-pointer relative max-w-50"
     >
       <Image className="w-full h-full object-contain" src={img} alt="" />
@@ -145,9 +153,11 @@ export function DropdownHeaderMenuSqrFull({
 export function DropdownHeaderMenuSqrHalf({
   img,
   url,
+  setShowDropdown,
 }: {
   img: string;
   url: string;
+  setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [showShopBtn, setShowShopBtn] = useState<boolean>(false);
 
@@ -156,6 +166,10 @@ export function DropdownHeaderMenuSqrHalf({
       style={{height: '48.75%'}}
       onMouseEnter={() => setShowShopBtn(true)}
       onMouseLeave={() => setShowShopBtn(false)}
+      onClick={() => setShowDropdown(false)}
+      onKeyDown={() => setShowDropdown(false)}
+      role="button"
+      tabIndex={0}
       // added max-w for safari compatibility
       className="  bg-neutral-300 cursor-pointer relative max-w-28"
     >
@@ -205,6 +219,7 @@ export function DropdownHeaderMenu() {
       <DropdownHeaderMenuSqrFull
         url={hoveredCollectionUrl}
         img={imagePath[0]}
+        setShowDropdown={setShowDropdown}
       />
       {/* col 2 */}
       <div className="flex flex-col gap-2">
@@ -212,11 +227,13 @@ export function DropdownHeaderMenu() {
         <DropdownHeaderMenuSqrHalf
           url={hoveredCollectionUrl}
           img={imagePath[1]}
+          setShowDropdown={setShowDropdown}
         />
         {/* col 2 row 2 */}
         <DropdownHeaderMenuSqrHalf
           url={hoveredCollectionUrl}
           img={imagePath[2]}
+          setShowDropdown={setShowDropdown}
         />
       </div>
       <button

@@ -180,7 +180,7 @@ export default function Product() {
   );
   const {open} = useAside();
   return (
-    <div className="mt-12 md:mt-32 flex flex-col items-center">
+    <div className="mt-12 md:mt-32 flex flex-col items-center ">
       <div className="flex flex-col md:flex-row justify-start gap-12 w-full">
         {/* gallery */}
         <Suspense
@@ -203,7 +203,7 @@ export default function Product() {
                 />
 
                 {/* Product Info Section*/}
-                <div className="flex flex-col min-w-96 ">
+                <div className="flex flex-col min-w-96  ">
                   <div className="w-full flex flex-col p-3 md:p-0 md:sticky md:top-32 ">
                     {' '}
                     {/* <div className="my-5 flex justify-start">

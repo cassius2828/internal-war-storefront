@@ -54,24 +54,8 @@ export default function Contact() {
                 directly from the following contact information
               </p>
               <dl className="mt-10 space-y-4 text-base/7 text-gray-900">
-                <div className="flex gap-x-4 mt-8">
-                  <dt className="flex-none">
-                    <span className="sr-only">Telephone</span>
-                    <PhoneIcon
-                      aria-hidden="true"
-                      className="h-7 w-6 text-gray-400"
-                    />
-                  </dt>
-                  <dd>
-                    <a
-                      href="tel:+1 (555) 234-5678"
-                      className="hover:text-gray-900"
-                    >
-                      +1 (555) 234-5678
-                    </a>
-                  </dd>
-                </div>
-                <div className="flex gap-x-4">
+             
+                <div className="flex gap-x-4 mt-12">
                   <dt className="flex-none">
                     <span className="sr-only">Email</span>
                     <EnvelopeIcon
@@ -81,10 +65,10 @@ export default function Contact() {
                   </dt>
                   <dd>
                     <a
-                      href="mailto:hello@example.com"
+                      href="mailto:internal.war09@gmail.com"
                       className="hover:text-gray-900"
                     >
-                      hello@example.com
+                      internal.war09@gmail.com
                     </a>
                   </dd>
                 </div>

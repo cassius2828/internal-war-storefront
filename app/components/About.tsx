@@ -11,6 +11,7 @@ const navigation = [
   {name: 'Resources', href: '#'},
   {name: 'Company', href: '#'},
 ];
+// come back to stats
 const stats = [
   {label: 'Sales in 2024', value: '1000+'},
   {label: 'Followers on social media', value: '3000+'},
@@ -233,12 +234,13 @@ export default function About() {
         </div>
 
         {/* Content section */}
-        <div className="mx-auto -mt-12 max-w-7xl px-6 sm:mt-0 lg:px-8 xl:-mt-8">
+        <div className="mx-auto -mt-12 max-w-7xl px-6 sm:mt-0 lg:px-8 xl:-mt-8 ">
           <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
-            <h3 className="text-pretty text-2xl font-semibold tracking-tight text-gray-900">
+            {/* when adding stats back remove justcenter from p container and flex and jc from h3 */}
+            <h3 className="text-pretty text-2xl font-semibold tracking-tight text-gray-900 flex justify-center">
               Inspired by
             </h3>
-            <div className="mt-6 flex flex-col gap-x-8 gap-y-20 lg:flex-row">
+            <div className="mt-6 flex flex-col gap-x-8 gap-y-20 lg:flex-row justify-center">
               <div className="lg:w-full lg:max-w-2xl lg:flex-auto">
                 <p
                   style={{lineHeight: '40px'}}
@@ -254,7 +256,7 @@ export default function About() {
                   terms.
                 </p>
               </div>
-              <div className="lg:flex lg:flex-auto lg:justify-center">
+              {/* <div className="lg:flex lg:flex-auto lg:justify-center">
                 <dl className="w-64 space-y-8 xl:w-80">
                   {stats.map((stat) => (
                     <div
@@ -270,7 +272,7 @@ export default function About() {
                     </div>
                   ))}
                 </dl>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -288,11 +290,11 @@ export default function About() {
 
         {/* Values section */}
         <div className="mx-auto mt-32 max-w-7xl px-6 sm:mt-40 lg:px-8">
-          <div className="mx-auto max-w-2xl lg:mx-0">
-            <h3 className="text-pretty text-2xl font-semibold tracking-tight text-gray-900">
+          <div className="mx-auto max-w-2xl flex flex-col items-center">
+            <h3 className="text-pretty text-2xl text-center font-semibold tracking-tight text-gray-900">
               Our process
             </h3>
-            <p className="mt-6 text-lg/8 text-gray-600">
+            <p className="mt-6 text-lg/8 text-gray-600 text-center">
               Our process isn’t just about creating fashion — it’s about
               channeling the war inside all of us into wearable art. Each
               collection is a canvas for exploring new ideas, clashing styles,
@@ -302,11 +304,15 @@ export default function About() {
               victory.
             </p>
           </div>
-          <dl className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-base/7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+          <dl className="mx-auto pt-12 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-base/7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {values.map((value) => (
               <div key={value.name}>
-                <dt className="font-semibold text-gray-900">{value.name}</dt>
-                <dd className="mt-1 text-gray-600">{value.description}</dd>
+                <dt className="font-semibold text-center text-gray-900">
+                  {value.name}
+                </dt>
+                <dd className="mt-1 text-center text-gray-600">
+                  {value.description}
+                </dd>
               </div>
             ))}
           </dl>

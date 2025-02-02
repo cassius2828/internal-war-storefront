@@ -87,6 +87,13 @@ Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [hoveredHandle, setHoveredHandle] = useState<string>('/');
   const [hoveredCollectionUrl, setHoveredCollectionUrl] = useState<string>('/');
+  // NEED TO HAVE OPEN BUTTONS FOR PRODUCT ADD TO CART
+  /*
+  1: State to control if a size button is selected on a product
+  2: State to contain a list of selections to add to the cart 
+  
+  */
+
   const fetcher = useFetcher();
   // TODO: Implement caching
   const handleShowDropdown = (handle: string | null) => {

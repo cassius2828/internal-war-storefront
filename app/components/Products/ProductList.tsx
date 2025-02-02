@@ -4,9 +4,10 @@ import {formatPrice, getAvailableSizeVariants} from '~/lib/utils';
 import type {
   Product,
   ProductOption,
+  ProductOptionValue,
 } from '@shopify/hydrogen/storefront-api-types';
 import {ProductCardProps} from 'customTypes';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 export default function ProductCardList({products}: {products: Product[]}) {
   return (
@@ -32,6 +33,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   );
   const availableSizes = getAvailableSizeVariants(product);
   const [showAddToCart, setShowAddToCart] = useState<boolean>(false);
+  const [activeArr, setActiveArr] = useState<string[]>([]);
+  console.log(product, ' <-- product');
+
+  // if no buttons are selected then remove add to cart btn
+  const handleShowAddToCart = () => {
+    if (activeArr.length === 0) {
+      setShowAddToCart(false);
+    } else {
+      setShowAddToCart(true);
+    }
+  };
+  useEffect(() => {
+    console.log(activeArr);
+    // ensures we are using a fresh state to reflect the value of the array
+    handleShowAddToCart();
+  }, [activeArr]);
   return (
     <div className="group relative flex flex-col justify-between relative">
       {/* //TODO: when no query it auto adds ?Size=S; locate origin and find out if this could be change to not include a query by default */}
@@ -70,25 +87,57 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         handle={product.handle}
         options={product.options}
         variants={product.variants}
+        setActiveArr={setActiveArr}
+        // handleShowAddToCart={handleShowAddToCart}
       >
         {({option}) => {
-          console.log(option, ' <-- option in variant selector');
+          // console.log(option, ' <-- option');
+          // console.log(option.values, ' <-- option.values');
+          // console.log(
+          //   option.values[0].isActive,
+          //   ' <-- option.vales[0].isActive',
+          // );
+
           return (
             <>
               <div className="mt-4">
                 <div className="flex gap-4 items-center  my-3 relative   justify-center ">
-                  {option.values.map(({value, isAvailable, to, isActive}) => (
-                    <button
-                      onClick={() => setShowAddToCart((prev) => !prev)}
-                      key={value}
-                      type="button"
-                      className={`${
-                        isActive ? 'active' : isAvailable ? '' : 'opacity-80'
-                      } rounded-sm bg-gray-200 drop-shadow-md md:min-w-8 px-2 py-1 text-xs md:text-sm font-semibold text-neautral-800 shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader`}
-                    >
-                      {value}
-                    </button>
-                  ))}
+                  {option.values.map(({value, isAvailable, to, isActive}) => {
+                    console.log(activeArr);
+                    const linkIsInActiveArr = activeArr.includes(to);
+                    console.log(linkIsInActiveArr, ' <-- lisar');
+
+                    // toggles active arr size btns
+                    const handleAddToActiveArr = () => {
+                      if (!linkIsInActiveArr) {
+                        setActiveArr((prev) => [...prev, to]);
+                      } else {
+                        setActiveArr((prev) =>
+                          prev.filter((value) => value !== to),
+                        );
+                      }
+                    };
+                    return (
+                      <button
+                        onClick={() => {
+                          // this logic needs to check for one true value in isactivearr
+                          // handleShowAddToCart();
+                          handleAddToActiveArr();
+                        }}
+                        key={value}
+                        type="button"
+                        className={`${
+                          linkIsInActiveArr
+                            ? 'active bg-neutral-950 text-gray-100'
+                            : isAvailable
+                            ? ''
+                            : 'opacity-80'
+                        } rounded-sm bg-gray-200 drop-shadow-md md:min-w-8 px-2 py-1 text-xs md:text-sm font-semibold text-neautral-800 shadow-sm hover:bg-black hover:text-gray-100 transition-colors duration-200 newsreader`}
+                      >
+                        {value}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </>

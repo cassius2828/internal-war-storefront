@@ -8,6 +8,8 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 import {ProductCardProps} from 'customTypes';
 import {useEffect, useState} from 'react';
+import {AddToCartButton, AddToCartButtonNoSubmit} from '../AddToCartButton';
+import {useAside} from '../Aside';
 
 export default function ProductCardList({products}: {products: Product[]}) {
   return (
@@ -34,6 +36,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const availableSizes = getAvailableSizeVariants(product);
   const [showAddToCart, setShowAddToCart] = useState<boolean>(false);
   const [activeArr, setActiveArr] = useState<string[]>([]);
+  const {open} = useAside();
+
   console.log(product, ' <-- product');
 
   // if no buttons are selected then remove add to cart btn
@@ -50,7 +54,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     handleShowAddToCart();
   }, [activeArr]);
   return (
-    <div className="group relative flex flex-col justify-between relative">
+    <div className="group relative flex flex-col justify-between">
       {/* //TODO: when no query it auto adds ?Size=S; locate origin and find out if this could be change to not include a query by default */}
       <Link prefetch="intent" to={`/products/${product.handle}?Size=M`}>
         <div>
@@ -88,6 +92,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         options={product.options}
         variants={product.variants}
         setActiveArr={setActiveArr}
+
         // handleShowAddToCart={handleShowAddToCart}
       >
         {({option}) => {
@@ -103,9 +108,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <div className="mt-4">
                 <div className="flex gap-4 items-center  my-3 relative   justify-center ">
                   {option.values.map(({value, isAvailable, to, isActive}) => {
-                    console.log(activeArr);
                     const linkIsInActiveArr = activeArr.includes(to);
-                    console.log(linkIsInActiveArr, ' <-- lisar');
 
                     // toggles active arr size btns
                     const handleAddToActiveArr = () => {
@@ -121,7 +124,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                       <button
                         onClick={() => {
                           // this logic needs to check for one true value in isactivearr
-                          // handleShowAddToCart();
                           handleAddToActiveArr();
                         }}
                         key={value}
@@ -147,9 +149,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className="flex justify-center items-center h-12 ">
         {showAddToCart && (
-          <button className=" bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6">
+          <AddToCartButtonNoSubmit
+            onClick={() => open('cart')}
+            // lines={
+            //   selectedVariant
+            //     ? [
+            //         {
+            //           merchandiseId: selectedVariant.id,
+            //           quantity: 1,
+            //           selectedVariant,
+            //         },
+            //       ]
+            //     : []
+            // }
+          >
             add to cart
-          </button>
+          </AddToCartButtonNoSubmit>
         )}
       </div>
 

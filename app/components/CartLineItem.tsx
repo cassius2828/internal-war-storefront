@@ -1,14 +1,10 @@
 import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
 import type {CartLayout} from '~/components/CartMain';
-import {CartForm, Image, type OptimisticCartLine} from '@shopify/hydrogen';
+import {CartForm, Image, Money, type OptimisticCartLine} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
-import {Await, Link} from '@remix-run/react';
-import {ProductPrice} from './Products/ProductPrice';
+import {Link} from '@remix-run/react';
 import {useAside} from './Aside';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheck, faExclamationCircle} from '@fortawesome/free-solid-svg-icons';
-import {Suspense} from 'react';
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
@@ -23,108 +19,87 @@ export function CartLineItem({
   layout: CartLayout;
   line: CartLine;
 }) {
-  const {id, merchandise, quantity} = line;
+  const {id, merchandise, quantity, cost} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
+  const isOptimistic = !!line.isOptimistic;
 
   return (
-    <>
-      <li key={product.id} className="flex py-6 px-3 newsreader">
-        <div className="shrink-0">
-          {image && (
-            <Image
-              alt={product.title}
-              aspectRatio="1/1"
-              data={image}
-              height={100}
-              loading="lazy"
-              width={100}
-            />
-          )}
+    <div className={`cart-line-item ${isOptimistic ? 'cart-line-optimistic' : ''}`}>
+      {/* Product Image */}
+      <Link
+        to={lineItemUrl}
+        onClick={() => layout === 'aside' && close()}
+        className="cart-line-image"
+      >
+        {image && (
+          <Image
+            alt={product.title}
+            aspectRatio="1/1"
+            data={image}
+            height={100}
+            width={100}
+            loading="lazy"
+          />
+        )}
+      </Link>
+
+      {/* Product Details */}
+      <div className="cart-line-details">
+        <div className="cart-line-header">
+          <div className="cart-line-info">
+            <Link
+              to={lineItemUrl}
+              onClick={() => layout === 'aside' && close()}
+              className="cart-line-title"
+            >
+              {product.title}
+            </Link>
+            <div className="cart-line-options">
+              {selectedOptions.map((option, index) => (
+                <span key={index} className="cart-line-option">
+                  {option.name}: {option.value}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="cart-line-price">
+            {cost?.totalAmount ? (
+              <Money data={cost.totalAmount} />
+            ) : (
+              <Money data={merchandise.price} />
+            )}
+          </div>
         </div>
 
-        <div className="ml-4 flex flex-1 flex-col sm:ml-6">
-          <div>
-            <div className="flex justify-between">
-              <h4 className="text-sm">
-                {selectedOptions.map((option, index) => (
-                  <Link
-                    key={index}
-                    prefetch="intent"
-                    to={lineItemUrl}
-                    onClick={() => {
-                      if (layout === 'aside') {
-                        close();
-                      }
-                    }}
-                  >
-                    <strong>{product.title}</strong>
-                  </Link>
-                ))}
-              </h4>
-
-              <ProductPrice
-                price={
-                  line?.cost?.totalAmount || {
-                    amount: (
-                      Number(merchandise.price.amount.slice(0, 2)) * quantity
-                    ).toString(),
-                    currencyCode: merchandise.price.currencyCode,
-                  }
-                }
-              />
-            </div>
-            <p className="mt-1 text-sm text-gray-500">
-              Size: {selectedOptions[0].value}
-            </p>
-            <CartLineQuantity line={line} />
-          </div>
-
-          <div className="mt-4 flex flex-1 items-end justify-between">
-            <p className="flex items-center space-x-2 text-sm text-gray-700">
-              {line.merchandise.availableForSale ? (
-                <FontAwesomeIcon
-                  aria-hidden="true"
-                  className="size-5 shrink-0 text-green-500"
-                  icon={faCheck}
-                />
+        {/* Quantity and Actions */}
+        <div className="cart-line-actions">
+          <CartLineQuantity line={line} />
+          <div className="cart-line-meta">
+            <span className={`cart-line-stock ${merchandise.availableForSale ? 'in-stock' : 'out-of-stock'}`}>
+              {merchandise.availableForSale ? (
+                <>
+                  <CheckIcon />
+                  In stock
+                </>
               ) : (
-                <FontAwesomeIcon
-                  aria-hidden="true"
-                  className="size-5 shrink-0 text-gray-300"
-                  icon={faExclamationCircle}
-                />
+                <>
+                  <AlertIcon />
+                  Out of stock
+                </>
               )}
-
-              <span>
-                {line.merchandise.availableForSale
-                  ? 'In stock'
-                  : 'Out of stock'}
-              </span>
-            </p>
-            <div className="ml-4">
-              <button
-                type="button"
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                <CartLineRemoveButton
-                  lineIds={[line.id]}
-                  disabled={!!line.isOptimistic}
-                />
-              </button>
-            </div>
+            </span>
+            <CartLineRemoveButton lineIds={[line.id]} disabled={isOptimistic} />
           </div>
         </div>
-      </li>
-    </>
+      </div>
+    </div>
   );
 }
 
 /**
  * Provides the controls to update the quantity of a line item in the cart.
- * These controls are disabled when the line item is new, and the server
- * hasn't yet responded that it was successfully added to the cart.
  */
 function CartLineQuantity({line}: {line: CartLine}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
@@ -133,30 +108,28 @@ function CartLineQuantity({line}: {line: CartLine}) {
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="flex items-center space-x-2">
-      <small className="text-sm text-gray-600">Quantity: {quantity}</small>
-
+    <div className="cart-quantity-selector">
       <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
           aria-label="Decrease quantity"
           disabled={quantity <= 1 || !!isOptimistic}
-          name="decrease-quantity"
-          value={prevQuantity}
-          className="flex items-center justify-center p-2 text-gray-500 hover:bg-gray-100 rounded-md transition-all duration-200 disabled:opacity-50"
+          className="cart-quantity-btn"
+          type="submit"
         >
-          <span className="text-xl">&#8722;</span>
+          <MinusIcon />
         </button>
       </CartLineUpdateButton>
+
+      <span className="cart-quantity-value">{quantity}</span>
 
       <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
         <button
           aria-label="Increase quantity"
-          name="increase-quantity"
-          value={nextQuantity}
           disabled={!!isOptimistic}
-          className="flex items-center justify-center p-2 text-gray-500 hover:bg-gray-100 rounded-md transition-all duration-200 disabled:opacity-50"
+          className="cart-quantity-btn"
+          type="submit"
         >
-          <span className="text-xl">&#43;</span>
+          <PlusIcon />
         </button>
       </CartLineUpdateButton>
     </div>
@@ -164,9 +137,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
 }
 
 /**
- * A button that removes a line item from the cart. It is disabled
- * when the line item is new, and the server hasn't yet responded
- * that it was successfully added to the cart.
+ * A button that removes a line item from the cart.
  */
 function CartLineRemoveButton({
   lineIds,
@@ -181,8 +152,14 @@ function CartLineRemoveButton({
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
     >
-      <button disabled={disabled} type="submit">
-        Remove
+      <button
+        disabled={disabled}
+        type="submit"
+        className="cart-remove-btn"
+        aria-label="Remove item"
+      >
+        <TrashIcon />
+        <span>Remove</span>
       </button>
     </CartForm>
   );
@@ -203,5 +180,48 @@ function CartLineUpdateButton({
     >
       {children}
     </CartForm>
+  );
+}
+
+// Icon Components
+function MinusIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M5 12h14" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+function AlertIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
   );
 }

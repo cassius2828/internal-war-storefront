@@ -23,7 +23,7 @@ const CollectionPreviewGrid = () => {
           href="/collections/sweats"
           imageSrc="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_6691.jpg?v=1732660138"
           imageAlt="Bottoms collection"
-          className="sm:row-span-2 aspect-[3/4] lg:aspect-auto"
+          className="sm:row-span-2 aspect-[3/4] sm:aspect-auto sm:h-full"
         />
         {/* Collection 2 - Hoodies */}
         <CollectionCard
@@ -31,7 +31,7 @@ const CollectionPreviewGrid = () => {
           href="/collections/hoodies"
           imageSrc="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5076.jpg?v=1732660176"
           imageAlt="Hoodies collection"
-          className="aspect-[3/4] lg:aspect-auto"
+          className="aspect-[3/4] sm:aspect-[4/3] lg:aspect-[3/2]"
         />
         {/* Collection 3 - Full Sets */}
         <CollectionCard
@@ -39,7 +39,7 @@ const CollectionPreviewGrid = () => {
           href="/collections/sweatsuits"
           imageSrc="https://cdn.shopify.com/s/files/1/0640/4082/9110/files/IMG_5300.jpg?v=1732660176"
           imageAlt="Full sets collection"
-          className="aspect-[3/4] lg:aspect-auto"
+          className="aspect-[3/4] sm:aspect-[4/3] lg:aspect-[3/2]"
         />
       </div>
 
@@ -68,23 +68,25 @@ function CollectionCard({title, href, imageSrc, imageAlt, className = ''}: Colle
   return (
     <Link
       to={href}
-      className={`group relative overflow-hidden bg-neutral-900 ${className}`}
+      className={`group relative block overflow-hidden bg-neutral-200 ${className}`}
     >
       <img
         alt={imageAlt}
         src={imageSrc}
-        className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-80"
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
       />
+      {/* Gradient overlay for text legibility */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10"
       />
+      {/* Content */}
       <div className="absolute inset-0 flex items-end p-6 md:p-8">
         <div>
-          <h3 className="text-xl md:text-2xl font-light text-white tracking-wide uppercase">
+          <h3 className="text-xl md:text-2xl font-light text-white tracking-wide uppercase drop-shadow-md">
             {title}
           </h3>
-          <p className="mt-2 text-sm text-white/80 flex items-center gap-2 group-hover:gap-3 transition-all duration-300">
+          <p className="mt-3 text-sm text-white flex items-center gap-2 group-hover:gap-3 transition-all duration-300">
             Shop now
             <span aria-hidden="true" className="text-lg">→</span>
           </p>

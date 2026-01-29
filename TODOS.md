@@ -8,6 +8,10 @@
 ### In Progress
 - [ ] Cross-browser QA for design elevation changes
 
+### Completed This Sprint
+- [x] Complete search UI overhaul with modern design
+- [x] Complete cart UI overhaul with premium e-commerce design
+
 ### Up Next
 - [ ] Ensure we can get accurate data from the Shopify store
 - [ ] Cart behavior is handled properly

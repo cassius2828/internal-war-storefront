@@ -19,9 +19,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Swipe gestures for mobile product image carousel
 - Loading spinner animation for add-to-cart button
 - Section titles for homepage product grid and collections
+- **New SearchModal component** (`app/components/SearchModal.tsx`) - Modern full-screen search experience
+  - Full-screen modal with backdrop blur effect
+  - Debounced search input (200ms) for better performance
+  - Global keyboard shortcut (⌘K / Ctrl+K) to open search from anywhere
+  - Keyboard navigation support (ESC to close, Enter to view all results)
+  - Clean empty state with search icon and keyboard hint
+  - Loading skeleton animations
+  - No results state with helpful message
+  - Product cards with images, titles, and prices in responsive grid
+  - Collection, page, and article results sections
+  - "View all results" CTA button
+  - Mobile-optimized slide-up animation
+- **Modernized Cart UI** - Complete overhaul of cart sidebar
+  - Clean product cards with better image presentation
+  - Modern quantity selector with +/- buttons
+  - Variant options displayed as styled tags
+  - In-stock/out-of-stock indicators with icons
+  - Collapsible discount code section with animation
+  - Order summary with subtotal, shipping, and total
+  - Premium checkout button with hover effects
+  - Security note with lock icon
+  - Empty cart state with call-to-action
+  - Optimistic UI feedback for cart updates
 
 ### Changed
-- **Header**: Improved spacing, typography with letter-spacing, refined dropdown animations with smooth fade/slide, hover states with underline animations
+- **Search UI**: Complete overhaul from basic aside panel to modern full-screen modal with premium e-commerce UX
+- **Cart UI**: Complete redesign of CartMain, CartLineItem, and CartSummary components with modern styling
+- **Header**: Added global ⌘K keyboard shortcut listener for search; improved spacing, typography with letter-spacing, refined dropdown animations with smooth fade/slide, hover states with underline animations
 - **Homepage Hero**: Enhanced with gradient overlay for text legibility, larger typography, premium CTA button styling
 - **Homepage Sections**: Added consistent section spacing using design tokens, section headers with proper hierarchy
 - **Product Images Grid (Desktop)**: Larger gaps, thumbnail strip navigation, subtle hover effects with scale and overlay
@@ -41,7 +66,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - None
 
 ### Removed
-- None
+- Old SearchAside component from PageLayout (replaced by modern SearchModal)
 
 ### Security
 - 36 npm vulnerabilities identified (to be addressed)

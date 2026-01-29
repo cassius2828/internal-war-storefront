@@ -39,7 +39,22 @@ export function Header({
   publicStoreDomain,
 }: HeaderProps) {
   const {shop, menu} = header;
-  const {showDropdown} = useAside();
+  const {showDropdown, open, type} = useAside();
+
+  // Global keyboard shortcut for search (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        if (type !== 'search') {
+          open('search');
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, type]);
 
   return (
     <header className="header fixed z-30 flex justify-between items-center w-full px-6 py-5 md:py-6 md:px-16 lg:px-24 bg-neutral-100 transition-all duration-300">

@@ -4,22 +4,18 @@ import ProductImagesCarousel from './ProductImagesCarousel';
 
 const ProductImages: React.FC<ProductImagesProps> = ({
   productDataWithMedia,
-  product,
-  selectedVariant,
-  variants,
   setFocusedImage,
 }) => {
-  const {title, descriptionHtml} = product;
-  const mediaLength = productDataWithMedia.product?.media.edges.length;
-
   return (
-    <>
+    <div className="w-full lg:w-3/5 lg:sticky lg:top-24 lg:self-start">
+      {/* Desktop: Grid with thumbnail navigation */}
       <ProductImagesGrid
         productDataWithMedia={productDataWithMedia}
         setFocusedImage={setFocusedImage}
       />
+      {/* Mobile: Swipeable carousel */}
       <ProductImagesCarousel productDataWithMedia={productDataWithMedia} />
-    </>
+    </div>
   );
 };
 

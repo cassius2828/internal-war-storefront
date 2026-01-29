@@ -51,16 +51,29 @@ export const SizePicker = ({option}: {option: Option}) => {
   const [selectedSize, setSelectedSize] = useState(option?.values[0] || 'S');
 
   return (
-    <div>
-      <fieldset aria-label={`Choose a ${option.name}`} className="mt-3">
+    <div className="w-full">
+      {/* Option label */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-sm font-light tracking-wide text-neutral-600 uppercase">
+          {option.name}
+        </span>
+        <button
+          type="button"
+          className="text-xs text-neutral-500 underline underline-offset-2 hover:text-neutral-900 transition-colors"
+        >
+          Size guide
+        </button>
+      </div>
+
+      <fieldset aria-label={`Choose a ${option.name}`}>
         <RadioGroup
           value={selectedSize}
           onChange={setSelectedSize}
-          className="flex gap-8"
+          className="grid grid-cols-4 gap-2"
         >
           {option.values.map(({value, isAvailable, isActive, to}) => (
             <Link
-              className={'p-0 max-w-32'}
+              className="block"
               key={option.name + value}
               prefetch="intent"
               preventScrollReset
@@ -68,37 +81,36 @@ export const SizePicker = ({option}: {option: Option}) => {
               to={to}
             >
               <Radio
-                key={value}
                 value={value}
                 disabled={!isAvailable}
-                className={classNames(
-                  isAvailable
-                    ? 'cursor-pointer focus:outline-none'
-                    : 'cursor-not-allowed opacity-25 text-xl',
-                  `flex items-center justify-center rounded-md border px-3 py-3  md:px-2 md:py-2 lg:px-3 text-xs font-medium uppercase sm:flex-1 ${
+                className={`
+                  relative flex items-center justify-center py-3 text-sm font-light tracking-wide
+                  transition-all duration-200 ease-out
+                  ${
+                    isAvailable
+                      ? 'cursor-pointer'
+                      : 'cursor-not-allowed opacity-40'
+                  }
+                  ${
                     isActive
-                      ? 'border-transparent bg-neutral-900 text-white ring-2 ring-neutral-500 ring-offset-2 hover:bg-neutral-700'
-                      : 'border-gray-200 bg-white text-gray-900 hover:bg-gray-50 '
-                  }`,
-                )}
+                      ? 'bg-neutral-900 text-white border border-neutral-900'
+                      : 'bg-white text-neutral-900 border border-neutral-300 hover:border-neutral-900'
+                  }
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-1
+                `}
               >
                 {value || 'N/A'}
+                {/* Strikethrough for unavailable */}
+                {!isAvailable && (
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="w-full h-px bg-neutral-400 rotate-[-20deg]" />
+                  </span>
+                )}
               </Radio>
             </Link>
           ))}
         </RadioGroup>
       </fieldset>
-      {/* <a
-        href="/"
-        className="text-xs font-medium text-neutral-600 hover:text-neutral-500"
-      >
-        See sizing chart
-      </a> */}
     </div>
   );
 };
-
-// utils
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ');
-}

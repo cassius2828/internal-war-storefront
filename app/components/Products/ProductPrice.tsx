@@ -9,29 +9,32 @@ export function ProductPrice({
   price?: MoneyV2;
   compareAtPrice?: MoneyV2 | null;
 }) {
-  if (!compareAtPrice)
-    return (
-      <div className="product-price">
-        {price ? <Money data={price} /> : <span>&nbsp;</span>}
-      </div>
-    );
-  const result = comparePrice(price?.amount, compareAtPrice?.amount);
+  const result = compareAtPrice
+    ? comparePrice(price?.amount, compareAtPrice?.amount)
+    : null;
+  const hasDiscount = result?.isBasePriceLessThanComparedPrice;
 
   return (
-    <div className="product-price">
-      {compareAtPrice ? (
-        <div className="product-price-on-sale">
-          {price ? <Money data={price} /> : null}
-          {result.isBasePriceLessThanComparedPrice && (
-            <s>
-              <Money data={compareAtPrice} />
-            </s>
-          )}
-        </div>
-      ) : price ? (
-        <Money data={price} />
+    <div className="flex items-baseline gap-3">
+      {price ? (
+        <span
+          className={`
+            text-lg font-light tracking-wide
+            ${hasDiscount ? 'text-red-600' : 'text-neutral-900'}
+          `}
+        >
+          <Money data={price} />
+        </span>
       ) : (
-        <span>&nbsp;</span>
+        <span className="text-lg font-light tracking-wide text-neutral-400">
+          —
+        </span>
+      )}
+
+      {hasDiscount && compareAtPrice && (
+        <span className="text-sm font-light text-neutral-400 line-through">
+          <Money data={compareAtPrice} />
+        </span>
       )}
     </div>
   );

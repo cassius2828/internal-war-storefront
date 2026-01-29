@@ -41,8 +41,6 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       console.error(error);
       return null;
     });
-  console.log(context, ' <-- CONTEXT');
-  console.log(context.storefront, ' <-- CONTEXT.STOREFRONT');
   return {
     featuredCollection: collections.nodes[0],
     allProducts,
@@ -74,35 +72,48 @@ interface HeroVideoProps {
 }
 function HeroVideo({url}: HeroVideoProps) {
   return (
-    <div style={{maxHeight: '50rem'}} className="hero-video w-screen relative">
-      {/* //TODO change the fonts later */}
-      <div className="absolute left-1/5 top-1/2 flex flex-col gap-4 justify-center items-start">
-        <h2 className="uppercase tracking-widest font-light flex">
-          Welcome to the Store
-        </h2>
-        <h3 className="uppercase text-3xl">Internal War</h3>
-        <span className=" capitalize">shop our collections now!</span>
-        <Link to={'/collections'}>
-          <button
-            type="button"
-            className=" bg-neutral-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6"
-          >
-            shop
-          </button>
-        </Link>
+    <div className="hero-video relative h-screen w-full overflow-hidden">
+      {/* Gradient overlay for text legibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent z-10" />
+      
+      {/* Hero content */}
+      <div className="absolute inset-0 z-20 flex items-end justify-center pb-24 md:pb-32 lg:pb-40">
+        <div className="text-center text-white px-6">
+          <p className="uppercase tracking-[0.25em] text-sm md:text-base font-light mb-4 opacity-90">
+            Welcome to the Store
+          </p>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-[0.1em] uppercase mb-6 newsreader">
+            Internal War
+          </h1>
+          <p className="text-base md:text-lg font-light mb-10 opacity-80 tracking-wide">
+            Shop our collections now
+          </p>
+          <Link to="/collections">
+            <button
+              type="button"
+              className="border border-white px-10 py-4 text-sm uppercase tracking-[0.2em] font-light
+                         transition-all duration-300 hover:bg-white hover:text-black
+                         focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              Shop Now
+            </button>
+          </Link>
+        </div>
       </div>
+      
+      {/* Video background */}
       <video
-        style={{maxHeight: '50rem'}}
-        className=" w-screen object-center object-cover relative -z-10"
+        className="absolute inset-0 w-full h-full object-cover object-center"
         src={url}
-        width="100%"
         autoPlay
         muted
         loop
+        playsInline
       >
         <img
           src={import.meta.env.VITE_FALLBACK_LOGO}
           alt={import.meta.env.VITE_FALLBACK_LOGO ? 'fallback logo' : 'hero'}
+          className="w-full h-full object-cover"
         />
       </video>
     </div>
@@ -113,8 +124,23 @@ export default function Homepage() {
   return (
     <div className="home">
       <HeroVideo url={heroVideoUrl} />
-      <ProductList products={data.allProducts?.products?.nodes} />
-      <CollectionPreviewGrid />
+      
+      {/* Featured Products Section */}
+      <section className="section-spacing page-wrapper">
+        <div className="max-w-[1600px] mx-auto">
+          <h2 className="section-title text-center mb-10 md:mb-14">New Arrivals</h2>
+          <ProductList products={data.allProducts?.products?.nodes} />
+        </div>
+      </section>
+      
+      {/* Collections Section */}
+      <section className="section-spacing page-wrapper bg-neutral-50">
+        <div className="max-w-[1600px] mx-auto">
+          <h2 className="section-title text-center mb-10 md:mb-14">Shop Collections</h2>
+          <CollectionPreviewGrid />
+        </div>
+      </section>
+      
       <NewsCarousel />
     </div>
   );

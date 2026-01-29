@@ -1,11 +1,11 @@
 :root {
-  --aside-width: 400px;
+  /* Legacy variables - kept for backwards compatibility */
+  /* New tokens are in tokens.css */
   --cart-aside-summary-height-with-discount: 300px;
   --cart-aside-summary-height: 250px;
   --grid-item-width: 355px;
-  --header-height: 64px;
-  --color-dark: #000;
-  --color-light: #fff;
+  --color-dark: var(--color-primary, #000);
+  --color-light: var(--color-background, #fff);
 }
 
 img {
@@ -18,15 +18,15 @@ img {
 * --------------------------------------------------
 */
 aside {
-  background: var(--color-light);
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+  background: var(--color-background);
+  box-shadow: var(--shadow-2xl);
   height: 100vh;
   max-width: var(--aside-width);
   min-width: var(--aside-width);
   position: fixed;
   right: calc(-1 * var(--aside-width));
   top: 0;
-  transition: transform 200ms ease-in-out;
+  transition: transform var(--transition-base) var(--ease-out);
 }
 
 /* aside header {
@@ -76,7 +76,7 @@ aside li {
 }
 
 .overlay {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -84,10 +84,9 @@ aside li {
   position: fixed;
   right: 0;
   top: 0;
-  transition: opacity 400ms ease-in-out;
-  transition: opacity 400ms;
+  transition: opacity var(--transition-slower) var(--ease-out);
   visibility: hidden;
-  z-index: 10;
+  z-index: var(--z-modal-backdrop);
 }
 
 .overlay .close-outside {
@@ -503,6 +502,22 @@ button.reset:hover:not(:has(> *)) {
 .fade-in {
   animation: fadeIn forwards 0.35s ease-out;
 }
+
+/* Dropdown animation */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.25s ease-out forwards;
+}
 /* loader */
 .two-tone-loader {
   width: 48px;
@@ -582,4 +597,88 @@ button.reset:hover:not(:has(> *)) {
 /* about section */
 .about-horizontal-img {
   object-position: 50% 20%;
+}
+
+/*
+* --------------------------------------------------
+* Layout Utilities
+* --------------------------------------------------
+*/
+
+/* Page wrapper - consistent horizontal padding */
+.page-wrapper {
+  padding-inline: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .page-wrapper {
+    padding-inline: var(--space-xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-wrapper {
+    padding-inline: var(--space-2xl);
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-wrapper {
+    padding-inline: var(--space-3xl);
+  }
+}
+
+/* Section spacing - vertical rhythm */
+.section-spacing {
+  padding-block: var(--space-2xl);
+}
+
+@media (min-width: 768px) {
+  .section-spacing {
+    padding-block: var(--space-3xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-spacing {
+    padding-block: var(--space-4xl);
+  }
+}
+
+/* Section header styles */
+.section-header {
+  margin-bottom: var(--space-xl);
+}
+
+@media (min-width: 768px) {
+  .section-header {
+    margin-bottom: var(--space-2xl);
+  }
+}
+
+.section-title {
+  font-family: 'Newsreader', serif;
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text);
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: var(--text-3xl);
+  }
+}
+
+/* Divider utility */
+.divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin-block: var(--space-2xl);
+}
+
+@media (min-width: 768px) {
+  .divider {
+    margin-block: var(--space-3xl);
+  }
 }

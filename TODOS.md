@@ -6,20 +6,37 @@
 ## Current Sprint
 
 ### In Progress
-- [ ] Project setup for agentic development workflow
+- [ ] Cross-browser QA for design elevation changes
 
 ### Up Next
-<!-- Add tasks here as they are identified -->
+- [ ] Ensure we can get accurate data from the Shopify store
+- [ ] Cart behavior is handled properly
+- [ ] Ensure we handle failed payments
 
 ---
 
 ## Backlog
 
 ### High Priority
-<!-- Critical issues or features -->
+
+#### Design & UI
+- [x] ~~Improve overall design of the website~~ (Completed - see Design Elevation below)
+- [ ] Ensure buttons and icons render correctly and consistently
+
+#### Performance
+- [ ] Improve data fetching of images to ensure they are prefetched and ready to render for the client
+
+#### Pages
+- [ ] Improve contact page
 
 ### Medium Priority
-<!-- Important but not urgent -->
+
+#### SEO & Performance
+- [ ] Improve SEO and statically rendered content
+  - Meta tags optimization
+  - Open Graph tags
+  - Structured data
+  - Static generation where possible
 
 ### Low Priority / Nice to Have
 <!-- Future improvements -->
@@ -29,6 +46,34 @@
 ## Completed
 
 ### January 2026
+
+#### Week of Jan 28 - Design Elevation
+- [x] Created design tokens system (`app/styles/tokens.css`)
+  - Spacing scale, typography, colors, shadows, transitions
+  - CSS custom properties for consistent styling
+- [x] Elevated Header component with premium navigation
+  - Improved spacing and typography
+  - Refined dropdown animations
+  - Better hover states with underline animations
+- [x] Enhanced homepage hero section
+  - Full viewport video with gradient overlay
+  - Premium typography and CTA styling
+- [x] Improved homepage product grid and collections
+  - Better section spacing and titles
+  - Consistent padding using design tokens
+- [x] Refined product page image gallery
+  - Desktop: Thumbnail strip navigation with hover states
+  - Mobile: Swipeable carousel with smooth transitions
+  - Image counter and premium indicator styling
+- [x] Elevated product info section
+  - Premium size selector with visual states
+  - Full-width add-to-cart with loading state
+  - Smooth accordion animations for details
+  - Better price typography hierarchy
+- [x] Applied consistent spacing across pages
+  - Added section and container utility classes
+  - Consistent horizontal padding responsive scale
+  - Section titles with proper hierarchy
 
 #### Week of Jan 27
 - [x] Created comprehensive documentation in `/docs`

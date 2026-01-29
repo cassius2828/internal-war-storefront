@@ -183,14 +183,14 @@ export default function Product() {
   // console.log(product, ' MAIN PRODUCT IN VIEW');
 
   return (
-    <div className="mt-12 md:mt-32 flex flex-col items-center ">
-      <div className="flex flex-col md:flex-row justify-start gap-12 w-full">
-        {/* gallery */}
+    <div className="mt-20 md:mt-28 flex flex-col items-center px-4 md:px-8 lg:px-16">
+      <div className="flex flex-col lg:flex-row justify-start gap-8 lg:gap-12 w-full max-w-[1600px]">
+        {/* Product Images Gallery */}
         <Suspense
           fallback={
-            <div className="flex flex-col gap-5 items-center justify-start">
+            <div className="flex flex-col gap-5 items-center justify-center w-full lg:w-3/5 aspect-[3/4] bg-neutral-50">
               <TwoToneLoader />
-              <span>loading images...</span>
+              <span className="text-sm text-neutral-500 tracking-wide">Loading images...</span>
             </div>
           }
         >
@@ -199,54 +199,51 @@ export default function Product() {
               <>
                 <ProductImages
                   setFocusedImage={setFocusedImage}
-                  product={product}
-                  variants={variants}
-                  selectedVariant={selectedVariant}
                   productDataWithMedia={data}
                 />
 
-                {/* Product Info Section*/}
-                <div className="flex flex-col min-w-96  ">
-                  <div className="w-full flex flex-col p-3 md:p-0 md:sticky md:top-32 ">
-                    {' '}
-                    {/* <div className="my-5 flex justify-start">
-                      <Breadcrumbs pageType="products" />
-                    </div> */}
-                    <div className="flex flex-col justify-between items-start ">
-                      <div className="w-1/2">
-                        <span aria-label={`Product title: ${title}`}>
-                          {title}
-                        </span>
-                        <ProductPrice
-                          price={selectedVariant?.price}
-                          compareAtPrice={selectedVariant?.compareAtPrice}
-                        />
-                      </div>
-                      {/* Sizing */}
+                {/* Product Info Section */}
+                <div className="w-full lg:w-2/5 lg:max-w-md">
+                  <div className="flex flex-col p-4 md:p-0 lg:sticky lg:top-28">
+                    {/* Product Title & Price */}
+                    <div className="flex flex-col gap-3 mb-8">
+                      <h1 
+                        className="text-xl md:text-2xl font-light tracking-wide"
+                        aria-label={`Product title: ${title}`}
+                      >
+                        {title}
+                      </h1>
+                      <ProductPrice
+                        price={selectedVariant?.price}
+                        compareAtPrice={selectedVariant?.compareAtPrice}
+                      />
+                    </div>
 
-                      <Suspense
-                        fallback={
+                    {/* Variant Selection */}
+                    <Suspense
+                      fallback={
+                        <ProductForm
+                          product={product}
+                          selectedVariant={selectedVariant}
+                          variants={[]}
+                        />
+                      }
+                    >
+                      <Await
+                        errorElement="There was a problem loading product variants"
+                        resolve={variants}
+                      >
+                        {(variantData) => (
                           <ProductForm
                             product={product}
                             selectedVariant={selectedVariant}
-                            variants={[]}
+                            variants={variantData?.product?.variants.nodes || []}
                           />
-                        }
-                      >
-                        <Await
-                          errorElement="There was a problem loading product variants"
-                          resolve={variants}
-                        >
-                          {(data) => (
-                            <ProductForm
-                              product={product}
-                              selectedVariant={selectedVariant}
-                              variants={data?.product?.variants.nodes || []}
-                            />
-                          )}
-                        </Await>
-                      </Suspense>
-                    </div>
+                        )}
+                      </Await>
+                    </Suspense>
+
+                    {/* Add to Cart Button */}
                     <AddToCartButton
                       disabled={
                         !selectedVariant || !selectedVariant.availableForSale
@@ -270,16 +267,16 @@ export default function Product() {
                         ? 'Add to cart'
                         : 'Sold out'}
                     </AddToCartButton>
-                    {/* detials */}
-                    <div className=" flex flex-col-reverse  items-center md:justify-between  gap-3 my-12 ">
-                      {/* shipping and description */}
-                      <ShippingDetailsHTML
-                        title="Shipping Details"
-                        descriptionHtml={sampleShippingDetails}
-                      />{' '}
+
+                    {/* Product Details Accordions */}
+                    <div className="flex flex-col gap-0 mt-10 border-t border-neutral-200">
                       <ShippingDetailsHTML
                         title="Product Details"
                         descriptionHtml={descriptionHtml}
+                      />
+                      <ShippingDetailsHTML
+                        title="Shipping Details"
+                        descriptionHtml={sampleShippingDetails}
                       />
                     </div>
                   </div>
@@ -306,25 +303,28 @@ export default function Product() {
           ],
         }}
       />
-      <Suspense
-        fallback={
-          <div className="flex flex-col gap-5 items-center justify-start">
-            <TwoToneLoader />
-            <span>loading images...</span>
-          </div>
-        }
-      >
-        {/* Await resolves the productDataWithMedia promise */}
-        <Await resolve={allProducts}>
-          {(data) => (
-            // Ensure that the resolved data is passed correctly
-            <>
-              <h3 className="text-xl mt-12 newsreader">More Styles</h3>
-              <ProductCardList products={data?.products?.nodes || []} />
-            </>
-          )}
-        </Await>
-      </Suspense>
+      {/* More Styles Section */}
+      <div className="w-full max-w-[1600px] mt-16 md:mt-24 lg:mt-32">
+        <div className="divider" />
+        <Suspense
+          fallback={
+            <div className="flex flex-col gap-5 items-center justify-center py-12">
+              <TwoToneLoader />
+              <span className="text-sm text-neutral-500 tracking-wide">Loading more styles...</span>
+            </div>
+          }
+        >
+          <Await resolve={allProducts}>
+            {(data) => (
+              <div className="section-spacing">
+                <h3 className="section-title text-center mb-8 md:mb-12">More Styles</h3>
+                <ProductCardList products={data?.products?.nodes || []} />
+              </div>
+            )}
+          </Await>
+        </Suspense>
+      </div>
+
       <BasicMarquee />
       <NewsCarousel />
     </div>

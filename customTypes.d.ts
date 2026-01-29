@@ -40,10 +40,7 @@ export type SetFocusedImage = (mediaImage: MediaImage) => void;
 // export Type for the props for ProductImages
 export type ProductImagesProps = {
   productDataWithMedia: ProductDataWithMedia;
-  product: Product; // Add this to match the product prop passed to ProductImages
-  selectedVariant: ProductVariant; // Use ProductVariant for selectedVariant
   setFocusedImage: SetFocusedImage;
-  variants: ProductVariants;
 };
 export type ProductImagesGridProps = {
   productDataWithMedia: ProductDataWithMedia;

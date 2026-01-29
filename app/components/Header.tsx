@@ -42,9 +42,11 @@ export function Header({
   const {showDropdown} = useAside();
 
   return (
-    <header className="header fixed z-10 flex justify-between items-center w-full px-5 py-4 md:py-0 md:px-20 bg-neutral-100  transition-colors duration-200">
+    <header className="header fixed z-30 flex justify-between items-center w-full px-6 py-5 md:py-6 md:px-16 lg:px-24 bg-neutral-100 transition-all duration-300">
       <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <h1 className="uppercase font-light text-3xl">{shop.name}</h1>
+        <h1 className="uppercase font-light text-2xl md:text-3xl tracking-[0.15em]">
+          {shop.name}
+        </h1>
       </NavLink>
       <HeaderMenu
         menu={menu}
@@ -69,7 +71,10 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
-  const className = `header-menu-${viewport} uppercase font-thin my-10`;
+  const isMobile = viewport === 'mobile';
+  const className = isMobile
+    ? 'header-menu-mobile flex flex-col gap-6 my-10'
+    : 'header-menu-desktop hidden md:flex items-center gap-8 lg:gap-10';
   const {close, setHoveredHandle, setShowDropdown, setHoveredCollectionUrl} =
     useAside();
   const fetcher = useFetcher();
@@ -85,7 +90,7 @@ export function HeaderMenu({
           end
           onClick={close}
           prefetch="intent"
-          style={activeLinkStyle}
+          className="uppercase text-sm tracking-widest font-light"
           to="/"
         >
           home
@@ -104,9 +109,11 @@ export function HeaderMenu({
 
         return (
           <NavLink
-            // onMouseEnter={() => handleShowDropdown(hoveredHandle)}
             onMouseEnter={() => handleHoverNavItem(item.title, url)}
-            className="header-menu-item relative"
+            className="header-menu-item relative py-2 uppercase text-sm tracking-widest font-light 
+                       after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-0 
+                       after:bg-current after:transition-all after:duration-300 
+                       hover:after:w-full"
             end
             key={item.id}
             onClick={() => {
@@ -114,7 +121,6 @@ export function HeaderMenu({
               setShowDropdown(false);
             }}
             prefetch="intent"
-            style={activeLinkStyle}
             to={url}
           >
             {item.title}
@@ -142,9 +148,13 @@ export function DropdownHeaderMenuSqrFull({
       onKeyDown={() => setShowDropdown(false)}
       role="button"
       tabIndex={0}
-      className="h-full bg-neutral-200 cursor-pointer relative max-w-50"
+      className="h-full aspect-square bg-neutral-200 cursor-pointer relative overflow-hidden group"
     >
-      <Image className="w-full h-full object-contain" src={img} alt="" />
+      <Image 
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        src={img} 
+        alt="" 
+      />
       {showShopBtn && <ShopBtnDropdownNav actionDescription={null} url={url} />}
     </div>
   );
@@ -163,17 +173,19 @@ export function DropdownHeaderMenuSqrHalf({
 
   return (
     <div
-      style={{height: '48.75%'}}
       onMouseEnter={() => setShowShopBtn(true)}
       onMouseLeave={() => setShowShopBtn(false)}
       onClick={() => setShowDropdown(false)}
       onKeyDown={() => setShowDropdown(false)}
       role="button"
       tabIndex={0}
-      // added max-w for safari compatibility
-      className="  bg-neutral-300 cursor-pointer relative max-w-28"
+      className="flex-1 bg-neutral-300 cursor-pointer relative overflow-hidden group aspect-square"
     >
-      <Image className="w-full h-full object-contain" src={img} alt="" />
+      <Image 
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+        src={img} 
+        alt="" 
+      />
       <ShopBtnDropdownNav actionDescription={null} url={url} />
     </div>
   );
@@ -211,9 +223,8 @@ export function DropdownHeaderMenu() {
     return <></>;
   return (
     <div
-      style={{height: '20rem'}}
       onMouseLeave={() => setShowDropdown(false)}
-      className="hidden md:flex w-full px-20 py-2 bg-neutral-100 justify-start gap-2 absolute top-24 left-0"
+      className="hidden md:flex w-full h-80 px-16 lg:px-24 py-4 bg-neutral-100 justify-start gap-3 absolute top-full left-0 animate-fade-in-down shadow-lg"
     >
       {/* col 1 */}
       <DropdownHeaderMenuSqrFull
@@ -222,7 +233,7 @@ export function DropdownHeaderMenu() {
         setShowDropdown={setShowDropdown}
       />
       {/* col 2 */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3 h-full">
         {/* col 2 row 1 */}
         <DropdownHeaderMenuSqrHalf
           url={hoveredCollectionUrl}
@@ -237,10 +248,11 @@ export function DropdownHeaderMenu() {
         />
       </div>
       <button
-        onClick={() => setShowDropdown(true)}
-        className="absolute right-2 top-0 text-3xl font-thin"
+        onClick={() => setShowDropdown(false)}
+        className="absolute right-6 lg:right-8 top-4 text-2xl font-light text-neutral-500 hover:text-neutral-900 transition-colors duration-200"
+        aria-label="Close dropdown"
       >
-        x
+        ×
       </button>
     </div>
   );
@@ -254,12 +266,12 @@ export function ShopBtnDropdownNav({
   actionDescription: string | null;
 }) {
   return (
-    <div className="opacity-0 hover:opacity-100 transition-opacity duration-300">
-      <Link to={url}>
-        <div className="bg-black opacity-40  w-full h-full absolute top-0 left-0"></div>
-        <button className=" text-gray-100 border px-4 py-2 rounded-sm absolute top-1/2 left-1/2 -translate-1/2 cursor-pointer uppercase">
+    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300">
+      <Link to={url} className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/40"></div>
+        <span className="relative z-10 text-white border border-white px-6 py-3 text-sm uppercase tracking-widest font-light hover:bg-white hover:text-black transition-all duration-300">
           {actionDescription || 'shop'}
-        </button>
+        </span>
       </Link>
     </div>
   );
@@ -270,7 +282,7 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
+    <nav className="flex items-center gap-5 lg:gap-6" role="navigation">
       <NavLink prefetch="intent" to="/account">
         {/* <Suspense fallback="Sign in">
           <Await resolve={isLoggedIn} errorElement="Sign in">
@@ -290,10 +302,12 @@ function HeaderMenuMobileToggle() {
   const {open} = useAside();
   return (
     <button
-      className="header-menu-mobile-toggle reset"
+      className="md:hidden text-neutral-900 hover:text-neutral-600 transition-colors duration-200 text-xl"
       onClick={() => open('mobile')}
+      aria-label="Open menu"
     >
-      <h3>☰</h3>
+      <span className="sr-only">Menu</span>
+      ☰
     </button>
   );
 }
@@ -301,7 +315,11 @@ function HeaderMenuMobileToggle() {
 function SearchToggle() {
   const {open} = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
+    <button 
+      className="text-neutral-900 hover:text-neutral-600 transition-colors duration-200" 
+      onClick={() => open('search')}
+      aria-label="Search"
+    >
       <FontAwesomeIcon icon={faSearch} />
     </button>
   );
@@ -314,6 +332,7 @@ function CartBadge({count}: {count: number | null}) {
   return (
     <a
       href="/cart"
+      className="relative text-neutral-900 hover:text-neutral-600 transition-colors duration-200"
       onClick={(e) => {
         e.preventDefault();
         open('cart');
@@ -325,11 +344,11 @@ function CartBadge({count}: {count: number | null}) {
         } as CartViewPayload);
       }}
     >
-      <FontAwesomeIcon icon={faShoppingCart} />{' '}
-      {count === null ? (
-        <span>&nbsp;</span>
-      ) : (
-        <span className="absolute -top-4">{count}</span>
+      <FontAwesomeIcon icon={faShoppingCart} />
+      {count !== null && count > 0 && (
+        <span className="absolute -top-2 -right-2 bg-neutral-900 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-medium">
+          {count}
+        </span>
       )}
     </a>
   );

@@ -41,10 +41,12 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
       console.error(error);
       return null;
     });
-
+  console.log(context, ' <-- CONTEXT');
+  console.log(context.storefront, ' <-- CONTEXT.STOREFRONT');
   return {
     featuredCollection: collections.nodes[0],
     allProducts,
+    storefront: context.storefront,
   };
 }
 

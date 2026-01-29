@@ -54,3 +54,40 @@ export type ProductCardProps = {
   product: Product;
   loading?: 'lazy' | 'eager';
 };
+
+
+export const GET_PRODUCT_VARIANT_QUERY = `#graphql
+  query getProductVariant($id: ID!) {
+    productVariant(id: $id) {
+      id
+      title
+      availableForSale
+      price {
+        amount
+        currencyCode
+      }
+      compareAtPrice {
+        amount
+        currencyCode
+      }
+      requiresShipping
+      image {
+        id
+        url
+        altText
+        width
+        height
+      }
+      product {
+        handle
+        title
+        id
+        vendor
+      }
+      selectedOptions {
+        name
+        value
+      }
+    }
+  }
+`;

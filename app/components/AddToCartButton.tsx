@@ -64,8 +64,8 @@ export function AddToCartButtonNoSubmit({
           <button
             type="button"
             onClick={(e) => {
-              e.preventDefault();
               if (onClick) onClick();
+              e.preventDefault();
             }}
             disabled={disabled ?? fetcher.state !== 'idle'}
             className=" bg-neutral-900 px-6 py-3 text-sm font-semibold rounded-md text-white shadow-sm hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700 uppercase min-w-40 mt-6"

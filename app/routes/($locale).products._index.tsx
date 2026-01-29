@@ -36,7 +36,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
 
 export default function Products() {
   const data = useLoaderData<typeof loader>();
-
+console.log(data, '<-- data for prodcuts ')
   return (
     <div className=" mt-32 flex flex-col items-center">
       <h1>All Products</h1>

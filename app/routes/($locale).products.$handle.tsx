@@ -12,7 +12,7 @@ import type {SelectedOption} from '@shopify/hydrogen/storefront-api-types';
 //TODO: Understand the variants and variant urls
 import {getVariantUrl} from '~/lib/variants';
 import {ProductPrice} from '~/components/Products/ProductPrice';
-import Accordion, { ShippingDetailsHTML } from '~/components/Accordion';
+import Accordion, {ShippingDetailsHTML} from '~/components/Accordion';
 import {ProductForm} from '~/components/Products/ProductForm';
 import Breadcrumbs from '~/components/BreadCrumbs';
 import {TwoToneLoader} from '~/components/Loaders';
@@ -85,6 +85,7 @@ async function loadCriticalData({
 
   return {
     product,
+    storefront: context.storefront,
   };
 }
 const pages = [{name: 'Hoodies', href: '/collections/hoodies', current: false}];
@@ -179,6 +180,8 @@ export default function Product() {
     selectedVariant?.image, // This is allowed to be undefined
   );
   const {open} = useAside();
+  // console.log(product, ' MAIN PRODUCT IN VIEW');
+
   return (
     <div className="mt-12 md:mt-32 flex flex-col items-center ">
       <div className="flex flex-col md:flex-row justify-start gap-12 w-full">
@@ -274,7 +277,6 @@ export default function Product() {
                         title="Shipping Details"
                         descriptionHtml={sampleShippingDetails}
                       />{' '}
-
                       <ShippingDetailsHTML
                         title="Product Details"
                         descriptionHtml={descriptionHtml}
@@ -367,7 +369,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
   }
 ` as const;
 
-const PRODUCT_FRAGMENT = `#graphql
+export const PRODUCT_FRAGMENT = `#graphql
   fragment Product on Product {
     id
     title
@@ -477,18 +479,19 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     variants(first: 10) {
       nodes {
-        selectedOptions  {
-        name
-      value
-      }
+        id
+        selectedOptions {
+          name
+          value
+        }
       }
     }
     options {
+      name
+      optionValues {
         name
-       optionValues {
-       name
-            }
       }
+    }
   }
 ` as const;
 

@@ -1,7 +1,8 @@
-import {Link} from '@remix-run/react';
+import {Link, useLoaderData} from '@remix-run/react';
 import {VariantSelector} from '@shopify/hydrogen';
 import {formatPrice, getAvailableSizeVariants} from '~/lib/utils';
 import type {
+  CartLine,
   Product,
   ProductOption,
   ProductOptionValue,
@@ -12,12 +13,20 @@ import {AddToCartButton, AddToCartButtonNoSubmit} from '../AddToCartButton';
 import {useAside} from '../Aside';
 
 export default function ProductCardList({products}: {products: Product[]}) {
+  const [lines, setLines] = useState<CartLine[]>([]);
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
         <div className=" grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           {products?.map((product: Product) => {
-            return <ProductCard key={product.id} product={product} />;
+            return (
+              <ProductCard
+                key={product.id}
+                lines={lines}
+                setLines={setLines}
+                product={product}
+              />
+            );
           })}
         </div>
       </div>
@@ -28,18 +37,19 @@ export default function ProductCardList({products}: {products: Product[]}) {
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   loading = 'lazy',
+  lines,
+  setLines,
 }) => {
   const formattedPrice = formatPrice(
     product.priceRange.maxVariantPrice?.amount ||
       product.priceRange.minVariantPrice?.amount,
   );
+  const {storefront} = useLoaderData<any>();
+  console.log(storefront, ",-- SF")
   const availableSizes = getAvailableSizeVariants(product);
   const [showAddToCart, setShowAddToCart] = useState<boolean>(false);
   const [activeArr, setActiveArr] = useState<string[]>([]);
   const {open} = useAside();
-
-  console.log(product, ' <-- product');
-
   // if no buttons are selected then remove add to cart btn
   const handleShowAddToCart = () => {
     if (activeArr.length === 0) {
@@ -92,6 +102,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         options={product.options}
         variants={product.variants}
         setActiveArr={setActiveArr}
+        lines={lines}
+        setLines={setLines}
 
         // handleShowAddToCart={handleShowAddToCart}
       >
@@ -107,16 +119,27 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <>
               <div className="mt-4">
                 <div className="flex gap-4 items-center  my-3 relative   justify-center ">
-                  {option.values.map(({value, isAvailable, to, isActive}) => {
-                    const linkIsInActiveArr = activeArr.includes(to);
-
+                  {option.values.map((item) => {
+                    const {value, isAvailable, to, isActive} = item;
+                    const variantId = item?.variant?.id;
+                    const linkIsInActiveArr = activeArr.includes(variantId);
+                    // console.log(item);
                     // toggles active arr size btns
-                    const handleAddToActiveArr = () => {
-                      if (!linkIsInActiveArr) {
-                        setActiveArr((prev) => [...prev, to]);
+                    const handleAddToActiveArr = async () => {
+                      if (!linkIsInActiveArr && variantId) {
+                        const data = await fetchProductByVariantId(
+                          variantId,
+                          storefront,
+                        );
+
+                        setActiveArr((prev) => [...prev, variantId]);
+                        setLines((prev) => [...prev, {data}]);
                       } else {
                         setActiveArr((prev) =>
-                          prev.filter((value) => value !== to),
+                          prev.filter((value) => value !== variantId),
+                        );
+                        setLines((prev) =>
+                          prev.filter((value) => value.id !== variantId),
                         );
                       }
                     };
@@ -151,17 +174,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {showAddToCart && (
           <AddToCartButtonNoSubmit
             onClick={() => open('cart')}
-            // lines={
-            //   selectedVariant
-            //     ? [
-            //         {
-            //           merchandiseId: selectedVariant.id,
-            //           quantity: 1,
-            //           selectedVariant,
-            //         },
-            //       ]
-            //     : []
-            // }
+            lines={
+              activeArr.length > 0
+                ? [
+                    {
+                      merchandiseId: selectedVariant.id,
+                      quantity: 1,
+                      selectedVariant,
+                    },
+                  ]
+                : []
+            }
           >
             add to cart
           </AddToCartButtonNoSubmit>
@@ -172,3 +195,42 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     </div>
   );
 };
+export async function fetchProductByVariantId(id: string, storefront) {
+  const query = `
+    ${PRODUCT_VARIANT_BY_ID_QUERY}
+  `;
+
+  const variables = {id};
+console.log(storefront)
+  const response = await storefront?.query(query, {variables});
+  console.log(response, ' <-- RESPONSE');
+  return response?.product;
+}
+export const PRODUCT_VARIANT_BY_ID_QUERY = `#graphql
+  query ProductById($id: ID!){
+
+      variants(id: $id) {
+        nodes {
+          id
+          title
+          availableForSale
+          price {
+            amount
+            currencyCode
+          }
+          selectedOptions {
+            name
+            value
+          }
+          image {
+            id
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
+  
+` as const;

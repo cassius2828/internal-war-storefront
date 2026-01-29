@@ -61,6 +61,7 @@ async function loadCriticalData({
 
   return {
     collection,
+  
   };
 }
 const pages = [{name: 'Hoodies', href: '/collections/hoodies', current: false}];
@@ -177,10 +178,12 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
       }
     }
     variants(first: 10) {
-      nodes {
+      nodes {  
+        id
         selectedOptions {
           name
           value
+        
         }
       }
     }
@@ -190,6 +193,7 @@ export const PRODUCT_ITEM_FRAGMENT = `#graphql
         name
       }
     }
+  
   }
 ` as const;
 

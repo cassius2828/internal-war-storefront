@@ -1,0 +1,36 @@
+---
+description: Agentic workflow rules for tracking progress and decisions
+globs: **/*
+alwaysApply: true
+---
+
+# Agentic Workflow Rules
+
+## Task Tracking
+- Reference `TODOS.md` at project root for current tasks
+- Update task status when completing work
+- Add new tasks as they're identified
+
+## Documentation Updates
+When completing significant work:
+1. Mark task complete in `TODOS.md`
+2. Add changelog entry in `docs/CHANGELOG.md`
+3. If architectural decision was made, add ADR to `docs/DECISIONS.md`
+
+## Before Starting Work
+1. Check `TODOS.md` for context on current priorities
+2. Review relevant docs in `/docs` for domain knowledge
+3. Check for existing patterns in codebase
+
+## After Completing Work
+1. Update `TODOS.md` with completed items
+2. Note any new issues discovered
+3. Document any decisions made
+
+## Commit Messages
+Follow conventional commits:
+- `feat(scope): description` - New features
+- `fix(scope): description` - Bug fixes
+- `refactor(scope): description` - Code refactoring
+- `docs(scope): description` - Documentation
+- No period at end, max 100 chars in header

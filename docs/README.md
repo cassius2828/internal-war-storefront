@@ -12,6 +12,15 @@ Welcome to the Internal War Storefront documentation. This is a **Shopify Hydrog
 | [Deployment](./DEPLOYMENT.md) | Deployment to Shopify Oxygen |
 | [Components](./COMPONENTS.md) | Component reference and usage |
 | [Routes](./ROUTES.md) | Route structure and pages |
+| [Decisions](./DECISIONS.md) | Architectural decision records (ADRs) |
+| [Changelog](./CHANGELOG.md) | Version history and changes |
+
+## Project Tracking
+
+| File | Purpose |
+|------|---------|
+| [TODOS.md](../TODOS.md) | Current tasks, backlog, and completed work |
+| [.cursor/rules/](../.cursor/rules/) | AI/Agent coding rules for this project |
 
 ## Overview
 

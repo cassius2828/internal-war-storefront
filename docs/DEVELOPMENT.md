@@ -4,10 +4,13 @@ This document covers local development setup and workflow for the Internal War S
 
 ## Prerequisites
 
-- **Node.js** v18.0.0 or higher
+- **Node.js v20** (required - v22/v24 cause CLI hangs)
 - **npm** (comes with Node.js)
 - **Git**
+- **nvm** (recommended for Node version management)
 - **Shopify Partner Account** (for API access)
+
+> **Important:** This project requires Node.js v20. The Shopify CLI hangs silently with newer versions (v22, v24). An `.nvmrc` file is included - run `nvm use` before starting.
 
 ## Initial Setup
 

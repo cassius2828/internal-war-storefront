@@ -1,0 +1,57 @@
+---
+description: Core project rules for Internal War Storefront agentic development
+globs: **/*
+alwaysApply: true
+---
+
+# Internal War Storefront - Project Rules
+
+## Project Context
+This is a Shopify Hydrogen storefront built on Remix, deployed to Shopify Oxygen.
+
+## Development Requirements
+- **Node.js**: Use v20 (run `nvm use` before starting)
+- **Dev Server**: `npm run dev` starts at http://localhost:3000
+- **Build**: `npm run build` with automatic GraphQL codegen
+
+## Documentation Protocol
+When making significant changes:
+1. Update `TODOS.md` with completed/new tasks
+2. Add entries to `docs/CHANGELOG.md` for notable changes
+3. Record architectural decisions in `docs/DECISIONS.md`
+
+## Code Patterns
+
+### Routes
+- Located in `app/routes/`
+- Use `($locale)` prefix for localized routes
+- Follow Remix file-based routing conventions
+
+### Components
+- Located in `app/components/`
+- Product components in `app/components/Products/`
+- Use TypeScript with proper typing
+
+### GraphQL
+- Queries inline in route files or `app/graphql/`
+- Types auto-generated via codegen
+- Reusable fragments in `app/lib/fragments.ts`
+
+### Styling
+- Tailwind CSS v4 (alpha)
+- Custom styles in `app/styles/`
+
+## Shopify APIs
+- Storefront API: `context.storefront.query()`
+- Customer Account API: `context.customerAccount.query()`
+- Cart: `context.cart` handler
+
+## File Organization
+```
+app/
+├── components/     # React components
+├── graphql/        # Customer Account API queries
+├── lib/            # Utilities, fragments, context
+├── routes/         # Remix routes
+└── styles/         # CSS files
+```

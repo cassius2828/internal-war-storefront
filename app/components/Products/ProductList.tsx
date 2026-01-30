@@ -65,14 +65,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     handleShowAddToCart();
   }, [activeArr]);
   return (
-    <div className="group relative flex flex-col justify-between">
+    <div className="group relative flex flex-col">
       <Link prefetch="intent" to={`/products/${product.handle}?Size=M`}>
-        <div className="relative aspect-square overflow-hidden rounded-sm bg-neutral-100">
+        <div className="relative w-full overflow-hidden rounded-sm bg-neutral-100" style={{ aspectRatio: '1 / 1' }}>
           {/* Primary image - fades out on hover */}
           <img
             src={product.media?.edges[0]?.node.image.url}
             alt={product.featuredImage?.altText || product.title}
-            className="absolute inset-0 w-full h-full object-cover 
+            className="absolute inset-0 w-full h-full object-cover object-center
                        transition-opacity duration-300 ease-out
                        opacity-100 group-hover:opacity-0"
           />
@@ -81,7 +81,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <img
               src={product.media.edges[1].node.image.url}
               alt={product.featuredImage?.altText || product.title}
-              className="absolute inset-0 w-full h-full object-cover 
+              className="absolute inset-0 w-full h-full object-cover object-center
                          transition-opacity duration-300 ease-out
                          opacity-0 group-hover:opacity-100"
             />

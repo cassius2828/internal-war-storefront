@@ -9,6 +9,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+- **HeroBanner component** (`app/components/HeroBanner.tsx`) - Full-width immersive image banner
+  - Edge-to-edge image grid with no gaps between photos
+  - Dark tint overlay on images for text legibility
+  - Centered slogan/text overlay with configurable messaging
+  - Responsive design: 3-column on desktop, stacked on mobile
+  - Subtle hover effects (image scale, tint darkening)
+  - CTA button with hover animation
+  - Alternative style variants (minimal, dark, gradient)
+  - Newsreader serif typography for premium streetwear aesthetic
 - Comprehensive documentation in `/docs` directory
 - `TODOS.md` for project task tracking
 - `DECISIONS.md` for architectural decision records
@@ -42,10 +51,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Security note with lock icon
   - Empty cart state with call-to-action
   - Optimistic UI feedback for cart updates
+- **Redesigned Collections Page** - Premium collection browsing experience
+  - Elegant page header with title and subtitle
+  - Modern collection cards with 4:5 aspect ratio images
+  - Gradient overlay for text legibility
+  - Product count badges on each card
+  - Hover effects with scale, shadow, and content reveal
+  - Description and "Shop Collection" CTA appear on hover
+  - Image swap on hover for collections with secondary images
+  - Staggered entrance animations for cards
+  - Collection metadata with descriptions
+  - Responsive 3-column grid layout
+- **Redesigned Individual Collection Pages** (Sweats, Hoodies, etc.)
+  - Elegant page header with collection title and description
+  - Collection descriptions for each category
+  - Sticky toolbar with product count, sort dropdown, and view toggle
+  - Sort dropdown with multiple options (Featured, Price, Newest)
+  - Grid/List view toggle buttons
+  - Improved responsive product grid (2-4 columns)
+  - Staggered product card entrance animations
+  - Better pagination styling
 
 ### Changed
+- **Product Details & Shipping Accordions**: Improved styling while maintaining original layout
+  - Added icon badges to accordion headers (tag icon for Product Details, truck icon for Shipping)
+  - Icon backgrounds animate between states (neutral-100 when closed, neutral-900 when open)
+  - Improved list styling with custom bullet points for product details
+  - Green checkmark indicators for shipping details list items
+  - Content indented to align with accordion title for better visual hierarchy
+  - Maintains original border-based layout structure
 - **Search UI**: Complete overhaul from basic aside panel to modern full-screen modal with premium e-commerce UX
 - **Cart UI**: Complete redesign of CartMain, CartLineItem, and CartSummary components with modern styling
+- **Collections Page**: Redesigned from basic grid to premium card layout with overlays, hover effects, and animations
+- **Individual Collection Pages**: Complete overhaul with header, description, toolbar, and improved product grid
 - **Header**: Added global ⌘K keyboard shortcut listener for search; improved spacing, typography with letter-spacing, refined dropdown animations with smooth fade/slide, hover states with underline animations
 - **Homepage Hero**: Enhanced with gradient overlay for text legibility, larger typography, premium CTA button styling
 - **Homepage Sections**: Added consistent section spacing using design tokens, section headers with proper hierarchy
@@ -58,6 +96,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Product Page Layout**: Improved flex layout with sticky sidebar, better responsive spacing
 
 ### Fixed
+- **Product card image consistency**: Fixed inconsistent product image heights across grids
+  - Enforced consistent 1:1 aspect ratio on product card images using inline style
+  - Added `object-center` to ensure images are centered when cropped
+  - Fixed flex layout causing image container stretching
+  - Updated list view product images with explicit aspect ratio
 - Dev server startup issue caused by Node.js v22/v24 incompatibility with Shopify CLI
 - Removed unused props from ProductImages and ProductImagesProps type
 - Removed debug console.logs from homepage loader

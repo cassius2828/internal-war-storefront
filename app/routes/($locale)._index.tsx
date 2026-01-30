@@ -9,6 +9,7 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import NewsCarousel from '../components/NewsCarousel';
+import HeroBanner from '../components/HeroBanner';
 import {PRODUCT_ITEM_FRAGMENT} from './($locale).collections.$handle';
 const heroVideoUrl = `https://cdn.shopify.com/videos/c/o/v/a78e9be02a6840ad9378f5ac9976801d.mp4`;
 export const meta: MetaFunction = () => {
@@ -140,6 +141,14 @@ export default function Homepage() {
           <CollectionPreviewGrid />
         </div>
       </section>
+
+      {/* Full-Width Hero Banner */}
+      <HeroBanner
+        slogan="Fight Your Own War"
+        subtext="Streetwear for the relentless"
+        ctaText="Shop the Collection"
+        ctaLink="/collections"
+      />
       
       <NewsCarousel />
     </div>

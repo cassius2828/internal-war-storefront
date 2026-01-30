@@ -11,6 +11,9 @@
 ### Completed This Sprint
 - [x] Complete search UI overhaul with modern design
 - [x] Complete cart UI overhaul with premium e-commerce design
+- [x] Complete collections page redesign with premium card layout
+- [x] Complete individual collection page redesign with header, toolbar, and improved grid
+- [x] Redesign product details and shipping details accordions on product page
 
 ### Up Next
 - [ ] Ensure we can get accurate data from the Shopify store
